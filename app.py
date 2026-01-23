@@ -295,11 +295,38 @@ with col_opt1:
     )
 
 with col_opt2:
+    # Output directory with better UI
+    st.markdown("**Output Directory**")
+    
+    # Show current working directory as reference
+    current_dir = os.getcwd()
+    st.caption(f"📁 Current directory: {current_dir}")
+    
     output_dir = st.text_input(
-        "Output Directory",
+        "Save location",
         value="output_generated",
-        help="Directory where CSV files will be saved"
+        help="Directory where CSV files will be saved. Use relative or absolute path.",
+        label_visibility="collapsed"
     )
+    
+    # Show full path that will be used
+    if not os.path.isabs(output_dir):
+        full_output_path = os.path.join(current_dir, output_dir)
+    else:
+        full_output_path = output_dir
+    
+    st.caption(f"💾 Files will be saved to: `{full_output_path}`")
+    
+    # Button to create directory if it doesn't exist
+    if not os.path.exists(full_output_path):
+        if st.button("📁 Create Directory", key="create_output_dir"):
+            try:
+                os.makedirs(full_output_path, exist_ok=True)
+                st.success(f"✅ Directory created: {full_output_path}")
+            except Exception as e:
+                st.error(f"❌ Failed to create directory: {e}")
+    else:
+        st.success("✅ Directory exists")
 
 # Output types based on country
 st.subheader("📊 Output Types to Generate")
