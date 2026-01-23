@@ -68,18 +68,18 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     # 2. Construct ZD14 Columns
     zd14 = pd.DataFrame()
     
-    # Static / Direct Mappings
+    # Static / Direct Mappings - use .values to avoid index issues
     zd14['Country'] = config.country
-    zd14['HS Number'] = merged['hs']
+    zd14['HS Number'] = merged['hs'].values
     
     year_start_int = int(f"{config.year}0101")
     
     # Date formatting
-    zd14['Date from'] = merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int))
-    zd14['Date to'] = merged['valid_to'].apply(format_date_to)
+    zd14['Date from'] = merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)).values
+    zd14['Date to'] = merged['valid_to'].apply(format_date_to).values
     
     zd14['Lang 1'] = "EN"
-    zd14['Desc 1'] = merged['full_description'].fillna("")
+    zd14['Desc 1'] = merged['full_description'].fillna("").values
     
     # Empty Descs
     for i in range(2, 8):
