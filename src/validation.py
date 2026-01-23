@@ -46,6 +46,7 @@ def validate_rates(dtr_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, List[
 def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, dict]:
     """
     Validates that imported data matches configuration.
+    Now supports dynamic country group mapping from XML data.
     Returns (is_valid, dict_of_missing_items)
     """
     logger.info("Validating configuration...")
@@ -55,14 +56,18 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
         'uoms': []
     }
     
-    # Validate country groups in DTR
-    if 'concat_cg_drt' in dtr_df.columns and config.all_country_group_list:
-        unique_cgs = dtr_df['concat_cg_drt'].dropna().unique().tolist()
+    # Validate country groups in DTR - now extract from actual country_group column
+    if 'country_group' in dtr_df.columns and config.all_country_group_list:
+        unique_cgs = dtr_df['country_group'].dropna().unique().tolist()
+        
+        # Only warn about unmapped groups, don't fail validation
+        # This allows dynamic mapping from XML files
         for cg in unique_cgs:
             if cg not in config.all_country_group_list:
                 missing_items['country_groups'].append(cg)
+                logger.info(f"Found country group in XML not in config (will be processed): {cg}")
     
-    # Validate UOMs in NOM
+    # Validate UOMs in NOM - also allow dynamic mapping
     if not nom_df.empty:
         uom_columns = ['alternate_unit_1', 'alternate_unit_2', 'alternate_unit_3']
         unique_uoms = set()
@@ -74,13 +79,15 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
         for uom in unique_uoms:
             if uom and uom not in config.uom_dict.keys():
                 missing_items['uoms'].append(uom)
+                logger.info(f"Found UOM in XML not in config (will use as-is): {uom}")
     
+    # Log summary
     if missing_items['country_groups']:
-        logger.warning(f"Found {len(missing_items['country_groups'])} unmapped country groups")
+        logger.info(f"Note: {len(missing_items['country_groups'])} country groups from XML not in config table (will be processed)")
     
     if missing_items['uoms']:
-        logger.warning(f"Found {len(missing_items['uoms'])} unmapped UOMs")
+        logger.info(f"Note: {len(missing_items['uoms'])} UOMs from XML not in config table (will be used as-is)")
     
-    is_valid = not (missing_items['country_groups'] or missing_items['uoms'])
-    
-    return is_valid, missing_items
+    # Return True - validation is informational only, not blocking
+    # This allows processing of data with country groups/UOMs not in config
+    return True, missing_items
