@@ -66,29 +66,24 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     )
     
     # 2. Construct ZD14 Columns
-    zd14 = pd.DataFrame()
+    # Build dictionary first, then create DataFrame to avoid index issues
+    zd14_data = {
+        'Country': [config.country] * len(merged),
+        'HS Number': merged['hs'].values,
+        'Date from': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)).values,
+        'Date to': merged['valid_to'].apply(format_date_to).values,
+        'Lang 1': ['EN'] * len(merged),
+        'Desc 1': merged['full_description'].fillna("").values if 'full_description' in merged.columns else [""] * len(merged),
+    }
     
-    # Static / Direct Mappings - use .values to avoid index issues
-    zd14['Country'] = config.country
-    zd14['HS Number'] = merged['hs'].values
-    
-    year_start_int = int(f"{config.year}0101")
-    
-    # Date formatting
-    zd14['Date from'] = merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)).values
-    zd14['Date to'] = merged['valid_to'].apply(format_date_to).values
-    
-    zd14['Lang 1'] = "EN"
-    zd14['Desc 1'] = merged['full_description'].fillna("").values
-    
-    # Empty Descs
+    # Empty Desc columns
     for i in range(2, 8):
-        zd14[f'Desc {i}'] = ""
+        zd14_data[f'Desc {i}'] = [""] * len(merged)
         
-    zd14['Lang 2'] = "ES" # Hardcoded in sample
+    zd14_data['Lang 2'] = ['ES'] * len(merged)  # Hardcoded
     
     for i in range(21, 28):
-         zd14[f'Desc {i}'] = ""
+        zd14_data[f'Desc {i}'] = [""] * len(merged)
          
     # Unit of measure - mapped via UOMDict
     def map_uom(u):
