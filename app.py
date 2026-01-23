@@ -75,11 +75,30 @@ excel_path = st.sidebar.text_input(
     help="Path to the HS_IMP Excel configuration file"
 )
 
-# Country override
-country_override = st.sidebar.text_input(
-    "Country Override (optional)",
-    value="",
-    help="Leave empty to use country from Excel, or specify (e.g., NZ, CA, US, MX, BR, EU)"
+# Get available countries from Excel file for dropdown
+available_countries = []
+try:
+    if os.path.exists(excel_path):
+        import openpyxl
+        wb = openpyxl.load_workbook(excel_path, data_only=True, read_only=True)
+        config_sheet = wb["Config"]
+        # Get all table names and extract country codes
+        for table_name in config_sheet.tables.keys():
+            if "RateType" in table_name:
+                country = table_name.replace("RateType", "")
+                if country and country not in available_countries:
+                    available_countries.append(country)
+        wb.close()
+        available_countries = sorted(available_countries)
+except:
+    available_countries = ["NZ", "CA", "US", "MX", "BR", "EU"]  # Fallback
+
+# Country selection dropdown
+country_override = st.sidebar.selectbox(
+    "Select Country",
+    options=[""] + available_countries,
+    index=0,
+    help="Select a country to process. Leave blank to use the default country from Excel configuration."
 )
 
 # Load configuration
@@ -92,16 +111,10 @@ if st.sidebar.button("🔄 Load Configuration", type="primary"):
                 loader = ConfigLoader(excel_path)
                 config = loader.load(country_override if country_override else None)
                 st.session_state['config'] = config
+                st.session_state['editable_year'] = config.year
+                st.session_state['editable_min_chapter'] = config.min_chapter
+                st.session_state['editable_max_csv'] = config.max_csv
                 st.sidebar.success(f"✅ Config loaded: {config.country} ({config.year})")
-                
-                # Display config details
-                with st.sidebar.expander("📋 Configuration Details"):
-                    st.write(f"**Country:** {config.country}")
-                    st.write(f"**Year:** {config.year}")
-                    st.write(f"**Min Chapter:** {config.min_chapter}")
-                    st.write(f"**Max CSV Rows:** {config.max_csv:,}")
-                    st.write(f"**Active Country Groups:** {len(config.active_country_group_list)}")
-                    st.write(f"**UOM Mappings:** {len(config.uom_dict)}")
                     
         except Exception as e:
             st.sidebar.error(f"❌ Failed to load config: {str(e)}")
