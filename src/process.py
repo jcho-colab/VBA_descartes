@@ -1,9 +1,15 @@
 import pandas as pd
 import logging
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 from .config import AppConfig
 
 logger = logging.getLogger(__name__)
+
+def replace_chars(text: str) -> str:
+    """Replace semicolons with dots for CSV compatibility."""
+    if pd.isna(text):
+        return ""
+    return str(text).replace(';', '.')
 
 def cleanse_hs(df: pd.DataFrame, col_name: str = 'hs') -> pd.DataFrame:
     """Removes leading '00' from HS codes."""
@@ -13,23 +19,28 @@ def cleanse_hs(df: pd.DataFrame, col_name: str = 'hs') -> pd.DataFrame:
         df[col_name] = df[col_name].apply(lambda x: x[2:] if isinstance(x, str) and x.startswith('00') else x)
     return df
 
-def filter_by_chapter(df: pd.DataFrame, min_chapter: int) -> pd.DataFrame:
-    """Filters HS codes to include only chapters >= MinChapter."""
-    # Assuming HS code starts with chapter. 
-    # VBA logic seems to use a specific list built from MinChapter.
-    # We can just check the first 2 digits.
+def filter_by_chapter(df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
+    """Filters HS codes to include only chapters in chapter_list."""
     if 'hs' not in df.columns:
+        return df
+    
+    if not config.chapter_list:
+        logger.warning("No chapter list defined, skipping chapter filter")
         return df
         
     def is_valid_chapter(hs):
-        if not isinstance(hs, str) or len(hs) < 2: return False
-        try:
-            chap = int(hs[:2])
-            return chap >= min_chapter
-        except:
+        if not isinstance(hs, str) or len(hs) < 2: 
             return False
+        chapter = hs[:2]
+        return chapter in config.chapter_list
 
-    return df[df['hs'].apply(is_valid_chapter)].copy()
+    original_count = len(df)
+    df_filtered = df[df['hs'].apply(is_valid_chapter)].copy()
+    filtered_count = len(df_filtered)
+    
+    logger.info(f"Chapter filter: {original_count} -> {filtered_count} rows (removed {original_count - filtered_count})")
+    
+    return df_filtered
 
 def filter_active_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """Filters DTR data to keep only active country groups defined in config."""
