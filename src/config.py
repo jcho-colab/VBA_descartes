@@ -112,12 +112,26 @@ class ConfigLoader:
         
         if not rate_type_df.empty and "Descartes CG" in rate_type_df.columns:
             for _, row in rate_type_df.iterrows():
-                cg = row["Descartes CG"]
-                if pd.notna(cg):
-                    all_country_group_list.append(str(cg))
+                cg_full = row["Descartes CG"]
+                if pd.notna(cg_full):
+                    # The "Descartes CG" contains both country_group and duty_rate_type
+                    # e.g., "_DNZ1 B001" where "_DNZ1" is country_group and "B001" is duty_rate_type
+                    # Split and extract just the country_group part
+                    cg_parts = str(cg_full).split()
+                    cg = cg_parts[0] if cg_parts else str(cg_full)
+                    
+                    # Add full version for filtering logic
+                    all_country_group_list.append(str(cg_full))
+                    
+                    # Also add country_group alone for validation
+                    if cg not in all_country_group_list:
+                        all_country_group_list.append(cg)
+                    
                     comment = str(row.get("Comment", "")).lower()
                     if "remove" not in comment:
-                        active_country_group_list.append(str(cg))
+                        active_country_group_list.append(str(cg_full))
+                        if cg not in active_country_group_list:
+                            active_country_group_list.append(cg)
 
         return AppConfig(
             country=country,
