@@ -84,7 +84,11 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         
     zd14_data['Lang 2'] = ['ES'] * len(merged)  # Hardcoded
     
-    for i in range(21, 28):
+    # Desc 21 should have the same description as Desc 1 (for Spanish)
+    zd14_data['Desc 21'] = merged['full_description'].fillna("").values if 'full_description' in merged.columns else [""] * len(merged)
+    
+    # Desc 22-27 are empty
+    for i in range(22, 28):
         zd14_data[f'Desc {i}'] = [""] * len(merged)
          
     # Unit of measure - mapped via UOMDict
