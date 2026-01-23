@@ -178,10 +178,16 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
     """
     Replicates CompleteDescription.
     Builds full description by traversing parent_id.
+    
+    VBA Logic:
+    - Level 10 (chapter): Use official_description as-is
+    - Level 20+ (including 50): Prepend parent's full_description with "---"
+    - Level 50 is not added to the dictionary for OTHERS to reference, but level 50 items
+      themselves still need to build their full description from parents
     """
     logger.info(f"Building hierarchical descriptions for {len(nom_df)} NOM records...")
     
-    # Dict: ID -> {parent_id: ..., desc: ..., lvl: ...}
+    # Build a complete map of ALL items first (including level 50) for lookups
     data_map = {}
     for _, row in nom_df.iterrows():
         rid = row.get('id')
@@ -189,8 +195,7 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
         desc = row.get('official_description', '')
         lvl = str(row.get('level_id', ''))
         
-        # Filter out level_id=50 (VBA: If Not level_id=50 Then Add to Dict)
-        if lvl != '50' and pd.notna(rid):
+        if pd.notna(rid):
             data_map[str(rid)] = {
                 'pid': str(pid) if pd.notna(pid) else None,
                 'desc': replace_chars(desc),
@@ -201,6 +206,7 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
     full_desc_cache = {}
     
     def get_full_desc(curr_id: str, depth: int = 0) -> str:
+        """Recursively build full description from parent chain."""
         # Prevent infinite recursion
         if depth > 20:
             logger.warning(f"Max recursion depth reached for ID {curr_id}")
@@ -209,20 +215,21 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
         if curr_id not in data_map:
             return ""
         
+        # Return cached if available
         if curr_id in full_desc_cache:
             return full_desc_cache[curr_id]
         
         item = data_map[curr_id]
         desc = item['desc']
         
-        # VBA: If level=10, full_desc = official_desc
+        # VBA: If level=10 (chapter), full_desc = official_desc only
         if item['lvl'] == '10':
             full_desc_cache[curr_id] = desc
             return desc
         
-        # Else: parent_full_desc + "---" + current_desc
+        # For all other levels (20, 30, 40, 50): parent_full_desc + "---" + current_desc
         pid = item['pid']
-        if pid:
+        if pid and pid != curr_id:  # Avoid self-reference
             parent_desc = get_full_desc(pid, depth + 1)
             if parent_desc:
                 full = f"{parent_desc}---{desc}"
@@ -234,14 +241,14 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
         full_desc_cache[curr_id] = full
         return full
 
-    # Apply to DataFrame
+    # Build full descriptions for all items in the dataframe
     full_descriptions = []
     for _, row in nom_df.iterrows():
         rid = row.get('id')
         if pd.notna(rid) and str(rid) in data_map:
             full_descriptions.append(get_full_desc(str(rid)))
         else:
-            # Fallback for level 50 or missing ID
+            # Fallback for missing entries
             full_descriptions.append(replace_chars(row.get('official_description', '')))
 
     nom_df['full_description'] = full_descriptions
