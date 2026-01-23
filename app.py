@@ -120,6 +120,61 @@ if st.sidebar.button("🔄 Load Configuration", type="primary"):
             st.sidebar.error(f"❌ Failed to load config: {str(e)}")
             logger.error(f"Config load error: {e}", exc_info=True)
 
+# Display editable configuration details
+if st.session_state['config'] is not None:
+    with st.sidebar.expander("📋 Configuration Details", expanded=True):
+        # Editable Year
+        new_year = st.text_input(
+            "Year", 
+            value=st.session_state.get('editable_year', '2025'),
+            help="Processing year (e.g., 2025)",
+            key="year_input"
+        )
+        
+        # Validate year
+        if new_year:
+            try:
+                year_int = int(new_year)
+                if 2000 <= year_int <= 2100:
+                    st.session_state['editable_year'] = new_year
+                    st.session_state['config'].year = new_year
+                else:
+                    st.warning("⚠️ Year should be between 2000 and 2100")
+            except ValueError:
+                st.error("❌ Invalid year format")
+        
+        # Editable Min Chapter
+        new_min_chapter = st.number_input(
+            "Min Chapter",
+            min_value=1,
+            max_value=99,
+            value=st.session_state.get('editable_min_chapter', 25),
+            help="Minimum HS chapter to include (1-99)",
+            key="min_chapter_input"
+        )
+        st.session_state['editable_min_chapter'] = new_min_chapter
+        st.session_state['config'].min_chapter = new_min_chapter
+        st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(new_min_chapter, 100)]
+        
+        # Editable Max CSV Rows
+        new_max_csv = st.number_input(
+            "Max CSV Rows",
+            min_value=1000,
+            max_value=10000000,
+            value=st.session_state.get('editable_max_csv', 100000),
+            step=10000,
+            help="Maximum rows per CSV file (1,000 - 10,000,000)",
+            key="max_csv_input"
+        )
+        st.session_state['editable_max_csv'] = new_max_csv
+        st.session_state['config'].max_csv = new_max_csv
+        
+        # Display non-editable info
+        st.divider()
+        st.caption(f"**Active Country Groups:** {len(st.session_state['config'].active_country_group_list)}")
+        st.caption(f"**UOM Mappings:** {len(st.session_state['config'].uom_dict)}")
+
+
 # Main content
 if st.session_state['config'] is None:
     st.info("👈 Please load configuration from the sidebar to begin")
