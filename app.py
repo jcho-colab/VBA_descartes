@@ -187,43 +187,99 @@ st.header(f"🌍 Processing for {config.country} - Year {config.year}")
 # File Upload Section
 st.subheader("📁 Upload XML Files")
 
+# Helper function to filter files by pattern
+def filter_files_by_pattern(files, pattern):
+    """Filter uploaded files by filename pattern."""
+    if not files:
+        return []
+    filtered = [f for f in files if pattern.upper() in f.name.upper()]
+    return filtered
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("**DTR Files** (Duty Rate)")
-    dtr_files = st.file_uploader(
+    st.caption("📌 Expected pattern: *DTR*.xml")
+    dtr_files_raw = st.file_uploader(
         "Upload DTR XML files", 
         type="xml", 
         accept_multiple_files=True,
         key="dtr_upload",
-        help="Duty rate XML files (HSNZ_IMP_EN_DTR_I_*.xml)"
+        help="Duty rate XML files matching pattern: *DTR*.xml (e.g., HSNZ_IMP_EN_DTR_I_00044001001.xml)"
     )
-    if dtr_files:
-        st.success(f"✅ {len(dtr_files)} DTR file(s) uploaded")
+    
+    # Filter DTR files
+    dtr_files = filter_files_by_pattern(dtr_files_raw, "DTR")
+    
+    if dtr_files_raw:
+        if dtr_files:
+            st.success(f"✅ {len(dtr_files)} DTR file(s) uploaded")
+        else:
+            st.error(f"❌ No DTR files found. Please upload files containing 'DTR' in the filename.")
+        
+        # Show non-DTR files that were uploaded
+        non_dtr = [f.name for f in dtr_files_raw if f not in dtr_files]
+        if non_dtr:
+            st.warning(f"⚠️ Ignored {len(non_dtr)} non-DTR file(s)")
+            with st.expander("View ignored files"):
+                for fname in non_dtr:
+                    st.caption(f"• {fname}")
 
 with col2:
     st.markdown("**NOM Files** (Nomenclature)")
-    nom_files = st.file_uploader(
+    st.caption("📌 Expected pattern: *NOM*.xml")
+    nom_files_raw = st.file_uploader(
         "Upload NOM XML files", 
         type="xml", 
         accept_multiple_files=True,
         key="nom_upload",
-        help="Nomenclature XML files (HSNZ_IMP_EN_NOM_I_*.xml)"
+        help="Nomenclature XML files matching pattern: *NOM*.xml (e.g., HSNZ_IMP_EN_NOM_I_00044001003.xml)"
     )
-    if nom_files:
-        st.success(f"✅ {len(nom_files)} NOM file(s) uploaded")
+    
+    # Filter NOM files
+    nom_files = filter_files_by_pattern(nom_files_raw, "NOM")
+    
+    if nom_files_raw:
+        if nom_files:
+            st.success(f"✅ {len(nom_files)} NOM file(s) uploaded")
+        else:
+            st.error(f"❌ No NOM files found. Please upload files containing 'NOM' in the filename.")
+        
+        # Show non-NOM files
+        non_nom = [f.name for f in nom_files_raw if f not in nom_files]
+        if non_nom:
+            st.warning(f"⚠️ Ignored {len(non_nom)} non-NOM file(s)")
+            with st.expander("View ignored files"):
+                for fname in non_nom:
+                    st.caption(f"• {fname}")
 
 with col3:
     st.markdown("**TXT Files** (Text/Notes) - Optional")
-    txt_files = st.file_uploader(
+    st.caption("📌 Expected pattern: *TXT*.xml")
+    txt_files_raw = st.file_uploader(
         "Upload TXT XML files", 
         type="xml", 
         accept_multiple_files=True,
         key="txt_upload",
-        help="Text/notes XML files (HSNZ_IMP_EN_TXT_I_*.xml)"
+        help="Text/notes XML files matching pattern: *TXT*.xml (e.g., HSNZ_IMP_EN_TXT_I_00044001001.xml)"
     )
-    if txt_files:
-        st.success(f"✅ {len(txt_files)} TXT file(s) uploaded")
+    
+    # Filter TXT files
+    txt_files = filter_files_by_pattern(txt_files_raw, "TXT")
+    
+    if txt_files_raw:
+        if txt_files:
+            st.success(f"✅ {len(txt_files)} TXT file(s) uploaded")
+        else:
+            st.error(f"❌ No TXT files found. Please upload files containing 'TXT' in the filename.")
+        
+        # Show non-TXT files
+        non_txt = [f.name for f in txt_files_raw if f not in txt_files]
+        if non_txt:
+            st.warning(f"⚠️ Ignored {len(non_txt)} non-TXT file(s)")
+            with st.expander("View ignored files"):
+                for fname in non_txt:
+                    st.caption(f"• {fname}")
 
 # Processing Options
 st.subheader("⚙️ Processing Options")
