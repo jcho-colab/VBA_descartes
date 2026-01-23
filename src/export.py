@@ -65,6 +65,8 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         how='left'
     )
     
+    year_start_int = int(f"{config.year}0101")
+    
     # 2. Construct ZD14 Columns
     # Build dictionary first, then create DataFrame to avoid index issues
     zd14_data = {
@@ -92,34 +94,36 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         uom_str = str(u)
         return config.uom_dict.get(uom_str, uom_str)
         
-    zd14['Unit of measure'] = merged['alternate_unit_1'].apply(map_uom).values if 'alternate_unit_1' in merged.columns else ""
+    zd14_data['Unit of measure'] = merged['alternate_unit_1'].apply(map_uom).values if 'alternate_unit_1' in merged.columns else [""] * len(merged)
     
-    zd14['Restriction code'] = ""
+    zd14_data['Restriction code'] = [""] * len(merged)
     
     # Rate type -> Country Group
-    zd14['Rate type'] = merged['country_group'].fillna("").values
-    
-    # Champ24/25 -> Dates again
-    zd14['Champ24'] = zd14['Date from']
-    zd14['Champ25'] = zd14['Date to']
+    zd14_data['Rate type'] = merged['country_group'].fillna("").values if 'country_group' in merged.columns else [""] * len(merged)
     
     # Rates
-    zd14['Base rate %'] = merged['adValoremRate_percentage'].apply(format_rate).values if 'adValoremRate_percentage' in merged.columns else "0"
-    zd14['Rate amount'] = merged['specificRate_ratePerUOM'].apply(format_rate).values if 'specificRate_ratePerUOM' in merged.columns else "0"
+    zd14_data['Champ24'] = zd14_data['Date from']
+    zd14_data['Champ25'] = zd14_data['Date to']
+    
+    zd14_data['Base rate %'] = merged['adValoremRate_percentage'].apply(format_rate).values if 'adValoremRate_percentage' in merged.columns else ["0"] * len(merged)
+    zd14_data['Rate amount'] = merged['specificRate_ratePerUOM'].apply(format_rate).values if 'specificRate_ratePerUOM' in merged.columns else ["0"] * len(merged)
     
     # Special handling for Brazil - clear rate amount
     if config.country == "BR":
-        zd14['Rate amount'] = ""
+        zd14_data['Rate amount'] = [""] * len(merged)
     
-    zd14['Rate curr'] = ""
-    zd14['Rate qty'] = ""
-    zd14['Rate qty uom'] = ""
-    zd14['Spec App'] = ""
+    zd14_data['Rate curr'] = [""] * len(merged)
+    zd14_data['Rate qty'] = [""] * len(merged)
+    zd14_data['Rate qty uom'] = [""] * len(merged)
+    zd14_data['Spec App'] = [""] * len(merged)
     
     # Cert Ori -> regulation
-    zd14['Cert Ori'] = merged['regulation'].fillna("").values if 'regulation' in merged.columns else ""
+    zd14_data['Cert Ori'] = merged['regulation'].fillna("").values if 'regulation' in merged.columns else [""] * len(merged)
     
-    zd14['Cty Grp'] = ""
+    zd14_data['Cty Grp'] = [""] * len(merged)
+    
+    # Create DataFrame from dictionary
+    zd14 = pd.DataFrame(zd14_data)
     
     # Special replacement for country 'US': 'T' -> 'TO' in UOM
     if config.country == "US":
