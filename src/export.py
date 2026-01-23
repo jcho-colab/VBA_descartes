@@ -97,20 +97,20 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         uom_str = str(u)
         return config.uom_dict.get(uom_str, uom_str)
         
-    zd14['Unit of measure'] = merged['alternate_unit_1'].apply(map_uom) if 'alternate_unit_1' in merged.columns else ""
+    zd14['Unit of measure'] = merged['alternate_unit_1'].apply(map_uom).values if 'alternate_unit_1' in merged.columns else ""
     
     zd14['Restriction code'] = ""
     
     # Rate type -> Country Group
-    zd14['Rate type'] = merged['country_group'].fillna("")
+    zd14['Rate type'] = merged['country_group'].fillna("").values
     
     # Champ24/25 -> Dates again
     zd14['Champ24'] = zd14['Date from']
     zd14['Champ25'] = zd14['Date to']
     
     # Rates
-    zd14['Base rate %'] = merged['adValoremRate_percentage'].apply(format_rate) if 'adValoremRate_percentage' in merged.columns else "0"
-    zd14['Rate amount'] = merged['specificRate_ratePerUOM'].apply(format_rate) if 'specificRate_ratePerUOM' in merged.columns else "0"
+    zd14['Base rate %'] = merged['adValoremRate_percentage'].apply(format_rate).values if 'adValoremRate_percentage' in merged.columns else "0"
+    zd14['Rate amount'] = merged['specificRate_ratePerUOM'].apply(format_rate).values if 'specificRate_ratePerUOM' in merged.columns else "0"
     
     # Special handling for Brazil - clear rate amount
     if config.country == "BR":
@@ -122,7 +122,7 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     zd14['Spec App'] = ""
     
     # Cert Ori -> regulation
-    zd14['Cert Ori'] = merged['regulation'].fillna("") if 'regulation' in merged.columns else ""
+    zd14['Cert Ori'] = merged['regulation'].fillna("").values if 'regulation' in merged.columns else ""
     
     zd14['Cty Grp'] = ""
     
