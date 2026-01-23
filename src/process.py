@@ -179,16 +179,9 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
     Replicates CompleteDescription.
     Builds full description by traversing parent_id.
     """
-    # Create a dictionary of id -> official_description
-    # We might need to handle 'hs_flag' logic first (VBA puts duplicates at bottom, assumes top is correct)
-    # But usually we just want to look up descriptions by ID.
+    logger.info(f"Building hierarchical descriptions for {len(nom_df)} NOM records...")
     
-    # We need a recursive look up.
-    # Since dataframe lookups are slow, convert to dict.
-    
-    # Filter out level_id=50? (VBA: If Not level_id=50 Then Add to Dict)
-    
-    # Dict: ID -> {parent_id: ..., desc: ...}
+    # Dict: ID -> {parent_id: ..., desc: ..., lvl: ...}
     data_map = {}
     for _, row in nom_df.iterrows():
         rid = row.get('id')
@@ -196,13 +189,23 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
         desc = row.get('official_description', '')
         lvl = str(row.get('level_id', ''))
         
-        if lvl != '50':
-            data_map[rid] = {'pid': pid, 'desc': desc, 'lvl': lvl}
+        # Filter out level_id=50 (VBA: If Not level_id=50 Then Add to Dict)
+        if lvl != '50' and pd.notna(rid):
+            data_map[str(rid)] = {
+                'pid': str(pid) if pd.notna(pid) else None,
+                'desc': replace_chars(desc),
+                'lvl': lvl
+            }
             
     # Cache for full descriptions to avoid re-traversing
     full_desc_cache = {}
     
-    def get_full_desc(curr_id):
+    def get_full_desc(curr_id: str, depth: int = 0) -> str:
+        # Prevent infinite recursion
+        if depth > 20:
+            logger.warning(f"Max recursion depth reached for ID {curr_id}")
+            return ""
+            
         if curr_id not in data_map:
             return ""
         
@@ -210,7 +213,7 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
             return full_desc_cache[curr_id]
         
         item = data_map[curr_id]
-        desc = str(item['desc']).replace(';', '.') # Replace ; with .
+        desc = item['desc']
         
         # VBA: If level=10, full_desc = official_desc
         if item['lvl'] == '10':
@@ -219,10 +222,12 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
         
         # Else: parent_full_desc + "---" + current_desc
         pid = item['pid']
-        parent_desc = get_full_desc(pid)
-        
-        if parent_desc:
-            full = f"{parent_desc}---{desc}"
+        if pid:
+            parent_desc = get_full_desc(pid, depth + 1)
+            if parent_desc:
+                full = f"{parent_desc}---{desc}"
+            else:
+                full = desc
         else:
             full = desc
             
@@ -233,16 +238,15 @@ def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
     full_descriptions = []
     for _, row in nom_df.iterrows():
         rid = row.get('id')
-        # If level is 10 or whatever, logic handles it inside get_full_desc
-        # But we need to call it for every row (even duplicates? VBA effectively does it for all rows)
-        
-        # If ID is missing or level 50, maybe just use own desc?
-        if rid in data_map:
-            full_descriptions.append(get_full_desc(rid))
+        if pd.notna(rid) and str(rid) in data_map:
+            full_descriptions.append(get_full_desc(str(rid)))
         else:
-            # Fallback
-            full_descriptions.append(str(row.get('official_description', '')).replace(';', '.'))
+            # Fallback for level 50 or missing ID
+            full_descriptions.append(replace_chars(row.get('official_description', '')))
 
     nom_df['full_description'] = full_descriptions
+    
+    logger.info(f"Completed building descriptions")
+    
     return nom_df
 
