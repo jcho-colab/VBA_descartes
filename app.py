@@ -80,7 +80,7 @@ available_countries = []
 try:
     if os.path.exists(excel_path):
         import openpyxl
-        wb = openpyxl.load_workbook(excel_path, data_only=True, read_only=True)
+        wb = openpyxl.load_workbook(excel_path, data_only=True)
         config_sheet = wb["Config"]
         # Get all table names and extract country codes
         for table_name in config_sheet.tables.keys():
@@ -90,7 +90,8 @@ try:
                     available_countries.append(country)
         wb.close()
         available_countries = sorted(available_countries)
-except:
+except Exception as e:
+    logger.warning(f"Could not extract countries from Excel: {e}")
     available_countries = ["NZ", "CA", "US", "MX", "BR", "EU"]  # Fallback
 
 # Country selection dropdown
