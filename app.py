@@ -395,20 +395,29 @@ if st.button("🚀 Run Processing Pipeline", type="primary", use_container_width
                     if not st.checkbox("Continue despite missing rates?"):
                         st.stop()
                 
-                # Config validation (after creating concat_cg_drt)
-                if 'country_group' in dtr_df.columns and 'duty_rate_type' in dtr_df.columns:
-                    dtr_df['concat_cg_drt'] = dtr_df['country_group'].fillna('') + " " + dtr_df['duty_rate_type'].fillna('')
-                
+                # Config validation
                 config_valid, missing_items = validate_config(dtr_df, nom_df, config)
-                if not config_valid:
-                    with st.expander("⚠️ Warning: Unmapped configuration items", expanded=False):
+                
+                # Show informational message about unmapped items (not blocking)
+                if missing_items['country_groups'] or missing_items['uoms']:
+                    with st.expander("ℹ️ Info: Data from XML not in configuration", expanded=False):
+                        st.caption("These items will be processed using their original values from XML files.")
+                        
                         if missing_items['country_groups']:
-                            st.write("**Unmapped Country Groups:**", missing_items['country_groups'][:10])
+                            st.write("**Country Groups from XML:**")
+                            for cg in missing_items['country_groups'][:10]:
+                                st.caption(f"  • {cg}")
+                            if len(missing_items['country_groups']) > 10:
+                                st.caption(f"  ... and {len(missing_items['country_groups']) - 10} more")
+                        
                         if missing_items['uoms']:
-                            st.write("**Unmapped UOMs:**", missing_items['uoms'][:10])
-                    
-                    if not st.checkbox("Continue despite config mismatches?"):
-                        st.stop()
+                            st.write("**UOMs from XML:**")
+                            for uom in missing_items['uoms'][:10]:
+                                st.caption(f"  • {uom}")
+                            if len(missing_items['uoms']) > 10:
+                                st.caption(f"  ... and {len(missing_items['uoms']) - 10} more")
+                
+                st.info("✅ Validation complete - ready to process")
             else:
                 progress_bar.progress(20)
             
