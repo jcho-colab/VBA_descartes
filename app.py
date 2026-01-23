@@ -85,14 +85,14 @@ try:
         # Get all table names and extract country codes
         for table_name in config_sheet.tables.keys():
             if "RateType" in table_name:
-                country = table_name.replace("RateType", "")
+                country = table_name.replace("RateType", "").upper()  # Convert to uppercase
                 if country and country not in available_countries:
                     available_countries.append(country)
         wb.close()
         available_countries = sorted(available_countries)
 except Exception as e:
     logger.warning(f"Could not extract countries from Excel: {e}")
-    available_countries = ["NZ", "CA", "US", "MX", "BR", "EU"]  # Fallback
+    available_countries = ["AU", "BR", "CA", "EU", "MX", "NZ", "RU", "US", "VN"]  # Fallback
 
 # Country selection dropdown
 country_override = st.sidebar.selectbox(
