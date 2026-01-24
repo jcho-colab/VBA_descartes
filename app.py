@@ -400,6 +400,9 @@ if run_processing:
             nom_df = parse_xml_to_df(nom_paths, "NOM")
             txt_df = parse_xml_to_df(txt_paths, "TXT") if txt_paths else pd.DataFrame()
             
+            # Parse country group definitions for descriptions
+            cg_descriptions = parse_country_group_definitions(dtr_paths)
+            
             st.success(f"✅ Loaded: DTR={len(dtr_df)} rows, NOM={len(nom_df)} rows")
             
             # 2. VALIDATION
@@ -419,7 +422,7 @@ if run_processing:
                         st.stop()
                 
                 # Config validation - now blocks on new country groups
-                config_valid, missing_items = validate_config(dtr_df, nom_df, config)
+                config_valid, missing_items = validate_config(dtr_df, nom_df, config, cg_descriptions)
                 
                 # BLOCKING: New country groups detected
                 if missing_items['country_groups']:
