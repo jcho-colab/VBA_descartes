@@ -432,17 +432,21 @@ if run_processing:
                     in the configuration file. Processing cannot continue until these are added.
                     """)
                     
-                    # Show the new country groups with ready-to-copy JSON
+                    # Show the new country groups with ready-to-copy JSON in a single block
                     st.markdown("**Add the following entries to the config file:**")
                     
                     config_file = f"Configuration_files/{config.country.lower()}_config.json"
                     
+                    # Build all JSON entries as a single block
+                    json_entries = []
                     for cg_info in missing_items['country_groups']:
                         cg_id = cg_info['cg']
                         duty_type = cg_info['duty_rate_type']
                         description = cg_info['description']
-                        json_entry = f'{{"Descartes CG": "{cg_id} {duty_type}", "Comment": "keep", "Description": "{description}"}}'
-                        st.code(json_entry, language="json")
+                        json_entries.append(f'{{"Descartes CG": "{cg_id} {duty_type}", "Comment": "keep", "Description": "{description}"}}')
+                    
+                    # Display all entries in one code block
+                    st.code(",\n".join(json_entries), language="json")
                     
                     st.markdown(f"""
                     ### How to fix:
