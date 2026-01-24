@@ -99,7 +99,11 @@
       "Descartes CG": "_DNZ26 B004",
       "Comment": "remove",
       "Description": "Regional Comprehensive Economic Partnership"
-    }
+    },
+    {
+      "Descartes CG": "_DNZ28 B004", 
+      "Comment": "keep", 
+      "Description": "EU-New Zealand Free Trade Agreement"}
   ],
   "uom_mappings": [
     {
