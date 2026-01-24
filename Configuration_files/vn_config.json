@@ -1,0 +1,1331 @@
+{
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "UNIT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "LITER",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M3",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KWH",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SET",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M2",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "ROLL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PAIR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M\u00b2",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M\u00b3",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "1000 UNIT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CAR",
+      "SAP UOM": "N/A"
+    }
+  ],
+  "rate_types": [
+    {
+      "Descartes CG": "_DVN1 B002",
+      "Comment": "keep",
+      "Description": "Preferential Most Favored Nations Rate"
+    },
+    {
+      "Descartes CG": "_DVN10 B004",
+      "Comment": "keep",
+      "Description": "ASEAN-China Free Trade Agreement Rate"
+    },
+    {
+      "Descartes CG": "_DVN100 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN102 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MY)"
+    },
+    {
+      "Descartes CG": "_DVN104 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN105 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MM)"
+    },
+    {
+      "Descartes CG": "_DVN106 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN108 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN109 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN11 B004",
+      "Comment": "keep",
+      "Description": "AFTA + Korea Free Trade Agreement Rate (AKFTA)"
+    },
+    {
+      "Descartes CG": "_DVN110 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MY)"
+    },
+    {
+      "Descartes CG": "_DVN111 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN112 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. PH)"
+    },
+    {
+      "Descartes CG": "_DVN113 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN)"
+    },
+    {
+      "Descartes CG": "_DVN114 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,CN,ID,KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN115 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,CN,ID,KH,MM,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN116 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,CN,ID,KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN117 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,CN,ID,LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN118 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,CN,ID,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN119 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID)"
+    },
+    {
+      "Descartes CG": "_DVN12 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN)"
+    },
+    {
+      "Descartes CG": "_DVN120 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH)"
+    },
+    {
+      "Descartes CG": "_DVN121 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,LA,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN122 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN123 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN124 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN125 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN126 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,PH)"
+    },
+    {
+      "Descartes CG": "_DVN127 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,KH,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN128 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,LA,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN129 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN13 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,ID,LA,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN130 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,MM)"
+    },
+    {
+      "Descartes CG": "_DVN131 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN132 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN133 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN134 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,PH)"
+    },
+    {
+      "Descartes CG": "_DVN135 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,ID,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN136 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,KH)"
+    },
+    {
+      "Descartes CG": "_DVN137 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN138 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,KH,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN139 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,KH,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN14 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH)"
+    },
+    {
+      "Descartes CG": "_DVN140 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,KH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN141 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,MM)"
+    },
+    {
+      "Descartes CG": "_DVN142 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN143 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN144 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN145 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,PH)"
+    },
+    {
+      "Descartes CG": "_DVN146 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. BN,TH)"
+    },
+    {
+      "Descartes CG": "_DVN147 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN)"
+    },
+    {
+      "Descartes CG": "_DVN148 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,ID)"
+    },
+    {
+      "Descartes CG": "_DVN149 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,ID,LA,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN15 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,LA)"
+    },
+    {
+      "Descartes CG": "_DVN150 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,ID,PH)"
+    },
+    {
+      "Descartes CG": "_DVN151 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,ID,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN152 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,ID,TH)"
+    },
+    {
+      "Descartes CG": "_DVN153 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,KH)"
+    },
+    {
+      "Descartes CG": "_DVN154 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN155 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,KH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN156 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,MM)"
+    },
+    {
+      "Descartes CG": "_DVN157 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN158 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN159 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,MY)"
+    },
+    {
+      "Descartes CG": "_DVN16 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,LA,MY)"
+    },
+    {
+      "Descartes CG": "_DVN160 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN161 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,PH)"
+    },
+    {
+      "Descartes CG": "_DVN162 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN163 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. CN,TH)"
+    },
+    {
+      "Descartes CG": "_DVN164 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID)"
+    },
+    {
+      "Descartes CG": "_DVN165 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH)"
+    },
+    {
+      "Descartes CG": "_DVN166 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN167 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN168 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN169 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN170 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN171 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN172 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN173 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN174 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN175 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,KH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN176 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN177 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,LA,TH)"
+    },
+    {
+      "Descartes CG": "_DVN178 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MM)"
+    },
+    {
+      "Descartes CG": "_DVN179 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN18 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN180 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN181 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN182 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MY)"
+    },
+    {
+      "Descartes CG": "_DVN183 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN184 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN185 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN186 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,PH)"
+    },
+    {
+      "Descartes CG": "_DVN187 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN188 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. ID,TH)"
+    },
+    {
+      "Descartes CG": "_DVN189 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH)"
+    },
+    {
+      "Descartes CG": "_DVN19 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN191 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,LA,MM,SG)"
+    },
+    {
+      "Descartes CG": "_DVN192 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,LA,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN193 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN194 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN195 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN196 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN197 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN198 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN199 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN2 B001",
+      "Comment": "keep",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DVN20 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN200 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN201 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,PH)"
+    },
+    {
+      "Descartes CG": "_DVN202 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN204 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. KH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN206 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA)"
+    },
+    {
+      "Descartes CG": "_DVN207 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN208 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN209 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN21 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,LA)"
+    },
+    {
+      "Descartes CG": "_DVN210 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN211 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. LA,TH)"
+    },
+    {
+      "Descartes CG": "_DVN212 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MM)"
+    },
+    {
+      "Descartes CG": "_DVN213 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN214 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN215 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN216 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN217 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MY)"
+    },
+    {
+      "Descartes CG": "_DVN218 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN219 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN22 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,LA,MY)"
+    },
+    {
+      "Descartes CG": "_DVN220 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN221 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. PH)"
+    },
+    {
+      "Descartes CG": "_DVN222 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN224 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl. TH)"
+    },
+    {
+      "Descartes CG": "_DVN23 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,LA,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN232 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN233 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN234 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,TH)"
+    },
+    {
+      "Descartes CG": "_DVN235 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN236 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN237 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN238 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. TH)"
+    },
+    {
+      "Descartes CG": "_DVN24 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN25 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN253 B004",
+      "Comment": "keep",
+      "Description": "China FTA (excl: BN,KH,MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN26 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,PH)"
+    },
+    {
+      "Descartes CG": "_DVN27 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID)"
+    },
+    {
+      "Descartes CG": "_DVN28 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH)"
+    },
+    {
+      "Descartes CG": "_DVN295 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,ID,LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN299 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,LA,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN30 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA)"
+    },
+    {
+      "Descartes CG": "_DVN301 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,KH,LA,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN307 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. BN,LA,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN31 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN310 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,LA,MM,MY,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN317 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN32 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN320 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN324 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN33 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN34 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA,MY)"
+    },
+    {
+      "Descartes CG": "_DVN344 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,PH,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN345 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN346 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,TH)"
+    },
+    {
+      "Descartes CG": "_DVN35 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN355 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MY,TH)"
+    },
+    {
+      "Descartes CG": "_DVN357 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,PH,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN358 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN359 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN36 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN363 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MM,TH)"
+    },
+    {
+      "Descartes CG": "_DVN365 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MY,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN366 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN368 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,PH,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN369 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN37 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN372 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MY,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN374 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN375 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. PH,KR,TH)"
+    },
+    {
+      "Descartes CG": "_DVN38 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN39 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN40 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN406 B004",
+      "Comment": "keep",
+      "Description": "AANZFTA - ASEAN Australia New Zealand FTA (AANZFTA)"
+    },
+    {
+      "Descartes CG": "_DVN407 B004",
+      "Comment": "keep",
+      "Description": "AIFTA - ASEAN\u00e2\u20ac\u201cIndia Free Trade Area (AIFTA)"
+    },
+    {
+      "Descartes CG": "_DVN408 B004",
+      "Comment": "keep",
+      "Description": "AJCEP - ASEAN-Japan Comprehensive Economic Partnership  (AJCEP)"
+    },
+    {
+      "Descartes CG": "_DVN409 B004",
+      "Comment": "keep",
+      "Description": "ATIGA - ASEAN Trade in Goods Agreement (ATIGA)"
+    },
+    {
+      "Descartes CG": "_DVN41 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,PH)"
+    },
+    {
+      "Descartes CG": "_DVN410 B004",
+      "Comment": "keep",
+      "Description": "VJEPA - Vietnam-Japan Economic Partnership Agreement (VJEPA)"
+    },
+    {
+      "Descartes CG": "_DVN411 B004",
+      "Comment": "keep",
+      "Description": "VCFTA - Vietnam-Chile Free Trade Agreement (VCFTA)"
+    },
+    {
+      "Descartes CG": "_DVN412 B004",
+      "Comment": "keep",
+      "Description": "VKFTA - Korea Free Trade Agreement (VKFTA)"
+    },
+    {
+      "Descartes CG": "_DVN413 B004",
+      "Comment": "keep",
+      "Description": "ASEAN - HONG KONG, CHINA FREE TRADE AGREEMENT"
+    },
+    {
+      "Descartes CG": "_DVN414 B004",
+      "Comment": "keep",
+      "Description": "Comprehensive and Progressive Agreement for Trans-Pacific Partnership Mexico Origin only"
+    },
+    {
+      "Descartes CG": "_DVN415 B004",
+      "Comment": "keep",
+      "Description": "Comprehensive and Progressive Agreement for Trans-Pacific Partnership All Except MX and KH"
+    },
+    {
+      "Descartes CG": "_DVN416 B004",
+      "Comment": "keep",
+      "Description": "Vietnam Cuba FTA"
+    },
+    {
+      "Descartes CG": "_DVN418 B004",
+      "Comment": "keep",
+      "Description": "Vietname Eurasian Economic Union FTA"
+    },
+    {
+      "Descartes CG": "_DVN419 B004",
+      "Comment": "keep",
+      "Description": "EU\u00e2\u20ac\u201cVietnam Free Trade Agreement (EVFTA)"
+    },
+    {
+      "Descartes CG": "_DVN42 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KR)"
+    },
+    {
+      "Descartes CG": "_DVN420 B004",
+      "Comment": "keep",
+      "Description": "Vietnam and Lao People`s Democratic Republic FTA rates"
+    },
+    {
+      "Descartes CG": "_DVN421 B004",
+      "Comment": "keep",
+      "Description": "Vietnam and United Kingdom of Great Britain and Northern Ireland FTA rates"
+    },
+    {
+      "Descartes CG": "_DVN43 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KR,LA)"
+    },
+    {
+      "Descartes CG": "_DVN430 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for ASEAN Partnership"
+    },
+    {
+      "Descartes CG": "_DVN431 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for Australia Origin Only"
+    },
+    {
+      "Descartes CG": "_DVN432 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for China Origin Only"
+    },
+    {
+      "Descartes CG": "_DVN433 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for Japan Origin Only"
+    },
+    {
+      "Descartes CG": "_DVN434 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for New Zeland Origin Only"
+    },
+    {
+      "Descartes CG": "_DVN435 B004",
+      "Comment": "keep",
+      "Description": "The Regional Comprehensive Economic Partnership (RCEP) for Republic of Korea Origin Only"
+    },
+    {
+      "Descartes CG": "_DVN438 B004",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement Rates between the Government of the Socialist Republic of Vietnam and the Government of Israel for the period of 2024-2027"
+    },
+    {
+      "Descartes CG": "_DVN439 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN440 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,TH)"
+    },
+    {
+      "Descartes CG": "_DVN45 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KR,LA,MM,MY,PH,TH)"
+    },
+    {
+      "Descartes CG": "_DVN49 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KR,MY)"
+    },
+    {
+      "Descartes CG": "_DVN52 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,LA)"
+    },
+    {
+      "Descartes CG": "_DVN53 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN54 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM)"
+    },
+    {
+      "Descartes CG": "_DVN55 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN56 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN57 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN58 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MY)"
+    },
+    {
+      "Descartes CG": "_DVN59 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN60 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,PH)"
+    },
+    {
+      "Descartes CG": "_DVN61 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. ID,KH,KR,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN62 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH)"
+    },
+    {
+      "Descartes CG": "_DVN63 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR)"
+    },
+    {
+      "Descartes CG": "_DVN64 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,LA)"
+    },
+    {
+      "Descartes CG": "_DVN65 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN66 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN68 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN69 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,MY)"
+    },
+    {
+      "Descartes CG": "_DVN70 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN71 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,KR,PH)"
+    },
+    {
+      "Descartes CG": "_DVN72 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA)"
+    },
+    {
+      "Descartes CG": "_DVN74 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN75 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN76 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN77 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,MY)"
+    },
+    {
+      "Descartes CG": "_DVN78 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN79 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN80 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MM)"
+    },
+    {
+      "Descartes CG": "_DVN81 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MM,MY)"
+    },
+    {
+      "Descartes CG": "_DVN82 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MM,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN83 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN84 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MY)"
+    },
+    {
+      "Descartes CG": "_DVN85 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN86 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KH,PH)"
+    },
+    {
+      "Descartes CG": "_DVN87 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR)"
+    },
+    {
+      "Descartes CG": "_DVN88 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,LA)"
+    },
+    {
+      "Descartes CG": "_DVN89 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,LA,MM,PH)"
+    },
+    {
+      "Descartes CG": "_DVN91 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,LA,PH)"
+    },
+    {
+      "Descartes CG": "_DVN92 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,MM)"
+    },
+    {
+      "Descartes CG": "_DVN94 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,MY)"
+    },
+    {
+      "Descartes CG": "_DVN95 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,MY,PH)"
+    },
+    {
+      "Descartes CG": "_DVN96 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. KR,PH)"
+    },
+    {
+      "Descartes CG": "_DVN97 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA)"
+    },
+    {
+      "Descartes CG": "_DVN98 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MM)"
+    },
+    {
+      "Descartes CG": "_DVN99 B004",
+      "Comment": "keep",
+      "Description": "ASEAN KOREA FTA (excl. LA,MM,MY)"
+    }
+  ]
+}

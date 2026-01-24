@@ -1,0 +1,249 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DAU1 B001",
+      "Comment": "3rd",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DAU10 B004",
+      "Comment": "remove",
+      "Description": "Malaysia Rate"
+    },
+    {
+      "Descartes CG": "_DAU11 B004",
+      "Comment": "remove",
+      "Description": "Singapore Rate"
+    },
+    {
+      "Descartes CG": "_DAU12 B004",
+      "Comment": "remove",
+      "Description": "Least Developed Countries Rate (LDC)"
+    },
+    {
+      "Descartes CG": "_DAU13 B004",
+      "Comment": "keep",
+      "Description": "United States of America Rate"
+    },
+    {
+      "Descartes CG": "_DAU14 B004",
+      "Comment": "remove",
+      "Description": "Thailand Rate"
+    },
+    {
+      "Descartes CG": "_DAU15 B004",
+      "Comment": "remove",
+      "Description": "Chile FTA"
+    },
+    {
+      "Descartes CG": "_DAU17 B004",
+      "Comment": "keep",
+      "Description": "AANZ Rate"
+    },
+    {
+      "Descartes CG": "_DAU18 B004",
+      "Comment": "remove",
+      "Description": "Korean Rate"
+    },
+    {
+      "Descartes CG": "_DAU19 B004",
+      "Comment": "remove",
+      "Description": "Japan Rate"
+    },
+    {
+      "Descartes CG": "_DAU2 B004",
+      "Comment": "keep",
+      "Description": "New Zealand Rate"
+    },
+    {
+      "Descartes CG": "_DAU20 B004",
+      "Comment": "remove",
+      "Description": "China FTA Rate"
+    },
+    {
+      "Descartes CG": "_DAU3 B004",
+      "Comment": "remove",
+      "Description": "Papua-New Guinea Rate"
+    },
+    {
+      "Descartes CG": "_DAU30 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Originating Goods"
+    },
+    {
+      "Descartes CG": "_DAU31 B004",
+      "Comment": "remove",
+      "Description": "Hong Kong FTA"
+    },
+    {
+      "Descartes CG": "_DAU32 B004",
+      "Comment": "remove",
+      "Description": "Peru FTA"
+    },
+    {
+      "Descartes CG": "_DAU33 B004",
+      "Comment": "remove",
+      "Description": "Indonesia FTA"
+    },
+    {
+      "Descartes CG": "_DAU4 B004",
+      "Comment": "remove",
+      "Description": "Forum Islands Rate"
+    },
+    {
+      "Descartes CG": "_DAU5 B004",
+      "Comment": "remove",
+      "Description": "Developed Countries Rate (DC)"
+    },
+    {
+      "Descartes CG": "_DAU6 B004",
+      "Comment": "remove",
+      "Description": "General system of Preference Rate (DCS)"
+    },
+    {
+      "Descartes CG": "_DAU7 B004",
+      "Comment": "remove",
+      "Description": "South East Asia regional Rate (DCT)"
+    },
+    {
+      "Descartes CG": "_DAU8 B004",
+      "Comment": "keep",
+      "Description": "Canada Rate"
+    },
+    {
+      "Descartes CG": "_DAU21 B004",
+      "Comment": "remove",
+      "Description": "AANZ Rate for ID only"
+    },
+    {
+      "Descartes CG": "_DAU22 B004",
+      "Comment": "remove",
+      "Description": "AANZ Rate for TH only"
+    },
+    {
+      "Descartes CG": "_DAU23 B004",
+      "Comment": "remove",
+      "Description": "AANZ Rate for MY only"
+    },
+    {
+      "Descartes CG": "_DAU34 B004",
+      "Comment": "remove",
+      "Description": "Regional Comprehensive Economic Partnership"
+    },
+    {
+      "Descartes CG": "_DAU38 B004",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DAU39 B004",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DAU40 B004",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DAU42 B004",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DAU37 B004",
+      "Comment": "remove",
+      "Description": "Pacific Agreement on Closer Economic Relations"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CU",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "IU",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG TSS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "L AL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "L AL AND L",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MC",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NO",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "T",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "TH",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG",
+      "SAP UOM": "KG"
+    },
+    {
+      "Descartes UOM": "TNE",
+      "SAP UOM": "TNE"
+    },
+    {
+      "Descartes UOM": "L",
+      "SAP UOM": "L"
+    },
+    {
+      "Descartes UOM": "G",
+      "SAP UOM": "G"
+    },
+    {
+      "Descartes UOM": "M",
+      "SAP UOM": "M"
+    },
+    {
+      "Descartes UOM": "CM",
+      "SAP UOM": "CM"
+    },
+    {
+      "Descartes UOM": "LA ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SET",
+      "SAP UOM": "N/A"
+    }
+  ]
+}

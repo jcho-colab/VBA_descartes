@@ -1,0 +1,471 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DMX10 B004",
+      "Comment": "keep",
+      "Description": "Israel Rate"
+    },
+    {
+      "Descartes CG": "_DMX100 B004",
+      "Comment": "keep",
+      "Description": "Pacific Alliance Agreement - Colombia Rates"
+    },
+    {
+      "Descartes CG": "_DMX101 B004",
+      "Comment": "keep",
+      "Description": "Pacific Alliance Agreement - Peru Rates"
+    },
+    {
+      "Descartes CG": "_DMX102 B004",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement - Panama Rates"
+    },
+    {
+      "Descartes CG": "_DMX105 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Australia Rates"
+    },
+    {
+      "Descartes CG": "_DMX106 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Canada Rates"
+    },
+    {
+      "Descartes CG": "_DMX108 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Japan Rates"
+    },
+    {
+      "Descartes CG": "_DMX109 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - New Zealand Rates"
+    },
+    {
+      "Descartes CG": "_DMX11 B001",
+      "Comment": "3rd",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DMX11 B009",
+      "Comment": "keep",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DMX110 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Singapore Rates"
+    },
+    {
+      "Descartes CG": "_DMX111 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Vietnam Rates"
+    },
+    {
+      "Descartes CG": "_DMX112 B004",
+      "Comment": "keep",
+      "Description": "United States of America Rate (USMCA Rate)"
+    },
+    {
+      "Descartes CG": "_DMX113 B004",
+      "Comment": "keep",
+      "Description": "Canada Rate (USMCA)"
+    },
+    {
+      "Descartes CG": "_DMX114 B004",
+      "Comment": "keep",
+      "Description": "United Kigdom Rate (UK)"
+    },
+    {
+      "Descartes CG": "_DMX115 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Peru Rates"
+    },
+    {
+      "Descartes CG": "_DMX116 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement (TPP) - Malaysia Rates"
+    },
+    {
+      "Descartes CG": "_DMX118 B004",
+      "Comment": "keep",
+      "Description": "N/A"
+    },
+    {
+      "Descartes CG": "_DMX12 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX13 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX14 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX18 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX19 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX20 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX21 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX22 B004",
+      "Comment": "keep",
+      "Description": "Guatemala rates"
+    },
+    {
+      "Descartes CG": "_DMX23 B004",
+      "Comment": "keep",
+      "Description": "Nicaragua Rate"
+    },
+    {
+      "Descartes CG": "_DMX25 B004",
+      "Comment": "keep",
+      "Description": "El Salvador Rate"
+    },
+    {
+      "Descartes CG": "_DMX26 B004",
+      "Comment": "keep",
+      "Description": "Norway Rate"
+    },
+    {
+      "Descartes CG": "_DMX27 B004",
+      "Comment": "keep",
+      "Description": "Iceland Rate"
+    },
+    {
+      "Descartes CG": "_DMX28 B004",
+      "Comment": "keep",
+      "Description": "Liechtenstein Rate"
+    },
+    {
+      "Descartes CG": "_DMX29 B004",
+      "Comment": "keep",
+      "Description": "Switzerland Rate"
+    },
+    {
+      "Descartes CG": "_DMX3 B004",
+      "Comment": "keep",
+      "Description": "Colombia Rate"
+    },
+    {
+      "Descartes CG": "_DMX30 B004",
+      "Comment": "keep",
+      "Description": "Uruguay rate"
+    },
+    {
+      "Descartes CG": "_DMX31 B004",
+      "Comment": "keep",
+      "Description": "Honduras Rate"
+    },
+    {
+      "Descartes CG": "_DMX4 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX5 B004",
+      "Comment": "keep",
+      "Description": "Costa Rica Rate"
+    },
+    {
+      "Descartes CG": "_DMX54 B004",
+      "Comment": "keep",
+      "Description": "Japan Rate"
+    },
+    {
+      "Descartes CG": "_DMX55 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No55 (AAP.CE55)"
+    },
+    {
+      "Descartes CG": "_DMX56 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No55 (AAP.CE55)"
+    },
+    {
+      "Descartes CG": "_DMX57 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No51 (AAP.CE51)"
+    },
+    {
+      "Descartes CG": "_DMX58 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No29 (AAP.CE29)"
+    },
+    {
+      "Descartes CG": "_DMX59 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No38 (AAP.CE38)"
+    },
+    {
+      "Descartes CG": "_DMX6 B004",
+      "Comment": "keep",
+      "Description": "Bolivia Rate"
+    },
+    {
+      "Descartes CG": "_DMX60 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX61 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No55 (AAP.CE55)"
+    },
+    {
+      "Descartes CG": "_DMX62 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX64 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX65 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX66 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX67 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DMX68 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX69 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX7 B004",
+      "Comment": "keep",
+      "Description": "Chile Rate"
+    },
+    {
+      "Descartes CG": "_DMX70 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX71 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX72 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX73 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX74 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX76 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX78 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX79 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DMX80 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 25 Montevideo Treated No38 (AAP.A25TM37)"
+    },
+    {
+      "Descartes CG": "_DMX81 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No33 (AAP.CE33)"
+    },
+    {
+      "Descartes CG": "_DMX82 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No41 (AAP.CE41)"
+    },
+    {
+      "Descartes CG": "_DMX84 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No53 (AAP.CE53)"
+    },
+    {
+      "Descartes CG": "_DMX85 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No6 (AAP.CE6)"
+    },
+    {
+      "Descartes CG": "_DMX86 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No60 (AAP.CE60)"
+    },
+    {
+      "Descartes CG": "_DMX87 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No66 (AAP.CE66)"
+    },
+    {
+      "Descartes CG": "_DMX9 B004",
+      "Comment": "keep",
+      "Description": "European Community Rate (EU)"
+    },
+    {
+      "Descartes CG": "_DMX90 B004",
+      "Comment": "keep",
+      "Description": "Trade Integration Agreement Mexico-Peru"
+    },
+    {
+      "Descartes CG": "_DMX94 B004",
+      "Comment": "keep",
+      "Description": "Open Market Agreement - Bolivia Rates"
+    },
+    {
+      "Descartes CG": "_DMX95 B004",
+      "Comment": "keep",
+      "Description": "Open Market Agreement - Ecuador Rates"
+    },
+    {
+      "Descartes CG": "_DMX96 B004",
+      "Comment": "keep",
+      "Description": "Open Market Agreement - Paraguay Rates"
+    },
+    {
+      "Descartes CG": "_DMX97 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 25 Montevideo Treated No14 (AAP.A25TM14)"
+    },
+    {
+      "Descartes CG": "_DMX98 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No67 (AAP.CE67)"
+    },
+    {
+      "Descartes CG": "_DMX117 B004",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DMX21 B009",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DMX87 B009",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DMX59 B009",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DMX99 B004",
+      "Comment": "keep",
+      "Description": "Pacific Alliance Agreement - Chile Rates"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "BARR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CBZA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MLL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PAR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PROHIBIDA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PZA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CARAT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG",
+      "SAP UOM": "KG"
+    },
+    {
+      "Descartes UOM": "L",
+      "SAP UOM": "L"
+    },
+    {
+      "Descartes UOM": "M3",
+      "SAP UOM": "M3"
+    },
+    {
+      "Descartes UOM": "KWH",
+      "SAP UOM": "KWH"
+    },
+    {
+      "Descartes UOM": "M2",
+      "SAP UOM": "M2"
+    },
+    {
+      "Descartes UOM": "M",
+      "SAP UOM": "M"
+    },
+    {
+      "Descartes UOM": "G",
+      "SAP UOM": "G"
+    }
+  ]
+}

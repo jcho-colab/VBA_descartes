@@ -1,0 +1,57 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DRU2",
+      "Comment": "keep",
+      "Description": "Community of Independant States Rate (CIS)"
+    },
+    {
+      "Descartes CG": "_DRU24",
+      "Comment": "keep",
+      "Description": "Russia, Belarus, Kazhahkstan, Armenia Common Customs Tariff Rate"
+    },
+    {
+      "Descartes CG": "_DRU25",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement Rates between the Eurasian Economic Union and its Member States and the Socialist Republic of Viet Nam"
+    },
+    {
+      "Descartes CG": "_DRU26",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement Rates between the Eurasian Economic Union and its Member States and Islamic Republic of Iran"
+    },
+    {
+      "Descartes CG": "_DRU3",
+      "Comment": "keep",
+      "Description": "Least Developed Countries Rate (LDC)"
+    },
+    {
+      "Descartes CG": "_DRU4",
+      "Comment": "keep",
+      "Description": "General System of Preference Rate (GPT)"
+    },
+    {
+      "Descartes CG": "_DRU5 ",
+      "Comment": "3rd",
+      "Description": "General Rate"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "Metric",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "Carat",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "Piece",
+      "SAP UOM": "N/A"
+    }
+  ]
+}

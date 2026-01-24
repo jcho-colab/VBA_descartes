@@ -1,0 +1,918 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DUS00",
+      "Comment": "keep",
+      "Description": "Special Customs processing fee for Canadian or Mexican import"
+    },
+    {
+      "Descartes CG": "_DUSA B004",
+      "Comment": "keep",
+      "Description": "Generalized System of Preferences (GSP)"
+    },
+    {
+      "Descartes CG": "_DUSA$ B004",
+      "Comment": "keep",
+      "Description": "GSP: EXCLUSN-CTRY USE COL1 RATE"
+    },
+    {
+      "Descartes CG": "_DUSA+ B004",
+      "Comment": "keep",
+      "Description": "Generalized System of Preferences (Least developed nations)"
+    },
+    {
+      "Descartes CG": "_DUSALL B001",
+      "Comment": "3rd",
+      "Description": "All Countries"
+    },
+    {
+      "Descartes CG": "_DUSALL B013",
+      "Comment": "keep",
+      "Description": "All Countries"
+    },
+    {
+      "Descartes CG": "_DUSAU B004",
+      "Comment": "keep",
+      "Description": "Australia Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUSB B004",
+      "Comment": "keep",
+      "Description": "Automotive Product Trade Act (Canada only)"
+    },
+    {
+      "Descartes CG": "_DUSB#",
+      "Comment": "keep",
+      "Description": "Automotive Product Trade Act (Canada only) (NAFTA)"
+    },
+    {
+      "Descartes CG": "_DUSBH B004",
+      "Comment": "remove",
+      "Description": "United States-Bahrain Free Trade Agreement Implementation Act (UBFTA)"
+    },
+    {
+      "Descartes CG": "_DUSC B004",
+      "Comment": "remove",
+      "Description": "Agreement on Trade in Civil Aircraft (column 1 countries only)"
+    },
+    {
+      "Descartes CG": "_DUSC#",
+      "Comment": "remove",
+      "Description": "Agreement on Trade in Civil Aircraft (column 1 countries only)"
+    },
+    {
+      "Descartes CG": "_DUSCA B004",
+      "Comment": "keep",
+      "Description": "Canadian Rate under U.S.-Mexico-Canada Agreement (USMCA)"
+    },
+    {
+      "Descartes CG": "_DUSCA B013",
+      "Comment": "keep",
+      "Description": "Canadian Rate under U.S.-Mexico-Canada Agreement (USMCA)"
+    },
+    {
+      "Descartes CG": "_DUSCL B004",
+      "Comment": "keep",
+      "Description": "Chile Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUSCNA B013",
+      "Comment": "keep",
+      "Description": "China Additional duty"
+    },
+    {
+      "Descartes CG": "_DUSCO B004",
+      "Comment": "keep",
+      "Description": "Colombia Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUSD B004",
+      "Comment": "remove",
+      "Description": "African Growth and Opprortunity Act (AGOA)"
+    },
+    {
+      "Descartes CG": "_DUSE B004",
+      "Comment": "remove",
+      "Description": "Caribbean Basin Initiative (CBI)"
+    },
+    {
+      "Descartes CG": "_DUSE$ B004",
+      "Comment": "remove",
+      "Description": "Certain countries or products excluded from CBI eligibility"
+    },
+    {
+      "Descartes CG": "_DUSEMB B009",
+      "Comment": "keep",
+      "Description": "Embargo Rate"
+    },
+    {
+      "Descartes CG": "_DUSF",
+      "Comment": "remove",
+      "Description": "Certified hand-loomed or folklore products"
+    },
+    {
+      "Descartes CG": "_DUSG",
+      "Comment": "keep",
+      "Description": "Made to measure Hong Kong suits"
+    },
+    {
+      "Descartes CG": "_DUSH",
+      "Comment": "remove",
+      "Description": "Special regime commodity"
+    },
+    {
+      "Descartes CG": "_DUSI B004",
+      "Comment": "keep",
+      "Description": "Isreal Free Trade Area Implementation Act"
+    },
+    {
+      "Descartes CG": "_DUSIL B004",
+      "Comment": "keep",
+      "Description": "Israel Free Trade Area Agreement"
+    },
+    {
+      "Descartes CG": "_DUSJ B004",
+      "Comment": "keep",
+      "Description": "Andean Trade Preference Act (ATPA)"
+    },
+    {
+      "Descartes CG": "_DUSJ$ B004",
+      "Comment": "remove",
+      "Description": "Certain products excluded from ATPA eligibility"
+    },
+    {
+      "Descartes CG": "_DUSJ+ B004",
+      "Comment": "remove",
+      "Description": "Andean Trade Promotion and Drug Eradiction Act (ATPDEA)"
+    },
+    {
+      "Descartes CG": "_DUSJO B004",
+      "Comment": "remove",
+      "Description": "Jordan Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUSJP B004",
+      "Comment": "keep",
+      "Description": "Trade Agreement Between the United States and Japan"
+    },
+    {
+      "Descartes CG": "_DUSK B004",
+      "Comment": "remove",
+      "Description": "Pharmaceutical Products"
+    },
+    {
+      "Descartes CG": "_DUSK#",
+      "Comment": "remove",
+      "Description": "Pharmaceutical Products (NAFTA)"
+    },
+    {
+      "Descartes CG": "_DUSKR B004",
+      "Comment": "keep",
+      "Description": "Korea Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUSL B004",
+      "Comment": "remove",
+      "Description": "Concessions on Intermediate Chemicals for Dyes"
+    },
+    {
+      "Descartes CG": "_DUSL#",
+      "Comment": "remove",
+      "Description": "Concessions on Intermediate Chemicals for Dyes-NAFTA"
+    },
+    {
+      "Descartes CG": "_DUSM",
+      "Comment": "remove",
+      "Description": "Fashion samples and Chinese floor"
+    },
+    {
+      "Descartes CG": "_DUSMA B004",
+      "Comment": "remove",
+      "Description": "Morocco Free Trade Agreement Implementation Act"
+    },
+    {
+      "Descartes CG": "_DUSMX B004",
+      "Comment": "keep",
+      "Description": "Mexican Rate under U.S.-Mexico-Canada Agreement (USMCA)"
+    },
+    {
+      "Descartes CG": "_DUSMX B013",
+      "Comment": "keep",
+      "Description": "Mexican Rate under U.S.-Mexico-Canada Agreement (USMCA)"
+    },
+    {
+      "Descartes CG": "_DUSNP B004",
+      "Comment": "remove",
+      "Description": "Nepal Rate"
+    },
+    {
+      "Descartes CG": "_DUSOM B004",
+      "Comment": "remove",
+      "Description": "United States-Oman Free Trade Agreement Implementation Act"
+    },
+    {
+      "Descartes CG": "_DUSP B004",
+      "Comment": "remove",
+      "Description": "Dominican Republic-Central America-United States Free Trade Agreement (DR-CAFTA)"
+    },
+    {
+      "Descartes CG": "_DUSP+ B004",
+      "Comment": "remove",
+      "Description": "Dominican Republic-Central America-United States Free Trade Agreement (DR-CAFTA)"
+    },
+    {
+      "Descartes CG": "_DUSPA B004",
+      "Comment": "remove",
+      "Description": "United States-Panama Trade Promotion Agreement"
+    },
+    {
+      "Descartes CG": "_DUSPE B004",
+      "Comment": "remove",
+      "Description": "United States-Peru Trade Promotion Agreement"
+    },
+    {
+      "Descartes CG": "_DUSQ",
+      "Comment": "remove",
+      "Description": "Expired GSP (For ACS database only)"
+    },
+    {
+      "Descartes CG": "_DUSR B004",
+      "Comment": "remove",
+      "Description": "Carribean Basin Trade Partnership Act (CBTPA)"
+    },
+    {
+      "Descartes CG": "_DUSRUA B013",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSS B004",
+      "Comment": "remove",
+      "Description": "Outward Processing Program for textiles and apparel (eff. 01/2000)"
+    },
+    {
+      "Descartes CG": "_DUSS+ B004",
+      "Comment": "keep",
+      "Description": "Qualifying U.S.-Mexico-Canada Agreement (USMCA) Commodities"
+    },
+    {
+      "Descartes CG": "_DUSSG B004",
+      "Comment": "keep",
+      "Description": "Singapore Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DUST1",
+      "Comment": "remove",
+      "Description": "African Growth & Opportunity Act (AGOA)(Textiles; NYSTC-Def)"
+    },
+    {
+      "Descartes CG": "_DUST2",
+      "Comment": "remove",
+      "Description": "Carribbean Basin Trade Partnership Act (CBTPA)(Textiles; NYSTC-Defined)"
+    },
+    {
+      "Descartes CG": "_DUST3",
+      "Comment": "remove",
+      "Description": "Andean Trade Promotion & Drug Eradication Act (ATPDEA)(Textiles; NYSTC-Defined)"
+    },
+    {
+      "Descartes CG": "_DUSV",
+      "Comment": "keep",
+      "Description": "Set Components"
+    },
+    {
+      "Descartes CG": "_DUSW",
+      "Comment": "keep",
+      "Description": "Products of Puerto Rico"
+    },
+    {
+      "Descartes CG": "_DUSIEEPA B013",
+      "Comment": "remove",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSZ",
+      "Comment": "remove",
+      "Description": "Marshall Islands & Federated States of Micronesia Compact of Free Association Act"
+    },
+    {
+      "Descartes CG": "_DUSAF B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSALL B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSAO B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBA B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBD B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBN B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBO B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBR B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBR B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSBW B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCA B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCD B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCH B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCH B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCI B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCM B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCNA B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSCR B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSDZ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSEC B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSEMB B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSEU B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSEU B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSFJ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSFK B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSGB B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSGB B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSGH B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSGQ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSGY B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSID B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIEEPA B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIL B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIN B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIN B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIQ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSIS B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSJO B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSJP B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSJP B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSKH B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSKR B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSKR B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSKZ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLA B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLI B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLI B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLK B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLS B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSLY B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMD B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMG B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMK B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMM B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMU B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMW B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMX B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMY B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSMZ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNA B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNG B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNI B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNO B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNR B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSNZ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSPG B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSPH B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSPK B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSRS B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSS+ B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSS+ B071",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSSY B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTD B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTH B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTN B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTR B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTT B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSTW B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSUG B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSVE B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSVN B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSVU B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSZA B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSZM B013",
+      "Comment": "keep",
+      "Description": null
+    },
+    {
+      "Descartes CG": "_DUSZW B013",
+      "Comment": "keep",
+      "Description": null
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "AGG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "AUG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "BBL",
+      "SAP UOM": "BB"
+    },
+    {
+      "Descartes UOM": "CAR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CGM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CKG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CTN",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CYK",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "DOZ",
+      "SAP UOM": "DZ"
+    },
+    {
+      "Descartes UOM": "DPC",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "DPR",
+      "SAP UOM": "DZ"
+    },
+    {
+      "Descartes UOM": "DS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "FBM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "GBQ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "GR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "HUN",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "IRG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KM3",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "LNM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MBQ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MWH",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NO",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "OSG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PCS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PDG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PFL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PK",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PRS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PTG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "RHG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "RUG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SQ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "T",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "X",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG",
+      "SAP UOM": "KG"
+    },
+    {
+      "Descartes UOM": "L",
+      "SAP UOM": "L"
+    },
+    {
+      "Descartes UOM": "M3",
+      "SAP UOM": "M3"
+    },
+    {
+      "Descartes UOM": "G",
+      "SAP UOM": "G"
+    },
+    {
+      "Descartes UOM": "M2",
+      "SAP UOM": "M2"
+    },
+    {
+      "Descartes UOM": "KM",
+      "SAP UOM": "KM"
+    },
+    {
+      "Descartes UOM": "K",
+      "SAP UOM": "K"
+    },
+    {
+      "Descartes UOM": "M",
+      "SAP UOM": "M"
+    },
+    {
+      "Descartes UOM": "CM2",
+      "SAP UOM": "CM2"
+    },
+    {
+      "Descartes UOM": "W",
+      "SAP UOM": "W"
+    },
+    {
+      "Descartes UOM": "JWL",
+      "SAP UOM": "JWL"
+    },
+    {
+      "Descartes UOM": "GRL",
+      "SAP UOM": "GRL"
+    },
+    {
+      "Descartes UOM": "DEG",
+      "SAP UOM": "N/A"
+    }
+  ]
+}

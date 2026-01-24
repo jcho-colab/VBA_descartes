@@ -1,0 +1,364 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": null,
+      "Comment": "remove",
+      "Description": "Country only"
+    },
+    {
+      "Descartes CG": "_DALLTC",
+      "Comment": "remove",
+      "Description": "All third countries"
+    },
+    {
+      "Descartes CG": "_DCAMER B060",
+      "Comment": "remove",
+      "Description": "Central America"
+    },
+    {
+      "Descartes CG": "_DCARI B060",
+      "Comment": "remove",
+      "Description": "CARIFORUM"
+    },
+    {
+      "Descartes CG": "_DDEF_SAVG B013",
+      "Comment": "remove",
+      "Description": "Countries subject to safeguard measures"
+    },
+    {
+      "Descartes CG": "_DEEA B060",
+      "Comment": "remove",
+      "Description": "European Economic Area"
+    },
+    {
+      "Descartes CG": "_DEEA_IS B060",
+      "Comment": "remove",
+      "Description": "European Economic Area  -  Iceland"
+    },
+    {
+      "Descartes CG": "_DEPA B060",
+      "Comment": "remove",
+      "Description": "Economic Partnership Agreements"
+    },
+    {
+      "Descartes CG": "_DESA B060",
+      "Comment": "remove",
+      "Description": "Eastern and Southern Africa States"
+    },
+    {
+      "Descartes CG": "_DEU",
+      "Comment": "remove",
+      "Description": "European Union"
+    },
+    {
+      "Descartes CG": "_DEUCA B060",
+      "Comment": "keep",
+      "Description": "EU-Canada agreement: re-imported goods"
+    },
+    {
+      "Descartes CG": "_DHANDY",
+      "Comment": "remove",
+      "Description": "Certain handicraft products (Handicrafts)"
+    },
+    {
+      "Descartes CG": "_DIUUN",
+      "Comment": "remove",
+      "Description": "Non-cooperating countries in fighting illegal, unreported and unregulated fishing"
+    },
+    {
+      "Descartes CG": "_DLOMB B060",
+      "Comment": "remove",
+      "Description": "OCTs (Overseas Countries and Territories)"
+    },
+    {
+      "Descartes CG": "_DLOOMS",
+      "Comment": "remove",
+      "Description": "Silk or cotton handloom products"
+    },
+    {
+      "Descartes CG": "_DNOWTO",
+      "Comment": "remove",
+      "Description": "Countries not members of the WTO"
+    },
+    {
+      "Descartes CG": "_DSADC B060",
+      "Comment": "remove",
+      "Description": "SADC EPA"
+    },
+    {
+      "Descartes CG": "_DSAVG",
+      "Comment": "remove",
+      "Description": "Countries subject to safeguard measures"
+    },
+    {
+      "Descartes CG": "_DSPGA B060",
+      "Comment": "remove",
+      "Description": "GSP (R 12/978) - Annex IV"
+    },
+    {
+      "Descartes CG": "_DSPGE B060",
+      "Comment": "remove",
+      "Description": "GSP+ (incentive arrangement for sustainable development and good governance)"
+    },
+    {
+      "Descartes CG": "_DSPGL B060",
+      "Comment": "remove",
+      "Description": "GSP (R 12/978) - General arrangements"
+    },
+    {
+      "Descartes CG": "_DSWITZ B060",
+      "Comment": "remove",
+      "Description": "EU-Switzerland agreement: re-imported goods"
+    },
+    {
+      "Descartes CG": "_DTOUT B013",
+      "Comment": "remove",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B050",
+      "Comment": "3rd",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B051",
+      "Comment": "3rd",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B070",
+      "Comment": "remove",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B071",
+      "Comment": "remove",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B080",
+      "Comment": "remove",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DTOUT B081",
+      "Comment": "remove",
+      "Description": "ERGA OMNES"
+    },
+    {
+      "Descartes CG": "_DWBC B060",
+      "Comment": "remove",
+      "Description": "Western Balkan countries (AL, BA, ME, MK, XK, XS)"
+    },
+    {
+      "Descartes CG": "_DWTO",
+      "Comment": "remove",
+      "Description": "Member countries of WTO"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "*",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MTQC",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MTQ",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "TJO",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MWH",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KPP",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KSH",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KPH",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "GRM",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KUR",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "GFI",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KNS",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KMA",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "NAR",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KNI",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KPO",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "LTR",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "LPA",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MTK",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "NPR",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KSD",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "CTM",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MIL",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "NCL",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "CCT",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "CEN",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "KGME",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "MTR",
+      "SAP UOM": "PST"
+    },
+    {
+      "Descartes UOM": "TCO2",
+      "SAP UOM": "PST"
+    }
+  ],
+  "country_list": [
+    {
+      "Country List": "AT"
+    },
+    {
+      "Country List": "BE"
+    },
+    {
+      "Country List": "BG"
+    },
+    {
+      "Country List": "CY"
+    },
+    {
+      "Country List": "CZ"
+    },
+    {
+      "Country List": "DE"
+    },
+    {
+      "Country List": "DK"
+    },
+    {
+      "Country List": "EE"
+    },
+    {
+      "Country List": "ES"
+    },
+    {
+      "Country List": "FI"
+    },
+    {
+      "Country List": "FR"
+    },
+    {
+      "Country List": "GR"
+    },
+    {
+      "Country List": "HR"
+    },
+    {
+      "Country List": "HU"
+    },
+    {
+      "Country List": "IE"
+    },
+    {
+      "Country List": "IT"
+    },
+    {
+      "Country List": "LT"
+    },
+    {
+      "Country List": "LU"
+    },
+    {
+      "Country List": "LV"
+    },
+    {
+      "Country List": "MT"
+    },
+    {
+      "Country List": "NL"
+    },
+    {
+      "Country List": "PL"
+    },
+    {
+      "Country List": "PT"
+    },
+    {
+      "Country List": "RO"
+    },
+    {
+      "Country List": "SE"
+    },
+    {
+      "Country List": "SI"
+    },
+    {
+      "Country List": "SK"
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DCA1 B002",
+      "Comment": "3rd",
+      "Description": "Most Favoured Nations Rate (MFN)"
+    },
+    {
+      "Descartes CG": "_DCA10 B004",
+      "Comment": "keep",
+      "Description": "Caribbean Countries tariff Rate (CCCT)"
+    },
+    {
+      "Descartes CG": "_DCA12 B001",
+      "Comment": "keep",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DCA12 B009",
+      "Comment": "keep",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DCA14 B004",
+      "Comment": "keep",
+      "Description": "Costa Rica Rate (CCRFTA)"
+    },
+    {
+      "Descartes CG": "_DCA17 B004",
+      "Comment": "keep",
+      "Description": "Iceland Rate"
+    },
+    {
+      "Descartes CG": "_DCA18 B004",
+      "Comment": "keep",
+      "Description": "Norway Rate"
+    },
+    {
+      "Descartes CG": "_DCA19 B004",
+      "Comment": "keep",
+      "Description": "Switzerland and Liechtenstein Rate"
+    },
+    {
+      "Descartes CG": "_DCA2 B004",
+      "Comment": "keep",
+      "Description": "General System of Preference Rate (GPT)"
+    },
+    {
+      "Descartes CG": "_DCA20 B004",
+      "Comment": "keep",
+      "Description": "Peru Rate"
+    },
+    {
+      "Descartes CG": "_DCA21 B004",
+      "Comment": "keep",
+      "Description": "Canada-Colombia Rate"
+    },
+    {
+      "Descartes CG": "_DCA22 B004",
+      "Comment": "keep",
+      "Description": "Canada-Jordan Free Trade Agreement (CJFTA)"
+    },
+    {
+      "Descartes CG": "_DCA23 B004",
+      "Comment": "keep",
+      "Description": "Canada-Panama Free Trade Agreement"
+    },
+    {
+      "Descartes CG": "_DCA25 B004",
+      "Comment": "keep",
+      "Description": "Honduras-Canada FTA"
+    },
+    {
+      "Descartes CG": "_DCA26 B004",
+      "Comment": "keep",
+      "Description": "South Korea-Canada FTA"
+    },
+    {
+      "Descartes CG": "_DCA27 B004",
+      "Comment": "keep",
+      "Description": "Ukraine-Canada FTA"
+    },
+    {
+      "Descartes CG": "_DCA28 B004",
+      "Comment": "keep",
+      "Description": "EU-Canada FTA"
+    },
+    {
+      "Descartes CG": "_DCA3 B004",
+      "Comment": "keep",
+      "Description": "Least Developed Countries Rate (LDDC)"
+    },
+    {
+      "Descartes CG": "_DCA33 B004",
+      "Comment": "keep",
+      "Description": "Comprehensive and Progressive Agreement for Trans-Pacific Partnership Tariff"
+    },
+    {
+      "Descartes CG": "_DCA34 B004",
+      "Comment": "keep",
+      "Description": "USMCA-US RATE"
+    },
+    {
+      "Descartes CG": "_DCA35 B004",
+      "Comment": "keep",
+      "Description": "USMCA-MX RATE"
+    },
+    {
+      "Descartes CG": "_DCA36 B004",
+      "Comment": "keep",
+      "Description": "CA-UK FTA"
+    },
+    {
+      "Descartes CG": "_DCA5 B004",
+      "Comment": "keep",
+      "Description": "Australia Rate (AUT)"
+    },
+    {
+      "Descartes CG": "_DCA6 B004",
+      "Comment": "keep",
+      "Description": "New Zealand Rate (NZT)"
+    },
+    {
+      "Descartes CG": "_DCA8 B004",
+      "Comment": "keep",
+      "Description": "Israel Rate (CIAT)"
+    },
+    {
+      "Descartes CG": "_DCA9 B004",
+      "Comment": "keep",
+      "Description": "Chile Rate (CT)"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "-",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "GRM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "HLT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "LPA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "LTR",
+      "SAP UOM": "L"
+    },
+    {
+      "Descartes UOM": "TMQ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MWH",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KNS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MBQ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KSD",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "TSD",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "SET",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "GRO",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "CTM",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NMB",
+      "SAP UOM": "NMB"
+    },
+    {
+      "Descartes UOM": "KGM",
+      "SAP UOM": "KGM"
+    },
+    {
+      "Descartes UOM": "DZN",
+      "SAP UOM": "DZN"
+    },
+    {
+      "Descartes UOM": "TNE",
+      "SAP UOM": "TNE"
+    },
+    {
+      "Descartes UOM": "MIL",
+      "SAP UOM": "MIL"
+    },
+    {
+      "Descartes UOM": "MTQ",
+      "SAP UOM": "MTQ"
+    },
+    {
+      "Descartes UOM": "MTK",
+      "SAP UOM": "MTK"
+    },
+    {
+      "Descartes UOM": "MTR",
+      "SAP UOM": "MTR"
+    },
+    {
+      "Descartes UOM": "PAR",
+      "SAP UOM": "PAR"
+    },
+    {
+      "Descartes UOM": "NAP",
+      "SAP UOM": "NAP"
+    }
+  ]
+}

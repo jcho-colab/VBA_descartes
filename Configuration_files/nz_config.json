@@ -1,0 +1,262 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DNZ1 B001",
+      "Comment": "3rd",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DNZ10 B004",
+      "Comment": "remove",
+      "Description": "Singapore Rate"
+    },
+    {
+      "Descartes CG": "_DNZ11 B004",
+      "Comment": "remove",
+      "Description": "Thailand rate"
+    },
+    {
+      "Descartes CG": "_DNZ12 B004",
+      "Comment": "remove",
+      "Description": "Trans-Pacific Strategic Economic Partnership Agreement rate"
+    },
+    {
+      "Descartes CG": "_DNZ13 B004",
+      "Comment": "remove",
+      "Description": "China Rate"
+    },
+    {
+      "Descartes CG": "_DNZ14 B004",
+      "Comment": "keep",
+      "Description": "ASEAN Rate"
+    },
+    {
+      "Descartes CG": "_DNZ16 B004",
+      "Comment": "remove",
+      "Description": "Malaysia"
+    },
+    {
+      "Descartes CG": "_DNZ19 B004",
+      "Comment": "remove",
+      "Description": "Hong Kong rate"
+    },
+    {
+      "Descartes CG": "_DNZ2 B004",
+      "Comment": "keep",
+      "Description": "Australia Rate"
+    },
+    {
+      "Descartes CG": "_DNZ20 B004",
+      "Comment": "remove",
+      "Description": "Taiwan Rate"
+    },
+    {
+      "Descartes CG": "_DNZ21 B004",
+      "Comment": "remove",
+      "Description": "Korea Rate"
+    },
+    {
+      "Descartes CG": "_DNZ22 B004",
+      "Comment": "keep",
+      "Description": "Trans-Pacific Partnership Agreement"
+    },
+    {
+      "Descartes CG": "_DNZ23 B004",
+      "Comment": "remove",
+      "Description": "PACER Plus"
+    },
+    {
+      "Descartes CG": "_DNZ3 B004",
+      "Comment": "keep",
+      "Description": "Canada Rate"
+    },
+    {
+      "Descartes CG": "_DNZ4 B004",
+      "Comment": "remove",
+      "Description": "Less Developed Countries Rate"
+    },
+    {
+      "Descartes CG": "_DNZ5 B004",
+      "Comment": "remove",
+      "Description": "Least Developed Countries Rate"
+    },
+    {
+      "Descartes CG": "_DNZ6 B004",
+      "Comment": "remove",
+      "Description": "Pacific Islands Rate"
+    },
+    {
+      "Descartes CG": "_DNZ8 B004",
+      "Comment": "remove",
+      "Description": "Great Britain Rate"
+    },
+    {
+      "Descartes CG": "_DNZ25 B004",
+      "Comment": "remove",
+      "Description": "Russian Sanction Rate"
+    },
+    {
+      "Descartes CG": "_DNZ26 B004",
+      "Comment": "remove",
+      "Description": "Regional Comprehensive Economic Partnership"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "BDU OF 1089.6 KG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "DOZ",
+      "SAP UOM": "DZ"
+    },
+    {
+      "Descartes UOM": "GJ",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "HBX",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "HD",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "HNK",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KTC",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "L AL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "L MS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NO",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NO.",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PK",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PR.",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "RLS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "TH",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "TNE",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M\u00c23",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M\u00c22",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NMB",
+      "SAP UOM": "NMB"
+    },
+    {
+      "Descartes UOM": "KGM",
+      "SAP UOM": "KGM"
+    },
+    {
+      "Descartes UOM": "DZN",
+      "SAP UOM": "DZN"
+    },
+    {
+      "Descartes UOM": "LTR",
+      "SAP UOM": "LTR"
+    },
+    {
+      "Descartes UOM": "LPA",
+      "SAP UOM": "LPA"
+    },
+    {
+      "Descartes UOM": "LMS",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MIL",
+      "SAP UOM": "MIL"
+    },
+    {
+      "Descartes UOM": "GIG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "GRM",
+      "SAP UOM": "GRM"
+    },
+    {
+      "Descartes UOM": "MTK",
+      "SAP UOM": "MTK"
+    },
+    {
+      "Descartes UOM": "CEN",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NRL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MTR",
+      "SAP UOM": "MTR"
+    },
+    {
+      "Descartes UOM": "KNS",
+      "SAP UOM": "KNS"
+    },
+    {
+      "Descartes UOM": "NPR",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "BDU",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MTQ",
+      "SAP UOM": "MTQ"
+    },
+    {
+      "Descartes UOM": "NCL",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "NMP",
+      "SAP UOM": "N/A"
+    }
+  ]
+}

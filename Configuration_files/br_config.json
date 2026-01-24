@@ -1,0 +1,371 @@
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DBR1 B001",
+      "Comment": "3rd",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DBR10 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No36 (AAP.CE36)"
+    },
+    {
+      "Descartes CG": "_DBR15 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No62 (AAP.CE62)"
+    },
+    {
+      "Descartes CG": "_DBR23 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No58 (AAP.CE58)"
+    },
+    {
+      "Descartes CG": "_DBR25 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No59 (AAP.CE59)"
+    },
+    {
+      "Descartes CG": "_DBR26 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No59 (AAP.CE59)"
+    },
+    {
+      "Descartes CG": "_DBR31 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR33 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR35 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 25 Montevideo Treated No41 - Rice Agreement (AAP.A25TM41) - In quota"
+    },
+    {
+      "Descartes CG": "_DBR36 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 25 Montevideo Treated No38 (AAP.A25TM38)"
+    },
+    {
+      "Descartes CG": "_DBR38 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No55 - Automobile Industry (AAP.CE55)"
+    },
+    {
+      "Descartes CG": "_DBR43 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 14 Montevideo Treated No6 (AAP.A14TM6)"
+    },
+    {
+      "Descartes CG": "_DBR44 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR45 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No14  (AAP.CE14)"
+    },
+    {
+      "Descartes CG": "_DBR50 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No18 - MERCOSUR (AAP.CE18)"
+    },
+    {
+      "Descartes CG": "_DBR51 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR52 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR53 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR54 B004",
+      "Comment": "keep",
+      "Description": "Regional Agreement for Market Opening (AR.AM1)"
+    },
+    {
+      "Descartes CG": "_DBR55 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR56 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR57 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR58 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR59 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR60 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR61 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR62 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR63 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR64 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR65 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR66 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR67 B004",
+      "Comment": "keep",
+      "Description": "Regional Agreement for Market Opening (AR.AM2)"
+    },
+    {
+      "Descartes CG": "_DBR68 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR7 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No53 (AAP.CE53)"
+    },
+    {
+      "Descartes CG": "_DBR71 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR72 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR73 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR74 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No18 - MERCOSUR (AAP.CE18)"
+    },
+    {
+      "Descartes CG": "_DBR75 B004",
+      "Comment": "keep",
+      "Description": "Regional Agreement for Market Opening (AR.AM3)"
+    },
+    {
+      "Descartes CG": "_DBR76 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR77 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR78 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR79 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR8 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No18 - MERCOSUR (AAP.CE18)"
+    },
+    {
+      "Descartes CG": "_DBR80 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 14 Montevideo Treated No6 (AAP.A14TM6)"
+    },
+    {
+      "Descartes CG": "_DBR81 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements under article 14 Montevideo Treated No7 (AAP.A14TM7)"
+    },
+    {
+      "Descartes CG": "_DBR82 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR83 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No2  (AAP.CE2)"
+    },
+    {
+      "Descartes CG": "_DBR84 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR85 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR86 B004",
+      "Comment": "keep",
+      "Description": "Partial Scope Agreements - Seed Interregional Trade (AAP.AG2)"
+    },
+    {
+      "Descartes CG": "_DBR87 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR88 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR89 B004",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement Mercosur-India (MERCOSUR-India)"
+    },
+    {
+      "Descartes CG": "_DBR9 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No35 (AAP.CE35)"
+    },
+    {
+      "Descartes CG": "_DBR91 B004",
+      "Comment": "keep",
+      "Description": "Free Trade Agreement Mercosur-Israel (MERCOSUR-Israel)"
+    },
+    {
+      "Descartes CG": "_DBR92 B004",
+      "Comment": "keep",
+      "Description": "Regional Cooperation Agreement for Cultural, Educational and Scientific Areas (AR.CYT7)"
+    },
+    {
+      "Descartes CG": "_DBR93 B004",
+      "Comment": "keep",
+      "Description": "Latin American Integration Association preferential regional Rate (AR.PAR4)"
+    },
+    {
+      "Descartes CG": "_DBR94 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No69 (AAP.CE69)"
+    },
+    {
+      "Descartes CG": "_DBR97 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No72 (AAP.CE72)"
+    },
+    {
+      "Descartes CG": "_DBR98 B004",
+      "Comment": "keep",
+      "Description": "Economic Complementation Agreement No74 - Brazil- Paraguay (AAP.CE74)"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": null,
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "*",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "UN",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "KG",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "LT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "MWHORA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M3",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "M2",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "PARES",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "1000UN",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "QUILAT",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "DUZIA",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "G",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "TON",
+      "SAP UOM": "N/A"
+    },
+    {
+      "Descartes UOM": "METRO",
+      "SAP UOM": "N/A"
+    }
+  ]
+}
