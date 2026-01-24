@@ -429,22 +429,24 @@ if run_processing:
                     in the configuration file. Processing cannot continue until these are added.
                     """)
                     
-                    # Show the new country groups
-                    st.markdown("**New country groups to add:**")
+                    # Show the new country groups with their duty_rate_type
+                    st.markdown("**New country groups to add** (format: `country_group duty_rate_type`):")
                     for cg in missing_items['country_groups']:
                         st.code(cg, language=None)
                     
-                    # Show instructions
+                    # Show instructions with example using actual values
                     config_file = f"Configuration_files/{config.country.lower()}_config.json"
+                    example_cg = missing_items['country_groups'][0] if missing_items['country_groups'] else "_DXXX B001"
+                    
                     st.markdown(f"""
                     ### How to fix:
                     1. Open `{config_file}`
-                    2. Add the new country group(s) to the `rate_types` array with the following format:
+                    2. Add the new country group(s) to the `rate_types` array. Example:
                     ```json
                     {{
-                        "Descartes CG": "<country_group> <duty_rate_type>",
+                        "Descartes CG": "{example_cg}",
                         "Comment": "keep",
-                        "Description": "<description>"
+                        "Description": "Description here"
                     }}
                     ```
                     3. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
