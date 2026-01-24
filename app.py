@@ -310,14 +310,14 @@ with col_opt2:
     current_dir = os.getcwd()
     st.caption(f"📁 Current directory: {current_dir}")
     
+    # Initialize output_dir in session state if not present
+    if 'output_dir' not in st.session_state:
+        st.session_state['output_dir'] = "output_generated"
+    
     # Create two columns for path input and browse button
-    path_col, browse_col = st.columns([4, 1])
+    path_col, browse_col = st.columns([5, 1])
     
     with path_col:
-        # Initialize output_dir in session state if not present
-        if 'output_dir' not in st.session_state:
-            st.session_state['output_dir'] = "output_generated"
-        
         output_dir = st.text_input(
             "Save location",
             value=st.session_state['output_dir'],
@@ -328,18 +328,20 @@ with col_opt2:
         st.session_state['output_dir'] = output_dir
     
     with browse_col:
-        # Folder picker button using a text input workaround
-        browse_path = st.text_input(
-            "Browse",
-            value="",
-            placeholder="Paste path",
-            help="Paste a folder path here to set it as output directory",
-            label_visibility="collapsed",
-            key="browse_folder"
-        )
-        if browse_path and browse_path.strip():
-            st.session_state['output_dir'] = browse_path.strip()
-            st.rerun()
+        if st.button("📂", help="Browse for folder - opens folder selector dialog", key="browse_btn"):
+            try:
+                import tkinter as tk
+                from tkinter import filedialog
+                root = tk.Tk()
+                root.withdraw()
+                root.wm_attributes('-topmost', 1)
+                folder_selected = filedialog.askdirectory(initialdir=current_dir)
+                root.destroy()
+                if folder_selected:
+                    st.session_state['output_dir'] = folder_selected
+                    st.rerun()
+            except Exception as e:
+                st.warning("Folder browser not available. Please paste the path manually.")
     
     # Show full path that will be used
     if not os.path.isabs(output_dir):
