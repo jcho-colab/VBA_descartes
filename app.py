@@ -72,52 +72,28 @@ if 'processing_complete' not in st.session_state:
 # Sidebar Configuration
 st.sidebar.header("⚙️ Configuration")
 
-# Excel config path
-default_excel_path = "/app/HS_IMP_v6.3.xlsm"
-if not os.path.exists(default_excel_path):
-    default_excel_path = "HS_IMP_v6.3.xlsm"
+# Configuration directory path
+CONFIG_DIR = "Configuration_files"
 
-excel_path = st.sidebar.text_input(
-    "Excel Config Path", 
-    value=default_excel_path,
-    help="Path to the HS_IMP Excel configuration file"
-)
-
-# Get available countries from Excel file for dropdown
-available_countries = []
-try:
-    if os.path.exists(excel_path):
-        import openpyxl
-        wb = openpyxl.load_workbook(excel_path, data_only=True)
-        config_sheet = wb["Config"]
-        # Get all table names and extract country codes
-        for table_name in config_sheet.tables.keys():
-            if "RateType" in table_name:
-                country = table_name.replace("RateType", "").upper()  # Convert to uppercase
-                if country and country not in available_countries:
-                    available_countries.append(country)
-        wb.close()
-        available_countries = sorted(available_countries)
-except Exception as e:
-    logger.warning(f"Could not extract countries from Excel: {e}")
-    available_countries = ["AU", "BR", "CA", "EU", "MX", "NZ", "RU", "US", "VN"]  # Fallback
+# Get available countries from configuration files
+loader = ConfigLoader(CONFIG_DIR)
+available_countries = loader.get_available_countries()
 
 # Country selection dropdown
 country_override = st.sidebar.selectbox(
     "Select Country",
     options=[""] + available_countries,
     index=0,
-    help="Select a country to process. Leave blank to use the default country from Excel configuration."
+    help="Select a country to process. Leave blank to use the default country from configuration."
 )
 
 # Load configuration
 if st.sidebar.button("🔄 Load Configuration", type="primary"):
-    if not os.path.exists(excel_path):
-        st.sidebar.error(f"❌ Configuration file not found: {excel_path}")
+    if not os.path.exists(CONFIG_DIR):
+        st.sidebar.error(f"❌ Configuration directory not found: {CONFIG_DIR}")
     else:
         try:
             with st.spinner("Loading configuration..."):
-                loader = ConfigLoader(excel_path)
                 config = loader.load(country_override if country_override else None)
                 st.session_state['config'] = config
                 st.session_state['editable_year'] = config.year
