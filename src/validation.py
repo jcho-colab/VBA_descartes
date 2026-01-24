@@ -1,6 +1,6 @@
 import pandas as pd
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Set
 from .config import AppConfig
 
 logger = logging.getLogger(__name__)
@@ -43,10 +43,42 @@ def validate_rates(dtr_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, List[
         logger.info("All DTR records have valid rate text or regulation")
         return True, []
 
+
+def detect_new_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> Set[str]:
+    """
+    Detects country groups in DTR data that are not in the config file.
+    Returns set of new country group codes.
+    """
+    new_groups = set()
+    
+    if 'country_group' not in dtr_df.columns:
+        return new_groups
+    
+    # Get unique country groups from XML
+    xml_country_groups = set(dtr_df['country_group'].dropna().unique().tolist())
+    
+    # Get all known country groups from config (extract just the country_group part)
+    known_groups = set()
+    for cg in config.all_country_group_list:
+        # Country groups in config are stored as "country_group duty_rate_type" or just "country_group"
+        parts = str(cg).split()
+        known_groups.add(parts[0] if parts else str(cg))
+    
+    # Find groups in XML not in config
+    for cg in xml_country_groups:
+        cg_str = str(cg)
+        if cg_str not in known_groups:
+            new_groups.add(cg_str)
+    
+    if new_groups:
+        logger.warning(f"Found {len(new_groups)} new country groups not in config: {new_groups}")
+    
+    return new_groups
+
+
 def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, dict]:
     """
     Validates that imported data matches configuration.
-    Now supports dynamic country group mapping from XML data.
     Returns (is_valid, dict_of_missing_items)
     """
     logger.info("Validating configuration...")
@@ -56,18 +88,22 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
         'uoms': []
     }
     
-    # Validate country groups in DTR - now extract from actual country_group column
+    # Validate country groups in DTR
     if 'country_group' in dtr_df.columns and config.all_country_group_list:
         unique_cgs = dtr_df['country_group'].dropna().unique().tolist()
         
-        # Only warn about unmapped groups, don't fail validation
-        # This allows dynamic mapping from XML files
+        # Get known country groups (just the first part before space)
+        known_groups = set()
+        for cg in config.all_country_group_list:
+            parts = str(cg).split()
+            known_groups.add(parts[0] if parts else str(cg))
+        
         for cg in unique_cgs:
-            if cg not in config.all_country_group_list:
-                missing_items['country_groups'].append(cg)
-                logger.info(f"Found country group in XML not in config (will be processed): {cg}")
+            if str(cg) not in known_groups:
+                missing_items['country_groups'].append(str(cg))
+                logger.info(f"Found new country group in XML not in config: {cg}")
     
-    # Validate UOMs in NOM - also allow dynamic mapping
+    # Validate UOMs in NOM
     if not nom_df.empty:
         uom_columns = ['alternate_unit_1', 'alternate_unit_2', 'alternate_unit_3']
         unique_uoms = set()
@@ -83,11 +119,11 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
     
     # Log summary
     if missing_items['country_groups']:
-        logger.info(f"Note: {len(missing_items['country_groups'])} country groups from XML not in config table (will be processed)")
+        logger.warning(f"BLOCKING: {len(missing_items['country_groups'])} new country groups require config update")
     
     if missing_items['uoms']:
         logger.info(f"Note: {len(missing_items['uoms'])} UOMs from XML not in config table (will be used as-is)")
     
-    # Return True - validation is informational only, not blocking
-    # This allows processing of data with country groups/UOMs not in config
-    return True, missing_items
+    # Return False if there are new country groups (blocking)
+    is_valid = len(missing_items['country_groups']) == 0
+    return is_valid, missing_items
