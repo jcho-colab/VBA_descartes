@@ -437,18 +437,20 @@ if run_processing:
                     
                     config_file = f"Configuration_files/{config.country.lower()}_config.json"
                     
-                    for cg in missing_items['country_groups']:
-                        json_entry = f'''{{"Descartes CG": "{cg}", "Comment": "keep", "Description": "TODO: Add description"}}'''
+                    for cg_info in missing_items['country_groups']:
+                        cg_id = cg_info['cg']
+                        duty_type = cg_info['duty_rate_type']
+                        description = cg_info['description']
+                        json_entry = f'{{"Descartes CG": "{cg_id} {duty_type}", "Comment": "keep", "Description": "{description}"}}'
                         st.code(json_entry, language="json")
                     
                     st.markdown(f"""
                     ### How to fix:
                     1. Open `{config_file}`
                     2. Copy the JSON entries above into the `rate_types` array
-                    3. Update the `Description` field with a meaningful name
-                    4. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
-                    5. Save the file and click **Load Configuration** again
-                    6. Re-upload your XML files and run processing
+                    3. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
+                    4. Save the file and click **Load Configuration** again
+                    5. Re-upload your XML files and run processing
                     """)
                     
                     st.warning("⚠️ Processing stopped. Please update the configuration file and try again.")
