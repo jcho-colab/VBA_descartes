@@ -1,9 +1,9 @@
-import openpyxl
 import pandas as pd
+import json
+import os
 from dataclasses import dataclass
 from typing import Dict, List, Any, Optional
 import logging
-import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -23,88 +23,73 @@ class AppConfig:
     active_country_group_list: List[str]
     all_country_group_list: List[str]
 
+
 class ConfigLoader:
-    def __init__(self, excel_path: str):
-        self.excel_path = excel_path
-        self.wb = None
+    """Configuration loader that reads from JSON files in Configuration_files folder."""
+    
+    def __init__(self, config_dir: str = "Configuration_files"):
+        self.config_dir = config_dir
         
-    def load(self, country_override: str = None) -> AppConfig:
-        logger.info(f"Loading configuration from {self.excel_path}")
+    def load(self, country_override: Optional[str] = None) -> AppConfig:
+        logger.info(f"Loading configuration from {self.config_dir}")
         
-        # Check if file exists
-        if not os.path.exists(self.excel_path):
-            raise FileNotFoundError(f"Configuration file not found: {self.excel_path}")
+        # Check if config directory exists
+        if not os.path.exists(self.config_dir):
+            raise FileNotFoundError(f"Configuration directory not found: {self.config_dir}")
         
-        self.wb = openpyxl.load_workbook(self.excel_path, data_only=True)
+        # Load global settings
+        global_settings_path = os.path.join(self.config_dir, "global_settings.json")
+        if not os.path.exists(global_settings_path):
+            raise FileNotFoundError(f"Global settings file not found: {global_settings_path}")
         
-        # Load Menu settings
-        menu_sheet = self.wb["Menu"]
+        with open(global_settings_path, 'r') as f:
+            global_settings = json.load(f)
         
+        # Determine country
         if country_override:
-            country = country_override
+            country = country_override.upper()
             logger.info(f"Using Country Override: {country}")
         else:
-            country = self._get_named_range_value("Country")
-            if not country:
-                raise ValueError("Country not found in configuration")
-            
-        year = str(self._get_named_range_value("Year")) 
-        min_chapter = int(self._get_named_range_value("MinChapter") or 25)
-        max_csv = int(self._get_named_range_value("MaxCSV") or 1000000)
-        zd14_date = self._get_named_range_value("ZD14Date")
+            country = global_settings.get("default_country", "NZ").upper()
+        
+        year = str(global_settings.get("year", "2026"))
+        min_chapter = int(global_settings.get("min_chapter", 25))
+        max_csv = int(global_settings.get("max_csv", 30000))
+        zd14_date = global_settings.get("zd14_date")
         
         logger.info(f"Loaded Global Settings: Country={country}, Year={year}, MinChapter={min_chapter}")
         
-        # Generate chapter list (25-99 typically)
+        # Generate chapter list
         chapter_list = [str(i).zfill(2) for i in range(min_chapter, 100)]
         
-        # Load Config tables
-        config_sheet = self.wb["Config"]
+        # Load country-specific configuration
+        country_config_path = os.path.join(self.config_dir, f"{country.lower()}_config.json")
+        if not os.path.exists(country_config_path):
+            raise FileNotFoundError(f"Country configuration not found: {country_config_path}")
         
-        # Helper to find table case-insensitively
-        def find_table(base_name):
-            # Try exact
-            if base_name in config_sheet.tables:
-                return base_name
-            # Try case-insensitive match
-            for key in config_sheet.tables.keys():
-                if key.lower() == base_name.lower():
-                    return key
-            return None
-
-        # Load RateType Table
-        rate_type_base = f"{country}RateType"
-        rate_type_table_name = find_table(rate_type_base)
+        with open(country_config_path, 'r') as f:
+            country_config = json.load(f)
         
-        if not rate_type_table_name:
-            logger.warning(f"RateType table '{rate_type_base}' not found")
-            rate_type_df = pd.DataFrame()
-        else:
-            rate_type_df = self._read_table(config_sheet, rate_type_table_name)
+        # Parse rate types
+        rate_types_data = country_config.get("rate_types", [])
+        rate_type_df = pd.DataFrame(rate_types_data) if rate_types_data else pd.DataFrame()
         
-        # Load UOM Table
-        uom_base = f"{country}UOM"
-        uom_table_name = find_table(uom_base)
-        
-        if not uom_table_name:
-            logger.warning(f"UOM table '{uom_base}' not found")
-            uom_df = pd.DataFrame()
-        else:
-            uom_df = self._read_table(config_sheet, uom_table_name)
-        
+        # Parse UOM mappings
+        uom_mappings = country_config.get("uom_mappings", [])
         uom_dict = {}
-        if not uom_df.empty and "Descartes UOM" in uom_df.columns and "SAP UOM" in uom_df.columns:
-             uom_dict = dict(zip(uom_df["Descartes UOM"], uom_df["SAP UOM"]))
-
+        for mapping in uom_mappings:
+            descartes_uom = mapping.get("Descartes UOM")
+            sap_uom = mapping.get("SAP UOM")
+            if descartes_uom is not None and sap_uom is not None:
+                uom_dict[descartes_uom] = sap_uom
+        
         # Load Country List (for EU)
         country_list = [country]
         if country == "EU":
-            cl_base = f"{country}CountryList"
-            country_list_table_name = find_table(cl_base)
-            if country_list_table_name:
-                cl_df = self._read_table(config_sheet, country_list_table_name)
-                if not cl_df.empty:
-                    country_list = cl_df.iloc[:, 0].tolist()
+            eu_country_list = country_config.get("country_list", [])
+            if eu_country_list:
+                country_list = [item.get("Country", item) if isinstance(item, dict) else item 
+                               for item in eu_country_list]
         
         # Extract active and all country group lists
         active_country_group_list = []
@@ -114,16 +99,11 @@ class ConfigLoader:
             for _, row in rate_type_df.iterrows():
                 cg_full = row["Descartes CG"]
                 if pd.notna(cg_full):
-                    # The "Descartes CG" contains both country_group and duty_rate_type
-                    # e.g., "_DNZ1 B001" where "_DNZ1" is country_group and "B001" is duty_rate_type
-                    # Split and extract just the country_group part
                     cg_parts = str(cg_full).split()
                     cg = cg_parts[0] if cg_parts else str(cg_full)
                     
-                    # Add full version for filtering logic
                     all_country_group_list.append(str(cg_full))
                     
-                    # Also add country_group alone for validation
                     if cg not in all_country_group_list:
                         all_country_group_list.append(cg)
                     
@@ -146,45 +126,13 @@ class ConfigLoader:
             active_country_group_list=active_country_group_list,
             all_country_group_list=all_country_group_list
         )
-
-    def _get_named_range_value(self, name: str) -> Any:
-        """Retrieves the value of a named range."""
-        try:
-            defined_name = self.wb.defined_names[name]
-            # This returns a list of destinations, usually just one
-            for title, coord in defined_name.destinations:
-                ws = self.wb[title]
-                return ws[coord].value
-            return None
-        except Exception as e:
-            logger.warning(f"Could not read named range '{name}': {e}")
-            return None
-
-    def _read_table(self, sheet, table_name: str) -> pd.DataFrame:
-        """Reads an Excel table (ListObject) into a DataFrame."""
-        try:
-            # openpyxl stores tables in sheet.tables
-            if table_name not in sheet.tables:
-                logger.warning(f"Table '{table_name}' not found in sheet '{sheet.title}'")
-                return pd.DataFrame()
-
-            tbl = sheet.tables[table_name]
-            ref = tbl.ref # e.g. "A1:C5"
-            
-            data = sheet[ref]
-            rows = [[cell.value for cell in row] for row in data]
-            
-            if not rows:
-                return pd.DataFrame()
-
-            header = rows[0]
-            body = rows[1:]
-            
-            df = pd.DataFrame(body, columns=header)
-            # Remove rows where all values are None
-            df = df.dropna(how='all')
-            
-            return df
-        except Exception as e:
-            logger.error(f"Error reading table '{table_name}': {e}")
-            return pd.DataFrame()
+    
+    def get_available_countries(self) -> List[str]:
+        """Returns list of available countries based on config files."""
+        countries = []
+        if os.path.exists(self.config_dir):
+            for filename in os.listdir(self.config_dir):
+                if filename.endswith("_config.json") and filename != "global_settings.json":
+                    country = filename.replace("_config.json", "").upper()
+                    countries.append(country)
+        return sorted(countries)
