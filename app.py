@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="FTA Tariff Rates Processor", layout="wide", page_icon="📊")
 
-# Custom CSS
+# Custom CSS with reduced top padding
 st.markdown("""
 <style>
     .main-header {
@@ -48,6 +48,14 @@ st.markdown("""
         background-color: #f8d7da;
         border-left: 5px solid #dc3545;
         margin: 1rem 0;
+    }
+    /* Reduce gap at top of sidebar */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 1rem;
+    }
+    /* Reduce gap at top of main content */
+    .block-container {
+        padding-top: 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -127,8 +135,8 @@ if st.session_state['config'] is not None:
         # Editable Year
         new_year = st.text_input(
             "Year", 
-            value=st.session_state.get('editable_year', '2025'),
-            help="Processing year (e.g., 2025)",
+            value=st.session_state.get('editable_year', '2026'),
+            help="Processing year (e.g., 2026)",
             key="year_input"
         )
         
@@ -162,7 +170,7 @@ if st.session_state['config'] is not None:
             "Max CSV Rows",
             min_value=1000,
             max_value=10000000,
-            value=st.session_state.get('editable_max_csv', 100000),
+            value=st.session_state.get('editable_max_csv', 30000),
             step=10000,
             help="Maximum rows per CSV file (1,000 - 10,000,000)",
             key="max_csv_input"
@@ -302,12 +310,36 @@ with col_opt2:
     current_dir = os.getcwd()
     st.caption(f"📁 Current directory: {current_dir}")
     
-    output_dir = st.text_input(
-        "Save location",
-        value="output_generated",
-        help="Directory where CSV files will be saved. Use relative or absolute path.",
-        label_visibility="collapsed"
-    )
+    # Create two columns for path input and browse button
+    path_col, browse_col = st.columns([4, 1])
+    
+    with path_col:
+        # Initialize output_dir in session state if not present
+        if 'output_dir' not in st.session_state:
+            st.session_state['output_dir'] = "output_generated"
+        
+        output_dir = st.text_input(
+            "Save location",
+            value=st.session_state['output_dir'],
+            help="Directory where CSV files will be saved. Use relative or absolute path.",
+            label_visibility="collapsed",
+            key="output_dir_input"
+        )
+        st.session_state['output_dir'] = output_dir
+    
+    with browse_col:
+        # Folder picker button using a text input workaround
+        browse_path = st.text_input(
+            "Browse",
+            value="",
+            placeholder="Paste path",
+            help="Paste a folder path here to set it as output directory",
+            label_visibility="collapsed",
+            key="browse_folder"
+        )
+        if browse_path and browse_path.strip():
+            st.session_state['output_dir'] = browse_path.strip()
+            st.rerun()
     
     # Show full path that will be used
     if not os.path.isabs(output_dir):
@@ -328,9 +360,8 @@ with col_opt2:
     else:
         st.success("✅ Directory exists")
 
-# Output types based on country
-st.subheader("📊 Output Types to Generate")
-output_types = {"ZD14": True}  # ZD14 always generated
+# Output types based on country (ZD14 always generated)
+output_types = {"ZD14": True}
 
 if config.country == "CA":
     col_ca1, col_ca2 = st.columns(2)
@@ -343,10 +374,21 @@ elif config.country == "MX":
 elif config.country == "US":
     output_types["ZZDF"] = st.checkbox("Generate ZZDF", value=True)
 
-# Process Button
+# Reset and Process Buttons
 st.markdown("---")
+col_reset, col_process = st.columns([1, 4])
 
-if st.button("🚀 Run Processing Pipeline", type="primary", use_container_width=True):
+with col_reset:
+    if st.button("🔄 Reset", type="secondary", use_container_width=True, help="Reset all settings and start over"):
+        # Clear all session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
+with col_process:
+    run_processing = st.button("🚀 Run Processing Pipeline", type="primary", use_container_width=True)
+
+if run_processing:
     if not dtr_files or not nom_files:
         st.error("❌ Please upload at least DTR and NOM files")
     else:
