@@ -5,21 +5,22 @@ Python-based migration of the Excel/VBA macro system for processing FTA (Free Tr
 
 ## Features Implemented
 
-### ✅ Core Functionality
+### Core Functionality
 - **XML Parsing**: Ingests DTR (Duty Rate), NOM (Nomenclature), and TXT (Text) XML files
 - **Data Cleansing**: Removes leading zeros, filters invalid chapters
 - **Flagging System**: Marks records as active/invalid/duplicate
 - **Description Building**: Creates hierarchical nomenclature descriptions
 - **Multiple Output Types**: ZD14, CAPDR, MX6Digits, ZZDE, ZZDF
 
-### ✅ Validation
+### Validation
 - **Rate Validation**: Checks all DTR records have rate text or regulation
-- **Config Validation**: Warns about unmapped country groups and UOMs
+- **Country Group Validation**: Blocks processing if new country groups are detected (requires config update)
+- **UOM Validation**: Warns about unmapped UOMs (non-blocking, uses original values)
 - **Data Integrity**: Ensures data quality before processing
 
-### ✅ Export Features
+### Export Features
 - **CSV Generation**: Semicolon-delimited with UTF-8 BOM encoding
-- **File Splitting**: Automatically splits large files (default: 1M rows)
+- **File Splitting**: Automatically splits large files (default: 30,000 rows)
 - **Version Management**: Auto-increments version numbers
 - **Country-Specific Logic**: 
   - US: T → TO replacement in UOM
@@ -27,30 +28,38 @@ Python-based migration of the Excel/VBA macro system for processing FTA (Free Tr
   - Canada: CAPDR and ZZDE formats
   - Mexico: MX6Digits format
 
-### ✅ User Interface
+### User Interface
 - **Streamlit Web App**: Modern, responsive interface
 - **Progress Tracking**: Real-time progress bars and status updates
 - **Error Handling**: Comprehensive error messages and recovery
-- **Configuration Management**: Flexible country and year selection
+- **Configuration Management**: JSON-based configuration files
 - **Output Preview**: View generated data before download
+- **Reset Button**: Clear all settings and start over
 
 ## Directory Structure
 
 ```
 /app/
+├── Configuration_files/    # JSON configuration files
+│   ├── global_settings.json
+│   ├── au_config.json
+│   ├── br_config.json
+│   ├── ca_config.json
+│   ├── eu_config.json
+│   ├── mx_config.json
+│   ├── nz_config.json
+│   ├── ru_config.json
+│   ├── us_config.json
+│   └── vn_config.json
 ├── src/
-│   ├── config.py           # Configuration loader
+│   ├── config.py           # Configuration loader (JSON-based)
 │   ├── ingest.py           # XML parsing
 │   ├── process.py          # Data processing and cleansing
 │   ├── export.py           # CSV generation
 │   └── validation.py       # Validation functions
 ├── app.py                  # Streamlit web interface
 ├── verify.py               # Verification script
-├── requirements.txt        # Python dependencies
-├── HS_IMP_v6.3.xlsm       # Configuration Excel file
-├── input XML/             # Input XML files
-├── output CSV/            # VBA reference output
-└── output_generated/      # Python generated output
+└── requirements.txt        # Python dependencies
 ```
 
 ## Installation
@@ -82,8 +91,8 @@ from src.ingest import parse_xml_to_df
 from src.process import *
 from src.export import *
 
-# Load configuration
-config = ConfigLoader("HS_IMP_v6.3.xlsm").load()
+# Load configuration from JSON files
+config = ConfigLoader("Configuration_files").load("NZ")
 
 # Process files
 dtr_df = parse_xml_to_df(dtr_files, "DTR")
@@ -101,32 +110,125 @@ zd14 = generate_zd14(dtr_df, nom_df, config)
 export_csv_split(zd14, "output", f"{config.country} UPLOAD _ZD14")
 ```
 
-## Verification
-
-Compare Python output with VBA reference:
-```bash
-python verify.py
-```
-
 ## Configuration
 
-### Excel Configuration File
-The system reads configuration from `HS_IMP_v6.3.xlsm`:
+### JSON Configuration Files
 
-**Named Ranges (Menu tab):**
-- `Country`: Country code (NZ, CA, US, MX, BR, EU)
-- `Year`: Processing year (e.g., 2025)
-- `MinChapter`: Minimum HS chapter (typically 25)
-- `MaxCSV`: Maximum rows per CSV file (default: 1,000,000)
-- `ZD14Date`: Reference date for ZD14 generation
+Configuration is stored in the `Configuration_files/` directory as JSON files.
 
-**Tables (Config tab):**
-- `{Country}RateType`: Country group mappings (Keep/Remove/3rd)
-- `{Country}UOM`: Unit of measure mappings (Descartes → SAP)
-- `{Country}CountryList`: Country list for EU multi-country export
+#### Global Settings (`global_settings.json`)
+```json
+{
+  "default_country": "NZ",
+  "year": "2026",
+  "min_chapter": 25,
+  "max_csv": 30000,
+  "zd14_date": null
+}
+```
 
-### Environment Variables
-None required - all configuration is in the Excel file.
+#### Country Configuration (`{country}_config.json`)
+Each country has its own configuration file containing:
+
+**Rate Types** - Defines which country groups to include/exclude:
+```json
+{
+  "rate_types": [
+    {
+      "Descartes CG": "_DNZ1 B001",
+      "Comment": "keep",
+      "Description": "General Rate"
+    },
+    {
+      "Descartes CG": "_DNZ10 B004",
+      "Comment": "remove",
+      "Description": "Singapore Rate"
+    }
+  ],
+  "uom_mappings": [
+    {
+      "Descartes UOM": "DOZ",
+      "SAP UOM": "DZ"
+    }
+  ]
+}
+```
+
+**Comment Values:**
+- `"keep"` - Include this country group in processing
+- `"remove"` - Exclude this country group from processing
+- Any other value (e.g., `"3rd"`) - Include in processing
+
+### Adding a New Country
+
+1. Create `Configuration_files/{country}_config.json`
+2. Add rate_types and uom_mappings arrays
+3. The country will automatically appear in the dropdown
+
+## Handling New Country Groups
+
+When processing XML files, the system validates that all country groups exist in the configuration. If new country groups are detected:
+
+### What Happens
+1. Processing is **blocked** with an error message
+2. The new country group codes are displayed
+3. Step-by-step instructions are shown
+
+### How to Fix
+
+1. **Identify the new country group** from the error message (e.g., `_DNZ99`)
+
+2. **Open the country's config file**: `Configuration_files/{country}_config.json`
+
+3. **Add the new country group** to the `rate_types` array:
+   ```json
+   {
+     "Descartes CG": "_DNZ99 B004",
+     "Comment": "keep",
+     "Description": "New Trade Agreement Rate"
+   }
+   ```
+
+4. **Set the Comment field:**
+   - `"keep"` - To include this country group in output
+   - `"remove"` - To exclude this country group from output
+
+5. **Save the file**
+
+6. **In the app:**
+   - Click "Load Configuration" to reload
+   - Re-upload your XML files
+   - Run processing again
+
+### Example
+
+If you see this error:
+```
+🚫 New Country Groups Detected - Action Required
+
+New country groups to add:
+_DNZ27
+_DNZ28
+```
+
+Add to `Configuration_files/nz_config.json`:
+```json
+{
+  "rate_types": [
+    // ... existing entries ...
+    {
+      "Descartes CG": "_DNZ27 B004",
+      "Comment": "keep",
+      "Description": "New Agreement 1"
+    },
+    {
+      "Descartes CG": "_DNZ28 B004",
+      "Comment": "keep", 
+      "Description": "New Agreement 2"
+    }
+  ]
+}
+```
 
 ## Output Formats
 
@@ -150,82 +252,47 @@ Additional Canada format (extends ZD14)
 ### ZZDF (United States)
 US-specific format with T→TO replacements (extends ZD14)
 
-## Improvements Over VBA
-
-1. **Performance**: Pandas vectorized operations vs Excel row-by-row
-2. **Scalability**: Handles 100k+ rows efficiently
-3. **Error Handling**: Comprehensive validation and recovery
-4. **User Interface**: Modern web UI vs Excel dialog boxes
-5. **Maintainability**: Modular Python code vs VBA macros
-6. **Portability**: Runs on any platform with Python
-7. **Testing**: Automated verification against reference output
-
-## Known Limitations
-
-1. **Special Output Formats**: CAPDR, MX6Digits, ZZDE, ZZDF use ZD14 base (full format TBD)
-2. **TXT Files**: Parsed but not currently used in output generation
-3. **Complex Rates**: Full handling of compound and complex rates pending
-4. **EU Multi-Country**: Multi-country export logic implemented but needs testing
-
-## Testing
-
-### Test Data
-Sample files are provided in `/app/input XML/`:
-- 17 DTR files (HSNZ_IMP_EN_DTR_I_*.xml)
-- 3 NOM files (HSNZ_IMP_EN_NOM_I_*.xml)
-- 1 TXT file (HSNZ_IMP_EN_TXT_I_*.xml)
-
-### Expected Output
-Reference output in `/app/output CSV/`:
-- 6 CSV files (NZ UPLOAD _ZD14 V1-1.csv through V1-6.csv)
-
-### Running Tests
-```bash
-# Process test data
-streamlit run app.py
-
-# Verify against reference
-python verify.py
-```
-
 ## Troubleshooting
 
-### Issue: Configuration file not found
-**Solution**: Update Excel path in sidebar or place file at `/app/HS_IMP_v6.3.xlsm`
+### Issue: New Country Groups Detected
+**Solution**: Add the new country groups to the configuration file. See "Handling New Country Groups" section above.
 
 ### Issue: Missing rate text warnings
 **Solution**: Check DTR XML files have rate descriptions or regulations. Can continue processing with warning.
 
 ### Issue: Unmapped UOM warnings
-**Solution**: Add missing UOMs to {Country}UOM table in Config tab
+**Solution**: UOMs not in config will use their original XML values. To add SAP mappings, edit the `uom_mappings` array in the country config file.
 
-### Issue: Output doesn't match VBA
+### Issue: Configuration directory not found
+**Solution**: Ensure `Configuration_files/` directory exists with the required JSON files.
+
+### Issue: Output doesn't match expected
 **Solution**: 
-1. Check chapter filtering (MinChapter setting)
-2. Verify country group configuration
+1. Check chapter filtering (Min Chapter setting)
+2. Verify country group configuration (keep vs remove)
 3. Review rate formatting precision
-4. Run verify.py for detailed comparison
-
-## Support
-
-For issues or questions:
-1. Check error logs in terminal/console
-2. Review validation warnings in UI
-3. Compare with VBA output using verify.py
-4. Check configuration in Excel file
+4. Check year setting
 
 ## Version History
 
-### Version 2.0 (Current)
-- ✅ Added validation module (rate and config validation)
-- ✅ Implemented all output types (CAPDR, MX6Digits, ZZDE, ZZDF)
-- ✅ Enhanced config loader with chapter list generation
-- ✅ Improved error handling throughout
-- ✅ Added file versioning
-- ✅ Better rate formatting
-- ✅ Country-specific logic (US, Brazil)
-- ✅ Modern Streamlit UI with progress tracking
-- ✅ Verification script for output comparison
+### Version 3.0 (Current)
+- JSON-based configuration (removed Excel dependency)
+- Blocking validation for new country groups
+- Reset button to clear all settings
+- Reduced UI padding for better space usage
+- Folder browser button for output directory
+- Default year: 2026, Max CSV: 30,000
+
+### Version 2.0
+- Added validation module (rate and config validation)
+- Implemented all output types (CAPDR, MX6Digits, ZZDE, ZZDF)
+- Enhanced config loader with chapter list generation
+- Improved error handling throughout
+- Added file versioning
+- Better rate formatting
+- Country-specific logic (US, Brazil)
+- Modern Streamlit UI with progress tracking
+- Verification script for output comparison
 
 ### Version 1.0
 - Basic ZD14 generation
