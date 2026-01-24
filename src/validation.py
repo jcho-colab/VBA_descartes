@@ -47,28 +47,32 @@ def validate_rates(dtr_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, List[
 def detect_new_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> Set[str]:
     """
     Detects country groups in DTR data that are not in the config file.
-    Returns set of new country group codes.
+    Returns set of new country group codes with their duty_rate_type.
     """
     new_groups = set()
     
     if 'country_group' not in dtr_df.columns:
         return new_groups
     
-    # Get unique country groups from XML
-    xml_country_groups = set(dtr_df['country_group'].dropna().unique().tolist())
+    # Get unique country_group + duty_rate_type combinations from XML
+    if 'duty_rate_type' in dtr_df.columns:
+        xml_combinations = dtr_df[['country_group', 'duty_rate_type']].dropna().drop_duplicates()
+    else:
+        return new_groups
     
     # Get all known country groups from config (extract just the country_group part)
     known_groups = set()
     for cg in config.all_country_group_list:
-        # Country groups in config are stored as "country_group duty_rate_type" or just "country_group"
         parts = str(cg).split()
         known_groups.add(parts[0] if parts else str(cg))
     
     # Find groups in XML not in config
-    for cg in xml_country_groups:
-        cg_str = str(cg)
+    for _, row in xml_combinations.iterrows():
+        cg_str = str(row['country_group'])
         if cg_str not in known_groups:
-            new_groups.add(cg_str)
+            # Include both country_group and duty_rate_type
+            full_cg = f"{cg_str} {row['duty_rate_type']}"
+            new_groups.add(full_cg)
     
     if new_groups:
         logger.warning(f"Found {len(new_groups)} new country groups not in config: {new_groups}")
@@ -84,15 +88,20 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
     logger.info("Validating configuration...")
     
     missing_items = {
-        'country_groups': [],
+        'country_groups': [],  # Now contains "country_group duty_rate_type" format
         'uoms': []
     }
     
-    # Validate country groups in DTR
-    if 'country_group' in dtr_df.columns and config.all_country_group_list:
-        unique_cgs = dtr_df['country_group'].dropna().unique().tolist()
+    # Validate country groups in DTR - now includes duty_rate_type
+    if 'country_group' in dtr_df.columns and 'duty_rate_type' in dtr_df.columns:
+        # Get unique combinations from XML
+        xml_combinations = dtr_df[['country_group', 'duty_rate_type']].dropna().drop_duplicates()
         
         # Get known country groups (just the first part before space)
+        known_groups = set()
+        for cg in config.all_country_group_list:
+            parts = str(cg).split()
+            known_groups.add(parts[0] if parts else str(cg))
         known_groups = set()
         for cg in config.all_country_group_list:
             parts = str(cg).split()
