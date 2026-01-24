@@ -102,15 +102,16 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
         for cg in config.all_country_group_list:
             parts = str(cg).split()
             known_groups.add(parts[0] if parts else str(cg))
-        known_groups = set()
-        for cg in config.all_country_group_list:
-            parts = str(cg).split()
-            known_groups.add(parts[0] if parts else str(cg))
         
-        for cg in unique_cgs:
-            if str(cg) not in known_groups:
-                missing_items['country_groups'].append(str(cg))
-                logger.info(f"Found new country group in XML not in config: {cg}")
+        # Find new country groups and include their duty_rate_type
+        for _, row in xml_combinations.iterrows():
+            cg_str = str(row['country_group'])
+            if cg_str not in known_groups:
+                # Format as "country_group duty_rate_type" for easy copy to config
+                full_cg = f"{cg_str} {row['duty_rate_type']}"
+                if full_cg not in missing_items['country_groups']:
+                    missing_items['country_groups'].append(full_cg)
+                    logger.info(f"Found new country group in XML not in config: {full_cg}")
     
     # Validate UOMs in NOM
     if not nom_df.empty:
