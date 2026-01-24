@@ -6,7 +6,7 @@ import tempfile
 import logging
 from pathlib import Path
 from src.config import ConfigLoader
-from src.ingest import parse_xml_to_df
+from src.ingest import parse_xml_to_df, parse_country_group_definitions
 from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions
 from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split
 from src.validation import validate_rates, validate_config
