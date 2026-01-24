@@ -6,6 +6,44 @@ import os
 
 logger = logging.getLogger(__name__)
 
+
+def parse_country_group_definitions(file_paths: List[str]) -> Dict[str, str]:
+    """
+    Parses country_group_def elements from DTR XML files to extract descriptions.
+    Returns a dictionary mapping country_group_id to description.
+    """
+    cg_descriptions = {}
+    
+    for file_path in file_paths:
+        try:
+            tree = etree.parse(file_path)
+            root = tree.getroot()
+            
+            # Find all country_group_def elements
+            cg_defs = root.findall(".//{*}country_group_def")
+            if not cg_defs:
+                cg_defs = root.findall(".//country_group_def")
+            
+            for cg_def in cg_defs:
+                cg_id = cg_def.get("id")
+                if cg_id:
+                    # Find description
+                    desc_node = cg_def.find(".//{*}description")
+                    if desc_node is None:
+                        desc_node = cg_def.find(".//description")
+                    
+                    if desc_node is not None:
+                        desc_text = desc_node.get("text", "")
+                        if desc_text and cg_id not in cg_descriptions:
+                            cg_descriptions[cg_id] = desc_text
+                            
+        except Exception as e:
+            logger.warning(f"Error parsing country_group_def from {file_path}: {e}")
+    
+    logger.info(f"Found {len(cg_descriptions)} country group definitions with descriptions")
+    return cg_descriptions
+
+
 def parse_xml_to_df(file_paths: List[str], doc_type: str) -> pd.DataFrame:
     """
     Parses a list of XML files of a specific type (DTR, NOM, TXT) into a single DataFrame.
