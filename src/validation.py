@@ -80,19 +80,26 @@ def detect_new_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> Set[st
     return new_groups
 
 
-def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> Tuple[bool, dict]:
+def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig, 
+                    cg_descriptions: Dict[str, str] = None) -> Tuple[bool, dict]:
     """
     Validates that imported data matches configuration.
     Returns (is_valid, dict_of_missing_items)
+    
+    Args:
+        cg_descriptions: Optional dict mapping country_group_id to description (from XML)
     """
     logger.info("Validating configuration...")
     
+    if cg_descriptions is None:
+        cg_descriptions = {}
+    
     missing_items = {
-        'country_groups': [],  # Now contains "country_group duty_rate_type" format
+        'country_groups': [],  # List of dicts with 'cg', 'duty_rate_type', 'description'
         'uoms': []
     }
     
-    # Validate country groups in DTR - now includes duty_rate_type
+    # Validate country groups in DTR - now includes duty_rate_type and description
     if 'country_group' in dtr_df.columns and 'duty_rate_type' in dtr_df.columns:
         # Get unique combinations from XML
         xml_combinations = dtr_df[['country_group', 'duty_rate_type']].dropna().drop_duplicates()
@@ -103,15 +110,21 @@ def validate_config(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfi
             parts = str(cg).split()
             known_groups.add(parts[0] if parts else str(cg))
         
-        # Find new country groups and include their duty_rate_type
+        # Find new country groups and include their duty_rate_type and description
+        seen_cgs = set()
         for _, row in xml_combinations.iterrows():
             cg_str = str(row['country_group'])
-            if cg_str not in known_groups:
-                # Format as "country_group duty_rate_type" for easy copy to config
-                full_cg = f"{cg_str} {row['duty_rate_type']}"
-                if full_cg not in missing_items['country_groups']:
-                    missing_items['country_groups'].append(full_cg)
-                    logger.info(f"Found new country group in XML not in config: {full_cg}")
+            if cg_str not in known_groups and cg_str not in seen_cgs:
+                seen_cgs.add(cg_str)
+                # Get description from XML definitions
+                description = cg_descriptions.get(cg_str, "TODO: Add description")
+                
+                missing_items['country_groups'].append({
+                    'cg': cg_str,
+                    'duty_rate_type': str(row['duty_rate_type']),
+                    'description': description
+                })
+                logger.info(f"Found new country group in XML not in config: {cg_str} - {description}")
     
     # Validate UOMs in NOM
     if not nom_df.empty:
