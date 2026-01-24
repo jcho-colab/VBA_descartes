@@ -1,6 +1,6 @@
 import pandas as pd
 import logging
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Dict
 from .config import AppConfig
 
 logger = logging.getLogger(__name__)
