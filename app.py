@@ -429,29 +429,23 @@ if run_processing:
                     in the configuration file. Processing cannot continue until these are added.
                     """)
                     
-                    # Show the new country groups with their duty_rate_type
-                    st.markdown("**New country groups to add** (format: `country_group duty_rate_type`):")
-                    for cg in missing_items['country_groups']:
-                        st.code(cg, language=None)
+                    # Show the new country groups with ready-to-copy JSON
+                    st.markdown("**Add the following entries to the config file:**")
                     
-                    # Show instructions with example using actual values
                     config_file = f"Configuration_files/{config.country.lower()}_config.json"
-                    example_cg = missing_items['country_groups'][0] if missing_items['country_groups'] else "_DXXX B001"
+                    
+                    for cg in missing_items['country_groups']:
+                        json_entry = f'''{{"Descartes CG": "{cg}", "Comment": "keep", "Description": "TODO: Add description"}}'''
+                        st.code(json_entry, language="json")
                     
                     st.markdown(f"""
                     ### How to fix:
                     1. Open `{config_file}`
-                    2. Add the new country group(s) to the `rate_types` array. Example:
-                    ```json
-                    {{
-                        "Descartes CG": "{example_cg}",
-                        "Comment": "keep",
-                        "Description": "Description here"
-                    }}
-                    ```
-                    3. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
-                    4. Save the file and click **Load Configuration** again
-                    5. Re-upload your XML files and run processing
+                    2. Copy the JSON entries above into the `rate_types` array
+                    3. Update the `Description` field with a meaningful name
+                    4. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
+                    5. Save the file and click **Load Configuration** again
+                    6. Re-upload your XML files and run processing
                     """)
                     
                     st.warning("⚠️ Processing stopped. Please update the configuration file and try again.")
