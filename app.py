@@ -138,8 +138,8 @@ if st.session_state['config'] is not None:
             key="min_chapter_input"
         )
         st.session_state['editable_min_chapter'] = new_min_chapter
-        st.session_state['config'].min_chapter = new_min_chapter
-        st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(new_min_chapter, 100)]
+        st.session_state['config'].min_chapter = int(new_min_chapter)
+        st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(int(new_min_chapter), 100)]
         
         # Editable Max CSV Rows
         new_max_csv = st.number_input(
@@ -316,8 +316,11 @@ with col_opt2:
                 if folder_selected:
                     st.session_state['output_dir'] = folder_selected
                     st.rerun()
-            except Exception as e:
+            except Exception:
                 st.warning("Folder browser not available. Please paste the path manually.")
+    
+    # Ensure output_dir is a string
+    output_dir = str(st.session_state.get('output_dir', 'output_generated'))
     
     # Show full path that will be used
     if not os.path.isabs(output_dir):
