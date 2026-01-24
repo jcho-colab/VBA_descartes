@@ -418,27 +418,54 @@ if run_processing:
                     if not st.checkbox("Continue despite missing rates?"):
                         st.stop()
                 
-                # Config validation
+                # Config validation - now blocks on new country groups
                 config_valid, missing_items = validate_config(dtr_df, nom_df, config)
                 
-                # Show informational message about unmapped items (not blocking)
-                if missing_items['country_groups'] or missing_items['uoms']:
-                    with st.expander("ℹ️ Info: Data from XML not in configuration", expanded=False):
-                        st.caption("These items will be processed using their original values from XML files.")
+                # BLOCKING: New country groups detected
+                if missing_items['country_groups']:
+                    st.error("🚫 **New Country Groups Detected - Action Required**")
+                    st.markdown("""
+                    The following country groups were found in your XML files but are **not configured** 
+                    in the configuration file. Processing cannot continue until these are added.
+                    """)
+                    
+                    # Show the new country groups
+                    st.markdown("**New country groups to add:**")
+                    for cg in missing_items['country_groups']:
+                        st.code(cg, language=None)
+                    
+                    # Show instructions
+                    config_file = f"Configuration_files/{config.country.lower()}_config.json"
+                    st.markdown(f"""
+                    ### How to fix:
+                    1. Open `{config_file}`
+                    2. Add the new country group(s) to the `rate_types` array with the following format:
+                    ```json
+                    {{
+                        "Descartes CG": "<country_group> <duty_rate_type>",
+                        "Comment": "keep",
+                        "Description": "<description>"
+                    }}
+                    ```
+                    3. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
+                    4. Save the file and click **Load Configuration** again
+                    5. Re-upload your XML files and run processing
+                    """)
+                    
+                    st.warning("⚠️ Processing stopped. Please update the configuration file and try again.")
+                    progress_bar.progress(0)
+                    st.stop()
+                
+                # Show informational message about unmapped UOMs (not blocking)
+                if missing_items['uoms']:
+                    with st.expander("ℹ️ Info: New UOMs found (will use original values)", expanded=False):
+                        st.caption("These UOMs are not in the configuration and will use their original XML values.")
+                        for uom in missing_items['uoms'][:10]:
+                            st.caption(f"  • {uom}")
+                        if len(missing_items['uoms']) > 10:
+                            st.caption(f"  ... and {len(missing_items['uoms']) - 10} more")
                         
-                        if missing_items['country_groups']:
-                            st.write("**Country Groups from XML:**")
-                            for cg in missing_items['country_groups'][:10]:
-                                st.caption(f"  • {cg}")
-                            if len(missing_items['country_groups']) > 10:
-                                st.caption(f"  ... and {len(missing_items['country_groups']) - 10} more")
-                        
-                        if missing_items['uoms']:
-                            st.write("**UOMs from XML:**")
-                            for uom in missing_items['uoms'][:10]:
-                                st.caption(f"  • {uom}")
-                            if len(missing_items['uoms']) > 10:
-                                st.caption(f"  ... and {len(missing_items['uoms']) - 10} more")
+                        st.info(f"💡 To add SAP mappings for these UOMs, edit `Configuration_files/{config.country.lower()}_config.json`")
                 
                 st.info("✅ Validation complete - ready to process")
             else:
