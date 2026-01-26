@@ -11,63 +11,51 @@ from src.process import cleanse_hs, filter_active_country_groups, filter_by_chap
 from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split
 from src.validation import validate_rates, validate_config
 
-# Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="FTA Tariff Rates Processor", layout="wide", page_icon="📊")
 
-# Compact CSS - minimize spacing and scrolling
+# Compact CSS
 st.markdown("""
 <style>
     .main-header { font-size: 1.8rem; font-weight: bold; color: #1f77b4; margin-bottom: 0.3rem; }
-    .sub-header { font-size: 0.95rem; color: #666; margin-bottom: 0.8rem; }
-    .success-box { padding: 0.6rem; background-color: #d4edda; border-left: 4px solid #28a745; margin: 0.5rem 0; }
-    .warning-box { padding: 0.6rem; background-color: #fff3cd; border-left: 4px solid #ffc107; margin: 0.5rem 0; }
-    .error-box { padding: 0.6rem; background-color: #f8d7da; border-left: 4px solid #dc3545; margin: 0.5rem 0; }
-    .main-cg-box { padding: 0.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    .sub-header { font-size: 0.95rem; color: #666; margin-bottom: 0.5rem; }
+    .success-box { padding: 0.5rem; background-color: #d4edda; border-left: 4px solid #28a745; margin: 0.4rem 0; }
+    .error-box { padding: 0.5rem; background-color: #f8d7da; border-left: 4px solid #dc3545; margin: 0.4rem 0; }
+    .main-cg-box { padding: 0.4rem 0.6rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                    border-radius: 6px; color: white; margin: 0.3rem 0; }
-    .main-cg-label { font-size: 0.7rem; opacity: 0.9; margin-bottom: 2px; }
-    .main-cg-value { font-size: 1.1rem; font-weight: bold; }
-    .main-cg-desc { font-size: 0.75rem; opacity: 0.85; margin-top: 2px; }
-    .config-stat { display: inline-block; padding: 2px 8px; background: #f0f2f6; border-radius: 4px; 
-                   margin: 2px 4px 2px 0; font-size: 0.75rem; }
-    /* Reduce all spacing */
+    .main-cg-label { font-size: 0.65rem; opacity: 0.9; }
+    .main-cg-value { font-size: 1rem; font-weight: bold; }
+    .main-cg-desc { font-size: 0.7rem; opacity: 0.85; }
+    .config-stat { display: inline-block; padding: 2px 6px; background: #f0f2f6; border-radius: 4px; 
+                   margin: 2px 3px 2px 0; font-size: 0.7rem; }
     section[data-testid="stSidebar"] > div:first-child { padding-top: 0.5rem; }
-    .block-container { padding-top: 0.5rem; padding-bottom: 0; }
-    div[data-testid="stExpander"] { margin-bottom: 0.3rem; }
-    .stButton > button { padding: 0.3rem 1rem; }
-    h1, h2, h3 { margin-top: 0.5rem; margin-bottom: 0.3rem; }
-    .element-container { margin-bottom: 0.3rem; }
+    .block-container { padding-top: 0.5rem; }
+    div[data-testid="stExpander"] { margin-bottom: 0.2rem; }
+    h1, h2, h3 { margin-top: 0.4rem; margin-bottom: 0.2rem; }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-header">📊 FTA Tariff Rates Processor</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Python-based migration of Excel/VBA tariff processing system</div>', unsafe_allow_html=True)
 
-# Initialize session state
+# Session state init
 if 'config' not in st.session_state:
     st.session_state['config'] = None
 if 'processing_complete' not in st.session_state:
     st.session_state['processing_complete'] = False
 
-# Sidebar Configuration - Compact Layout
+# Sidebar - Compact
 st.sidebar.markdown("### ⚙️ Configuration")
-
 CONFIG_DIR = "Configuration_files"
 loader = ConfigLoader(CONFIG_DIR)
 available_countries = loader.get_available_countries()
 
-# Country selection and load button on same row concept - keep compact
-country_override = st.sidebar.selectbox(
-    "Country", options=[""] + available_countries, index=0,
-    help="Select country to process", label_visibility="collapsed"
-)
+country_override = st.sidebar.selectbox("Country", options=[""] + available_countries, index=0, label_visibility="collapsed")
 
 if st.sidebar.button("🔄 Load Configuration", type="primary", use_container_width=True):
-    if not os.path.exists(CONFIG_DIR):
-        st.sidebar.error(f"❌ Config dir not found")
-    else:
+    if os.path.exists(CONFIG_DIR):
         try:
             config = loader.load(country_override if country_override else None)
             st.session_state['config'] = config
@@ -77,12 +65,13 @@ if st.sidebar.button("🔄 Load Configuration", type="primary", use_container_wi
         except Exception as e:
             st.sidebar.error(f"❌ {str(e)[:50]}")
             logger.error(f"Config load error: {e}", exc_info=True)
+    else:
+        st.sidebar.error("❌ Config dir not found")
 
-# Display config details when loaded - COMPACT
+# Sidebar config display
 if st.session_state['config'] is not None:
     cfg = st.session_state['config']
     
-    # Main Country Group - Prominent Display
     st.sidebar.markdown(f"""
     <div class="main-cg-box">
         <div class="main-cg-label">MAIN COUNTRY GROUP</div>
@@ -91,20 +80,18 @@ if st.session_state['config'] is not None:
     </div>
     """, unsafe_allow_html=True)
     
-    # Compact config summary
     st.sidebar.markdown(f"""
-    <div style="margin: 0.3rem 0;">
+    <div style="margin: 0.2rem 0;">
         <span class="config-stat">🌍 {cfg.country}</span>
         <span class="config-stat">📅 {cfg.year}</span>
         <span class="config-stat">📊 Ch≥{cfg.min_chapter}</span>
     </div>
-    <div style="margin: 0.3rem 0;">
+    <div style="margin: 0.2rem 0;">
         <span class="config-stat">✅ {len(cfg.active_country_group_list)} Active CG</span>
         <span class="config-stat">📏 {len(cfg.uom_dict)} UOMs</span>
     </div>
     """, unsafe_allow_html=True)
     
-    # Editable settings in collapsed expander
     with st.sidebar.expander("✏️ Edit Settings", expanded=False):
         col1, col2 = st.columns(2)
         with col1:
@@ -122,51 +109,41 @@ if st.session_state['config'] is not None:
             st.session_state['config'].min_chapter = int(new_min)
             st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(int(new_min), 100)]
         
-        new_max = st.number_input("Max CSV Rows", 1000, 10000000, 
-                                   st.session_state.get('editable_max_csv', 30000), 10000, key="max_csv")
+        new_max = st.number_input("Max CSV Rows", 1000, 10000000, st.session_state.get('editable_max_csv', 30000), 10000, key="max_csv")
         st.session_state['editable_max_csv'] = new_max
         st.session_state['config'].max_csv = new_max
 
 # Main content
 if st.session_state['config'] is None:
     st.info("👈 Select a country and click **Load Configuration** to begin")
-    
-    # Show Info tab even without config
     st.markdown("---")
     st.subheader("ℹ️ Reference Information")
-    st.markdown("**Duty Rate Type Definitions**")
-    drt_df = pd.DataFrame([
-        {"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()
-    ])
-    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=300)
+    drt_df = pd.DataFrame([{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()])
+    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=350)
     st.stop()
 
 config = st.session_state['config']
 
-# Create tabs for organized content
+# Tabs
 tab_process, tab_info = st.tabs(["🚀 Processing", "ℹ️ Reference Info"])
 
 with tab_info:
     st.markdown("#### Duty Rate Type Definitions")
-    st.caption("Reference table for duty rate type codes used in tariff data")
     drt_df = pd.DataFrame([{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()])
-    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=350)
+    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=300)
     
     st.markdown("#### Current Configuration - Rate Types")
     if not config.rate_type_defs.empty:
-        st.dataframe(config.rate_type_defs, use_container_width=True, hide_index=True, height=300)
+        st.dataframe(config.rate_type_defs, use_container_width=True, hide_index=True, height=250)
     else:
-        st.info("No rate types configured for this country")
+        st.info("No rate types configured")
 
 with tab_process:
-    # Helper function to filter files by pattern
     def filter_files_by_pattern(files, pattern):
-        """Filter uploaded files by filename pattern."""
         if not files:
             return []
         return [f for f in files if pattern.upper() in f.name.upper()]
 
-    # Compact file upload section
     st.markdown("##### 📁 Upload XML Files")
     col1, col2, col3 = st.columns(3)
 
@@ -175,34 +152,27 @@ with tab_process:
         dtr_files_raw = st.file_uploader("DTR", type="xml", accept_multiple_files=True, key="dtr_upload", label_visibility="collapsed")
         dtr_files = filter_files_by_pattern(dtr_files_raw, "DTR")
         if dtr_files_raw:
-            if dtr_files:
-                st.success(f"✅ {len(dtr_files)} DTR")
-            else:
-                st.error("❌ No DTR files")
+            st.success(f"✅ {len(dtr_files)} DTR") if dtr_files else st.error("❌ No DTR")
 
     with col2:
         st.caption("**NOM** (Nomenclature) *required*")
         nom_files_raw = st.file_uploader("NOM", type="xml", accept_multiple_files=True, key="nom_upload", label_visibility="collapsed")
         nom_files = filter_files_by_pattern(nom_files_raw, "NOM")
         if nom_files_raw:
-            if nom_files:
-                st.success(f"✅ {len(nom_files)} NOM")
-            else:
-                st.error("❌ No NOM files")
+            st.success(f"✅ {len(nom_files)} NOM") if nom_files else st.error("❌ No NOM")
 
     with col3:
-        st.caption("**TXT** (Text/Notes) *optional*")
+        st.caption("**TXT** (Text) *optional*")
         txt_files_raw = st.file_uploader("TXT", type="xml", accept_multiple_files=True, key="txt_upload", label_visibility="collapsed")
         txt_files = filter_files_by_pattern(txt_files_raw, "TXT")
         if txt_files_raw and txt_files:
             st.success(f"✅ {len(txt_files)} TXT")
 
-    # Compact options row
     st.markdown("##### ⚙️ Options")
     opt_col1, opt_col2, opt_col3 = st.columns([1, 2, 2])
     
     with opt_col1:
-        skip_validation = st.checkbox("Skip Validation", value=False, help="Skip rate/config validation")
+        skip_validation = st.checkbox("Skip Validation", value=False)
     
     with opt_col2:
         if 'output_dir' not in st.session_state:
@@ -213,7 +183,6 @@ with tab_process:
         full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
     
     with opt_col3:
-        # Output types based on country
         output_types = {"ZD14": True}
         if config.country == "CA":
             c1, c2 = st.columns(2)
@@ -226,7 +195,6 @@ with tab_process:
         elif config.country == "US":
             output_types["ZZDF"] = st.checkbox("ZZDF", value=True)
 
-    # Action buttons
     btn_col1, btn_col2 = st.columns([1, 3])
     with btn_col1:
         if st.button("🔄 Reset", use_container_width=True):
@@ -238,13 +206,11 @@ with tab_process:
 
     if run_processing:
         if not dtr_files or not nom_files:
-            st.error("❌ Please upload at least DTR and NOM files")
+            st.error("❌ Please upload DTR and NOM files")
         else:
-            status_container = st.container()
             progress_bar = st.progress(0)
             
             try:
-                # Helper to save uploaded files to temp
                 def save_uploads(files):
                     paths = []
                     tmp_dir = tempfile.mkdtemp()
@@ -255,8 +221,7 @@ with tab_process:
                         paths.append(path)
                     return paths, tmp_dir
                 
-                # 1. INGEST
-                status_container.info("📥 Step 1/6: Ingesting XML files...")
+                st.info("📥 Step 1/6: Ingesting XML files...")
                 progress_bar.progress(10)
                 
                 dtr_paths, dtr_tmp = save_uploads(dtr_files)
@@ -266,215 +231,115 @@ with tab_process:
                 dtr_df = parse_xml_to_df(dtr_paths, "DTR")
                 nom_df = parse_xml_to_df(nom_paths, "NOM")
                 txt_df = parse_xml_to_df(txt_paths, "TXT") if txt_paths else pd.DataFrame()
-                
-                # Parse country group definitions for descriptions
                 cg_descriptions = parse_country_group_definitions(dtr_paths)
                 
-                st.success(f"✅ Loaded: DTR={len(dtr_df)} rows, NOM={len(nom_df)} rows")
+                st.success(f"✅ Loaded: DTR={len(dtr_df)}, NOM={len(nom_df)} rows")
                 
-                # 2. VALIDATION
                 if not skip_validation:
-                    status_container.info("✔️ Step 2/6: Validating data...")
+                    st.info("✔️ Step 2/6: Validating...")
                     progress_bar.progress(20)
                     
-                    # Rate validation
                     rate_valid, invalid_hs = validate_rates(dtr_df, config)
                     if not rate_valid:
-                        with st.expander(f"⚠️ Warning: {len(invalid_hs)} HS codes missing rate text", expanded=False):
-                            st.write(invalid_hs[:20])  # Show first 20
-                            if len(invalid_hs) > 20:
-                            st.write(f"... and {len(invalid_hs) - 20} more")
+                        with st.expander(f"⚠️ {len(invalid_hs)} HS codes missing rate text"):
+                            st.write(invalid_hs[:20])
                     
-                    if not st.checkbox("Continue despite missing rates?"):
+                    config_valid, missing_items = validate_config(dtr_df, nom_df, config, cg_descriptions)
+                    
+                    if missing_items['country_groups']:
+                        st.error("🚫 New Country Groups Detected - Update config first")
+                        config_file = f"Configuration_files/{config.country.lower()}_config.json"
+                        json_entries = []
+                        for cg_info in missing_items['country_groups']:
+                            json_entries.append(f'{{"Descartes CG": "{cg_info["cg"]} {cg_info["duty_rate_type"]}", "Comment": "keep", "Description": "{cg_info["description"]}"}}')
+                        st.code(",\n".join(json_entries), language="json")
+                        st.warning(f"Add above to {config_file} and reload")
                         st.stop()
+                else:
+                    progress_bar.progress(20)
                 
-                # Config validation - now blocks on new country groups
-                config_valid, missing_items = validate_config(dtr_df, nom_df, config, cg_descriptions)
+                st.info("⚙️ Step 3/6: Processing DTR...")
+                progress_bar.progress(35)
                 
-                # BLOCKING: New country groups detected
-                if missing_items['country_groups']:
-                    st.error("🚫 **New Country Groups Detected - Action Required**")
-                    st.markdown("""
-                    The following country groups were found in your XML files but are **not configured** 
-                    in the configuration file. Processing cannot continue until these are added.
-                    """)
-                    
-                    # Show the new country groups with ready-to-copy JSON in a single block
-                    st.markdown("**Add the following entries to the config file:**")
-                    
-                    config_file = f"Configuration_files/{config.country.lower()}_config.json"
-                    
-                    # Build all JSON entries as a single block
-                    json_entries = []
-                    for cg_info in missing_items['country_groups']:
-                        cg_id = cg_info['cg']
-                        duty_type = cg_info['duty_rate_type']
-                        description = cg_info['description']
-                        json_entries.append(f'{{"Descartes CG": "{cg_id} {duty_type}", "Comment": "keep", "Description": "{description}"}}')
-                    
-                    # Display all entries in one code block
-                    st.code(",\n".join(json_entries), language="json")
-                    
-                    st.markdown(f"""
-                    ### How to fix:
-                    1. Open `{config_file}`
-                    2. Copy the JSON entries above into the `rate_types` array
-                    3. Set `Comment` to `"keep"` to include it in processing, or `"remove"` to exclude it
-                    4. Save the file and click **Load Configuration** again
-                    5. Re-upload your XML files and run processing
-                    """)
-                    
-                    st.warning("⚠️ Processing stopped. Please update the configuration file and try again.")
-                    progress_bar.progress(0)
-                    st.stop()
+                dtr_df = cleanse_hs(dtr_df, 'hs')
+                dtr_df = filter_by_chapter(dtr_df, config)
+                dtr_df = filter_active_country_groups(dtr_df, config)
+                dtr_df = flag_hs(dtr_df, config, "DTR")
+                dtr_active = dtr_df[dtr_df['hs_flag'] == '01-active'].copy()
+                st.success(f"✅ Active DTR: {len(dtr_active)}/{len(dtr_df)}")
                 
-                # Show informational message about unmapped UOMs (not blocking)
-                if missing_items['uoms']:
-                    with st.expander("ℹ️ Info: New UOMs found (will use original values)", expanded=False):
-                        st.caption("These UOMs are not in the configuration and will use their original XML values.")
-                        for uom in missing_items['uoms'][:10]:
-                            st.caption(f"  • {uom}")
-                        if len(missing_items['uoms']) > 10:
-                            st.caption(f"  ... and {len(missing_items['uoms']) - 10} more")
+                st.info("⚙️ Step 4/6: Processing NOM...")
+                progress_bar.progress(50)
+                
+                nom_df = cleanse_hs(nom_df, 'number')
+                nom_df = flag_hs(nom_df, config, "NOM")
+                nom_df = build_descriptions(nom_df)
+                st.success(f"✅ NOM: {len(nom_df)} records")
+                
+                st.info("📊 Step 5/6: Generating outputs...")
+                progress_bar.progress(65)
+                
+                outputs = {}
+                if output_types.get("ZD14", True):
+                    outputs["ZD14"] = generate_zd14(dtr_active, nom_df, config)
+                    st.success(f"✅ ZD14: {len(outputs['ZD14'])} rows")
+                
+                if output_types.get("CAPDR"):
+                    outputs["CAPDR"] = generate_capdr(dtr_active, nom_df, config)
+                if output_types.get("MX6Digits"):
+                    outputs["MX6Digits"] = generate_mx6digits(dtr_active, nom_df, config)
+                if output_types.get("ZZDE"):
+                    outputs["ZZDE"] = generate_zzde(dtr_active, nom_df, config)
+                if output_types.get("ZZDF"):
+                    outputs["ZZDF"] = generate_zzdf(dtr_active, nom_df, config)
+                
+                st.info("💾 Step 6/6: Exporting CSV files...")
+                progress_bar.progress(80)
+                
+                all_exported_files = []
+                for output_type, df in outputs.items():
+                    if not df.empty:
+                        prefix = f"{config.country} UPLOAD _{output_type}"
+                        files = export_csv_split(df, output_dir, prefix, config.max_csv)
+                        if files:
+                            all_exported_files.extend(files)
+                
+                progress_bar.progress(90)
+                
+                if all_exported_files:
+                    zip_path = "output.zip"
+                    shutil.make_archive("output", 'zip', output_dir)
+                    progress_bar.progress(100)
+                    
+                    st.markdown('<div class="success-box">', unsafe_allow_html=True)
+                    st.markdown(f"### ✅ Complete! Generated {len(all_exported_files)} file(s)")
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    with open(zip_path, "rb") as f:
+                        st.download_button("📥 Download ZIP", data=f, 
+                                          file_name=f"{config.country}_tariff_{config.year}.zip",
+                                          mime="application/zip", use_container_width=True)
+                    
+                    if "ZD14" in outputs and not outputs["ZD14"].empty:
+                        with st.expander("👀 Preview ZD14 (first 50 rows)"):
+                            st.dataframe(outputs["ZD14"].head(50), use_container_width=True)
+                else:
+                    st.error("❌ No files generated")
+                
+                # Cleanup
+                for tmp in [dtr_tmp, nom_tmp, txt_tmp]:
+                    if tmp and os.path.exists(tmp):
+                        shutil.rmtree(tmp, ignore_errors=True)
                         
-                        st.info(f"💡 To add SAP mappings for these UOMs, edit `Configuration_files/{config.country.lower()}_config.json`")
-                
-                st.info("✅ Validation complete - ready to process")
-            else:
-                progress_bar.progress(20)
-            
-            # 3. PROCESSING
-            status_container.info("⚙️ Step 3/6: Processing DTR data...")
-            progress_bar.progress(35)
-            
-            # DTR Processing
-            dtr_df = cleanse_hs(dtr_df, 'hs')
-            dtr_df = filter_by_chapter(dtr_df, config)
-            dtr_df = filter_active_country_groups(dtr_df, config)
-            dtr_df = flag_hs(dtr_df, config, "DTR")
-            
-            # Filter active only
-            dtr_active = dtr_df[dtr_df['hs_flag'] == '01-active'].copy()
-            st.success(f"✅ Active DTR records: {len(dtr_active)}/{len(dtr_df)}")
-            
-            # NOM Processing
-            status_container.info("⚙️ Step 4/6: Processing NOM data...")
-            progress_bar.progress(50)
-            
-            nom_df = cleanse_hs(nom_df, 'number')
-            nom_df = flag_hs(nom_df, config, "NOM")
-            nom_df = build_descriptions(nom_df)
-            
-            st.success(f"✅ Processed NOM: {len(nom_df)} records")
-            
-            # 4. GENERATE OUTPUTS
-            status_container.info("📊 Step 5/6: Generating output datasets...")
-            progress_bar.progress(65)
-            
-            outputs = {}
-            
-            if output_types.get("ZD14", True):
-                outputs["ZD14"] = generate_zd14(dtr_active, nom_df, config)
-                st.success(f"✅ Generated ZD14: {len(outputs['ZD14'])} rows")
-            
-            if output_types.get("CAPDR", False):
-                outputs["CAPDR"] = generate_capdr(dtr_active, nom_df, config)
-                if not outputs["CAPDR"].empty:
-                    st.success(f"✅ Generated CAPDR: {len(outputs['CAPDR'])} rows")
-            
-            if output_types.get("MX6Digits", False):
-                outputs["MX6Digits"] = generate_mx6digits(dtr_active, nom_df, config)
-                if not outputs["MX6Digits"].empty:
-                    st.success(f"✅ Generated MX6Digits: {len(outputs['MX6Digits'])} rows")
-            
-            if output_types.get("ZZDE", False):
-                outputs["ZZDE"] = generate_zzde(dtr_active, nom_df, config)
-                if not outputs["ZZDE"].empty:
-                    st.success(f"✅ Generated ZZDE: {len(outputs['ZZDE'])} rows")
-            
-            if output_types.get("ZZDF", False):
-                outputs["ZZDF"] = generate_zzdf(dtr_active, nom_df, config)
-                if not outputs["ZZDF"].empty:
-                    st.success(f"✅ Generated ZZDF: {len(outputs['ZZDF'])} rows")
-            
-            # 5. EXPORT
-            status_container.info("💾 Step 6/6: Exporting CSV files...")
-            progress_bar.progress(80)
-            
-            all_exported_files = []
-            
-            for output_type, df in outputs.items():
-                if not df.empty:
-                    prefix = f"{config.country} UPLOAD _{output_type}"
-                    files = export_csv_split(df, output_dir, prefix, config.max_csv)
-                    if files:
-                        all_exported_files.extend(files)
-            
-            progress_bar.progress(90)
-            
-            # 6. CREATE ZIP
-            if all_exported_files:
-                status_container.info("📦 Creating download package...")
-                
-                zip_path = "output.zip"
-                shutil.make_archive("output", 'zip', output_dir)
-                
-                progress_bar.progress(100)
-                
-                # Success message
-                st.markdown('<div class="success-box">', unsafe_allow_html=True)
-                st.markdown("### ✅ Processing Complete!")
-                st.markdown(f"**Generated {len(all_exported_files)} CSV file(s)**")
-                for f in all_exported_files:
-                    st.markdown(f"- `{os.path.basename(f)}`")
+            except Exception as e:
+                progress_bar.progress(0)
+                st.markdown('<div class="error-box">', unsafe_allow_html=True)
+                st.markdown(f"### ❌ Error: {str(e)}")
                 st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Download button
-                with open(zip_path, "rb") as f:
-                    st.download_button(
-                        label="📥 Download All CSV Files (ZIP)",
-                        data=f,
-                        file_name=f"{config.country}_tariff_output_{config.year}.zip",
-                        mime="application/zip",
-                        use_container_width=True
-                    )
-                
-                # Preview first output
-                if "ZD14" in outputs and not outputs["ZD14"].empty:
-                    with st.expander("👀 Preview ZD14 Output (first 50 rows)"):
-                        st.dataframe(outputs["ZD14"].head(50), use_container_width=True)
-                
-                st.session_state['processing_complete'] = True
-            else:
-                st.error("❌ No files were generated")
-            
-            # Cleanup temps
-            try:
-                if dtr_tmp and os.path.exists(dtr_tmp):
-                    shutil.rmtree(dtr_tmp)
-                if nom_tmp and os.path.exists(nom_tmp):
-                    shutil.rmtree(nom_tmp)
-                if txt_tmp and os.path.exists(txt_tmp):
-                    shutil.rmtree(txt_tmp)
-            except:
-                pass
-                
-        except Exception as e:
-            progress_bar.progress(0)
-            st.markdown('<div class="error-box">', unsafe_allow_html=True)
-            st.markdown(f"### ❌ Error Occurred")
-            st.markdown(f"**Error:** {str(e)}")
-            st.markdown('</div>', unsafe_allow_html=True)
-            logger.error(f"Processing error: {e}", exc_info=True)
-            
-            with st.expander("🐛 View Error Details"):
-                st.exception(e)
+                logger.error(f"Processing error: {e}", exc_info=True)
+                with st.expander("🐛 Details"):
+                    st.exception(e)
 
 # Footer
 st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #666; padding: 1rem;'>
-    <small>FTA Tariff Rates Processor | Python Migration of Excel/VBA System<br>
-    Supports: ZD14, CAPDR, MX6Digits, ZZDE, ZZDF output formats</small>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888; font-size: 0.8rem;'>FTA Tariff Processor | ZD14, CAPDR, MX6Digits, ZZDE, ZZDF</div>", unsafe_allow_html=True)
