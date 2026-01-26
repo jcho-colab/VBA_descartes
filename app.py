@@ -143,6 +143,23 @@ if st.session_state['config'] is None:
 
 config = st.session_state['config']
 
+# Create tabs for organized content
+tab_process, tab_info = st.tabs(["🚀 Processing", "ℹ️ Reference Info"])
+
+with tab_info:
+    st.markdown("#### Duty Rate Type Definitions")
+    st.caption("Reference table for duty rate type codes used in tariff data")
+    drt_df = pd.DataFrame([{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()])
+    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=350)
+    
+    st.markdown("#### Current Configuration - Rate Types")
+    if not config.rate_type_defs.empty:
+        st.dataframe(config.rate_type_defs, use_container_width=True, hide_index=True, height=300)
+    else:
+        st.info("No rate types configured for this country")
+
+with tab_process:
+
 # File Upload Section
 st.subheader("📁 Upload XML Files")
 
