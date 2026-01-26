@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import logging
 from pathlib import Path
-from src.config import ConfigLoader
+from src.config import ConfigLoader, DUTY_RATE_TYPE_DEFINITIONS
 from src.ingest import parse_xml_to_df, parse_country_group_definitions
 from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions
 from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split
@@ -17,46 +17,28 @@ logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="FTA Tariff Rates Processor", layout="wide", page_icon="📊")
 
-# Custom CSS with reduced top padding
+# Compact CSS - minimize spacing and scrolling
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #1f77b4;
-        margin-bottom: 1rem;
-    }
-    .sub-header {
-        font-size: 1.2rem;
-        color: #666;
-        margin-bottom: 2rem;
-    }
-    .success-box {
-        padding: 1rem;
-        background-color: #d4edda;
-        border-left: 5px solid #28a745;
-        margin: 1rem 0;
-    }
-    .warning-box {
-        padding: 1rem;
-        background-color: #fff3cd;
-        border-left: 5px solid #ffc107;
-        margin: 1rem 0;
-    }
-    .error-box {
-        padding: 1rem;
-        background-color: #f8d7da;
-        border-left: 5px solid #dc3545;
-        margin: 1rem 0;
-    }
-    /* Reduce gap at top of sidebar */
-    section[data-testid="stSidebar"] > div:first-child {
-        padding-top: 1rem;
-    }
-    /* Reduce gap at top of main content */
-    .block-container {
-        padding-top: 1rem;
-    }
+    .main-header { font-size: 1.8rem; font-weight: bold; color: #1f77b4; margin-bottom: 0.3rem; }
+    .sub-header { font-size: 0.95rem; color: #666; margin-bottom: 0.8rem; }
+    .success-box { padding: 0.6rem; background-color: #d4edda; border-left: 4px solid #28a745; margin: 0.5rem 0; }
+    .warning-box { padding: 0.6rem; background-color: #fff3cd; border-left: 4px solid #ffc107; margin: 0.5rem 0; }
+    .error-box { padding: 0.6rem; background-color: #f8d7da; border-left: 4px solid #dc3545; margin: 0.5rem 0; }
+    .main-cg-box { padding: 0.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                   border-radius: 6px; color: white; margin: 0.3rem 0; }
+    .main-cg-label { font-size: 0.7rem; opacity: 0.9; margin-bottom: 2px; }
+    .main-cg-value { font-size: 1.1rem; font-weight: bold; }
+    .main-cg-desc { font-size: 0.75rem; opacity: 0.85; margin-top: 2px; }
+    .config-stat { display: inline-block; padding: 2px 8px; background: #f0f2f6; border-radius: 4px; 
+                   margin: 2px 4px 2px 0; font-size: 0.75rem; }
+    /* Reduce all spacing */
+    section[data-testid="stSidebar"] > div:first-child { padding-top: 0.5rem; }
+    .block-container { padding-top: 0.5rem; padding-bottom: 0; }
+    div[data-testid="stExpander"] { margin-bottom: 0.3rem; }
+    .stButton > button { padding: 0.3rem 1rem; }
+    h1, h2, h3 { margin-top: 0.5rem; margin-bottom: 0.3rem; }
+    .element-container { margin-bottom: 0.3rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,105 +51,97 @@ if 'config' not in st.session_state:
 if 'processing_complete' not in st.session_state:
     st.session_state['processing_complete'] = False
 
-# Sidebar Configuration
-st.sidebar.header("⚙️ Configuration")
+# Sidebar Configuration - Compact Layout
+st.sidebar.markdown("### ⚙️ Configuration")
 
-# Configuration directory path
 CONFIG_DIR = "Configuration_files"
-
-# Get available countries from configuration files
 loader = ConfigLoader(CONFIG_DIR)
 available_countries = loader.get_available_countries()
 
-# Country selection dropdown
+# Country selection and load button on same row concept - keep compact
 country_override = st.sidebar.selectbox(
-    "Select Country",
-    options=[""] + available_countries,
-    index=0,
-    help="Select a country to process. Leave blank to use the default country from configuration."
+    "Country", options=[""] + available_countries, index=0,
+    help="Select country to process", label_visibility="collapsed"
 )
 
-# Load configuration
-if st.sidebar.button("🔄 Load Configuration", type="primary"):
+if st.sidebar.button("🔄 Load Configuration", type="primary", use_container_width=True):
     if not os.path.exists(CONFIG_DIR):
-        st.sidebar.error(f"❌ Configuration directory not found: {CONFIG_DIR}")
+        st.sidebar.error(f"❌ Config dir not found")
     else:
         try:
-            with st.spinner("Loading configuration..."):
-                config = loader.load(country_override if country_override else None)
-                st.session_state['config'] = config
-                st.session_state['editable_year'] = config.year
-                st.session_state['editable_min_chapter'] = config.min_chapter
-                st.session_state['editable_max_csv'] = config.max_csv
-                st.sidebar.success(f"✅ Config loaded: {config.country} ({config.year})")
-                    
+            config = loader.load(country_override if country_override else None)
+            st.session_state['config'] = config
+            st.session_state['editable_year'] = config.year
+            st.session_state['editable_min_chapter'] = config.min_chapter
+            st.session_state['editable_max_csv'] = config.max_csv
         except Exception as e:
-            st.sidebar.error(f"❌ Failed to load config: {str(e)}")
+            st.sidebar.error(f"❌ {str(e)[:50]}")
             logger.error(f"Config load error: {e}", exc_info=True)
 
-# Display editable configuration details
+# Display config details when loaded - COMPACT
 if st.session_state['config'] is not None:
-    with st.sidebar.expander("📋 Configuration Details", expanded=True):
-        # Editable Year
-        new_year = st.text_input(
-            "Year", 
-            value=st.session_state.get('editable_year', '2026'),
-            help="Processing year (e.g., 2026)",
-            key="year_input"
-        )
+    cfg = st.session_state['config']
+    
+    # Main Country Group - Prominent Display
+    st.sidebar.markdown(f"""
+    <div class="main-cg-box">
+        <div class="main-cg-label">MAIN COUNTRY GROUP</div>
+        <div class="main-cg-value">{cfg.main_country_group}</div>
+        <div class="main-cg-desc">{cfg.main_country_group_description}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Compact config summary
+    st.sidebar.markdown(f"""
+    <div style="margin: 0.3rem 0;">
+        <span class="config-stat">🌍 {cfg.country}</span>
+        <span class="config-stat">📅 {cfg.year}</span>
+        <span class="config-stat">📊 Ch≥{cfg.min_chapter}</span>
+    </div>
+    <div style="margin: 0.3rem 0;">
+        <span class="config-stat">✅ {len(cfg.active_country_group_list)} Active CG</span>
+        <span class="config-stat">📏 {len(cfg.uom_dict)} UOMs</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Editable settings in collapsed expander
+    with st.sidebar.expander("✏️ Edit Settings", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            new_year = st.text_input("Year", value=st.session_state.get('editable_year', '2026'), key="year_input")
+            if new_year:
+                try:
+                    if 2000 <= int(new_year) <= 2100:
+                        st.session_state['editable_year'] = new_year
+                        st.session_state['config'].year = new_year
+                except ValueError:
+                    pass
+        with col2:
+            new_min = st.number_input("Min Ch", 1, 99, st.session_state.get('editable_min_chapter', 25), key="min_ch")
+            st.session_state['editable_min_chapter'] = new_min
+            st.session_state['config'].min_chapter = int(new_min)
+            st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(int(new_min), 100)]
         
-        # Validate year
-        if new_year:
-            try:
-                year_int = int(new_year)
-                if 2000 <= year_int <= 2100:
-                    st.session_state['editable_year'] = new_year
-                    st.session_state['config'].year = new_year
-                else:
-                    st.warning("⚠️ Year should be between 2000 and 2100")
-            except ValueError:
-                st.error("❌ Invalid year format")
-        
-        # Editable Min Chapter
-        new_min_chapter = st.number_input(
-            "Min Chapter",
-            min_value=1,
-            max_value=99,
-            value=st.session_state.get('editable_min_chapter', 25),
-            help="Minimum HS chapter to include (1-99)",
-            key="min_chapter_input"
-        )
-        st.session_state['editable_min_chapter'] = new_min_chapter
-        st.session_state['config'].min_chapter = int(new_min_chapter)
-        st.session_state['config'].chapter_list = [str(i).zfill(2) for i in range(int(new_min_chapter), 100)]
-        
-        # Editable Max CSV Rows
-        new_max_csv = st.number_input(
-            "Max CSV Rows",
-            min_value=1000,
-            max_value=10000000,
-            value=st.session_state.get('editable_max_csv', 30000),
-            step=10000,
-            help="Maximum rows per CSV file (1,000 - 10,000,000)",
-            key="max_csv_input"
-        )
-        st.session_state['editable_max_csv'] = new_max_csv
-        st.session_state['config'].max_csv = new_max_csv
-        
-        # Display non-editable info
-        st.divider()
-        st.caption(f"**Active Country Groups:** {len(st.session_state['config'].active_country_group_list)}")
-        st.caption(f"**UOM Mappings:** {len(st.session_state['config'].uom_dict)}")
-
+        new_max = st.number_input("Max CSV Rows", 1000, 10000000, 
+                                   st.session_state.get('editable_max_csv', 30000), 10000, key="max_csv")
+        st.session_state['editable_max_csv'] = new_max
+        st.session_state['config'].max_csv = new_max
 
 # Main content
 if st.session_state['config'] is None:
-    st.info("👈 Please load configuration from the sidebar to begin")
+    st.info("👈 Select a country and click **Load Configuration** to begin")
+    
+    # Show Info tab even without config
+    st.markdown("---")
+    st.subheader("ℹ️ Reference Information")
+    st.markdown("**Duty Rate Type Definitions**")
+    drt_df = pd.DataFrame([
+        {"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()
+    ])
+    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=300)
     st.stop()
 
 config = st.session_state['config']
-
-st.header(f"🌍 Processing for {config.country} - Year {config.year}")
 
 # File Upload Section
 st.subheader("📁 Upload XML Files")
