@@ -271,18 +271,18 @@ with tab_process:
                 cg_descriptions = parse_country_group_definitions(dtr_paths)
                 
                 st.success(f"✅ Loaded: DTR={len(dtr_df)} rows, NOM={len(nom_df)} rows")
-            
-            # 2. VALIDATION
-            if not skip_validation:
-                status_container.info("✔️ Step 2/6: Validating data...")
-                progress_bar.progress(20)
                 
-                # Rate validation
-                rate_valid, invalid_hs = validate_rates(dtr_df, config)
-                if not rate_valid:
-                    with st.expander(f"⚠️ Warning: {len(invalid_hs)} HS codes missing rate text", expanded=False):
-                        st.write(invalid_hs[:20])  # Show first 20
-                        if len(invalid_hs) > 20:
+                # 2. VALIDATION
+                if not skip_validation:
+                    status_container.info("✔️ Step 2/6: Validating data...")
+                    progress_bar.progress(20)
+                    
+                    # Rate validation
+                    rate_valid, invalid_hs = validate_rates(dtr_df, config)
+                    if not rate_valid:
+                        with st.expander(f"⚠️ Warning: {len(invalid_hs)} HS codes missing rate text", expanded=False):
+                            st.write(invalid_hs[:20])  # Show first 20
+                            if len(invalid_hs) > 20:
                             st.write(f"... and {len(invalid_hs) - 20} more")
                     
                     if not st.checkbox("Continue despite missing rates?"):
