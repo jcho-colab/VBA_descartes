@@ -22,6 +22,30 @@ class AppConfig:
     chapter_list: List[str]
     active_country_group_list: List[str]
     all_country_group_list: List[str]
+    main_country_group: str = ""  # The "3rd" country group (main/general rate)
+    main_country_group_description: str = ""  # Description of the main country group
+
+
+# Duty Rate Type definitions (Table34 from Excel)
+DUTY_RATE_TYPE_DEFINITIONS = {
+    "B000": "Anti-dumping duty",
+    "B001": "Third country duty / General rate",
+    "B002": "MFN rate - Bound",
+    "B003": "MFN rate - Applied",
+    "B004": "Preferential rate",
+    "B006": "Tariff suspension",
+    "B007": "Provisional anti-dumping rate",
+    "B008": "Pharmaceutical products",
+    "B009": "Column 2 / Embargo rate",
+    "B013": "Additional Duty",
+    "B050": "Third country duty",
+    "B051": "Conditional Third-Country Duty",
+    "B060": "Preferential Customs Duty",
+    "B070": "Suspension of Duty",
+    "B071": "Conditional Suspension of Duty",
+    "B080": "Anti-Dumping",
+    "B081": "Anti-Dumping",
+}
 
 
 class ConfigLoader:
