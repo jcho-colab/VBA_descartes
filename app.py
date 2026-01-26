@@ -328,7 +328,7 @@ with tab_process:
                 
                 if all_exported_files:
                     zip_path = "output.zip"
-                    shutil.make_archive("output", 'zip', output_dir)
+                    shutil.make_archive("output", 'zip', export_path)
                     progress_bar.progress(100)
                     
                     st.markdown('<div class="success-box">', unsafe_allow_html=True)
