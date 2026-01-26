@@ -183,8 +183,27 @@ with tab_process:
         if 'output_dir' not in st.session_state:
             st.session_state['output_dir'] = "output_generated"
         st.caption("**Output Directory**")
-        output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
-        st.session_state['output_dir'] = output_dir
+        
+        dir_col1, dir_col2 = st.columns([5, 1])
+        with dir_col1:
+            output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
+            st.session_state['output_dir'] = output_dir
+        with dir_col2:
+            if st.button("📂", help="Browse for folder", key="browse_btn"):
+                try:
+                    import tkinter as tk
+                    from tkinter import filedialog
+                    root = tk.Tk()
+                    root.withdraw()
+                    root.wm_attributes('-topmost', 1)
+                    folder_selected = filedialog.askdirectory(initialdir=os.getcwd())
+                    root.destroy()
+                    if folder_selected:
+                        st.session_state['output_dir'] = folder_selected
+                        st.rerun()
+                except Exception:
+                    st.toast("Folder browser not available - enter path manually")
+        
         current_dir = os.getcwd()
         full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
         st.caption(f"💾 `{full_output_path}`")
