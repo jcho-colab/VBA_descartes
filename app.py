@@ -189,20 +189,7 @@ with tab_process:
             output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
             st.session_state['output_dir'] = output_dir
         with dir_col2:
-            if st.button("📂", help="Browse for folder", key="browse_btn"):
-                try:
-                    import tkinter as tk
-                    from tkinter import filedialog
-                    root = tk.Tk()
-                    root.withdraw()
-                    root.wm_attributes('-topmost', 1)
-                    folder_selected = filedialog.askdirectory(initialdir=os.getcwd())
-                    root.destroy()
-                    if folder_selected:
-                        st.session_state['output_dir'] = folder_selected
-                        st.rerun()
-                except Exception:
-                    st.toast("Folder browser not available - enter path manually")
+            st.markdown("ℹ️", help="Enter folder path directly in the text field")
         
         current_dir = os.getcwd()
         full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
@@ -324,10 +311,16 @@ with tab_process:
                 progress_bar.progress(80)
                 
                 all_exported_files = []
+                # Use the full output path from session state
+                export_path = st.session_state.get('output_dir', 'output_generated')
+                if not os.path.isabs(export_path):
+                    export_path = os.path.join(os.getcwd(), export_path)
+                os.makedirs(export_path, exist_ok=True)
+                
                 for output_type, df in outputs.items():
                     if not df.empty:
                         prefix = f"{config.country} UPLOAD _{output_type}"
-                        files = export_csv_split(df, output_dir, prefix, config.max_csv)
+                        files = export_csv_split(df, export_path, prefix, config.max_csv)
                         if files:
                             all_exported_files.extend(files)
                 
