@@ -187,8 +187,10 @@ with tab_process:
         st.session_state['output_dir'] = output_dir
         current_dir = os.getcwd()
         full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
+        st.caption(f"💾 `{full_output_path}`")
     
     with opt_col3:
+        st.caption("**Output Types**")
         output_types = {"ZD14": True}
         if config.country == "CA":
             c1, c2 = st.columns(2)
