@@ -92,7 +92,7 @@ if st.session_state['config'] is not None:
     </div>
     """, unsafe_allow_html=True)
     
-    with st.sidebar.expander("✏️ Edit Settings", expanded=False):
+    with st.sidebar.expander("✏️ Edit Settings", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
             new_year = st.text_input("Year", value=st.session_state.get('editable_year', '2026'), key="year_input")
@@ -128,15 +128,58 @@ config = st.session_state['config']
 tab_process, tab_info = st.tabs(["🚀 Processing", "ℹ️ Reference Info"])
 
 with tab_info:
-    st.markdown("#### Duty Rate Type Definitions")
-    drt_df = pd.DataFrame([{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()])
-    st.dataframe(drt_df, use_container_width=True, hide_index=True, height=300)
+    col1, col2 = st.columns(2)
+    # ---- LEFT TABLE ----
+    with col1:
+        st.markdown("#### Duty Rate Type Definitions")
+
+        drt_df = pd.DataFrame(
+            [{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()]
+        )
+
+        # Fixed widths (in pixels)
+        column_widths = {
+            "Code": 50,
+            "Definition": 200,
+        }
+
+
+        styles = []
+        for col in drt_df.columns:
+            width = column_widths[col]
+            idx = list(drt_df.columns).index(col)
+
+            styles += [
+                {'selector': f'th.col_heading.level0.col{idx}', 'props': [('min-width', f'{width}px')]},
+                {'selector': f'td.col{idx}', 'props': [('min-width', f'{width}px')]}
+            ]
+
+        drt_df_styled = drt_df.style.set_table_styles(styles)
+
+        st.dataframe(drt_df_styled, use_container_width=True, hide_index=True, height=300)
+
+    # ---- RIGHT TABLE ----
+    with col2:
+        st.markdown("#### Current Configuration - Rate Types")
+        if not config.rate_type_defs.empty:
+            st.dataframe(
+                config.rate_type_defs,
+                use_container_width=True,
+                hide_index=True,
+                height=300
+            )
+        else:
+            st.info("No rate types configured")
+
+    # st.markdown("#### Duty Rate Type Definitions")
+    # drt_df = pd.DataFrame([{"Code": k, "Definition": v} for k, v in DUTY_RATE_TYPE_DEFINITIONS.items()])
+    # st.dataframe(drt_df, use_container_width=True, hide_index=True, height=300)
     
-    st.markdown("#### Current Configuration - Rate Types")
-    if not config.rate_type_defs.empty:
-        st.dataframe(config.rate_type_defs, use_container_width=True, hide_index=True, height=250)
-    else:
-        st.info("No rate types configured")
+    # st.markdown("#### Current Configuration - Rate Types")
+    # if not config.rate_type_defs.empty:
+    #     st.dataframe(config.rate_type_defs, use_container_width=True, hide_index=True, height=250)
+    # else:
+    #     st.info("No rate types configured")
 
 with tab_process:
     def filter_files_by_pattern(files, pattern):
@@ -180,8 +223,9 @@ with tab_process:
         skip_validation = st.checkbox("Skip Validation", value=False)
     
     with opt_col2:
-        if 'output_dir' not in st.session_state:
-            st.session_state['output_dir'] = "output_generated"
+        # if 'output_dir' not in st.session_state:
+        #     st.session_state['output_dir'] = "output_generated"
+        st.session_state['output_dir'] = r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template"
         st.caption("**Output Directory**")
         
         dir_col1, dir_col2 = st.columns([5, 1])
@@ -189,7 +233,22 @@ with tab_process:
             output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
             st.session_state['output_dir'] = output_dir
         with dir_col2:
-            st.markdown("ℹ️", help="Enter folder path directly in the text field")
+            # st.markdown("ℹ️", help="Enter folder path directly in the text field")
+            if st.button("📂", help="Browse for folder", key="browse_btn"):
+                try:
+                    import tkinter as tk
+                    from tkinter import filedialog
+                    root = tk.Tk()
+                    root.withdraw()
+                    root.wm_attributes('-topmost', 1)
+                    folder_selected = filedialog.askdirectory(initialdir=r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template")
+                    root.quit()
+                    root.destroy()
+                    if folder_selected:
+                        st.session_state['output_dir'] = folder_selected
+                        st.rerun()
+                except Exception as e:
+                    st.toast(f"Folder browser error: {e}")
         
         current_dir = os.getcwd()
         full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
