@@ -236,41 +236,41 @@ with tab_process:
     with btn_col2:
         run_processing = st.button("🚀 Run Processing Pipeline", type="primary", use_container_width=True)
 
-if run_processing:
-    if not dtr_files or not nom_files:
-        st.error("❌ Please upload at least DTR and NOM files")
-    else:
-        status_container = st.container()
-        progress_bar = st.progress(0)
-        
-        try:
-            # Helper to save uploaded files to temp
-            def save_uploads(files):
-                paths = []
-                tmp_dir = tempfile.mkdtemp()
-                for f in files:
-                    path = os.path.join(tmp_dir, f.name)
-                    with open(path, "wb") as f_out:
-                        f_out.write(f.getbuffer())
-                    paths.append(path)
-                return paths, tmp_dir
+    if run_processing:
+        if not dtr_files or not nom_files:
+            st.error("❌ Please upload at least DTR and NOM files")
+        else:
+            status_container = st.container()
+            progress_bar = st.progress(0)
             
-            # 1. INGEST
-            status_container.info("📥 Step 1/6: Ingesting XML files...")
-            progress_bar.progress(10)
-            
-            dtr_paths, dtr_tmp = save_uploads(dtr_files)
-            nom_paths, nom_tmp = save_uploads(nom_files)
-            txt_paths, txt_tmp = save_uploads(txt_files) if txt_files else ([], None)
-            
-            dtr_df = parse_xml_to_df(dtr_paths, "DTR")
-            nom_df = parse_xml_to_df(nom_paths, "NOM")
-            txt_df = parse_xml_to_df(txt_paths, "TXT") if txt_paths else pd.DataFrame()
-            
-            # Parse country group definitions for descriptions
-            cg_descriptions = parse_country_group_definitions(dtr_paths)
-            
-            st.success(f"✅ Loaded: DTR={len(dtr_df)} rows, NOM={len(nom_df)} rows")
+            try:
+                # Helper to save uploaded files to temp
+                def save_uploads(files):
+                    paths = []
+                    tmp_dir = tempfile.mkdtemp()
+                    for f in files:
+                        path = os.path.join(tmp_dir, f.name)
+                        with open(path, "wb") as f_out:
+                            f_out.write(f.getbuffer())
+                        paths.append(path)
+                    return paths, tmp_dir
+                
+                # 1. INGEST
+                status_container.info("📥 Step 1/6: Ingesting XML files...")
+                progress_bar.progress(10)
+                
+                dtr_paths, dtr_tmp = save_uploads(dtr_files)
+                nom_paths, nom_tmp = save_uploads(nom_files)
+                txt_paths, txt_tmp = save_uploads(txt_files) if txt_files else ([], None)
+                
+                dtr_df = parse_xml_to_df(dtr_paths, "DTR")
+                nom_df = parse_xml_to_df(nom_paths, "NOM")
+                txt_df = parse_xml_to_df(txt_paths, "TXT") if txt_paths else pd.DataFrame()
+                
+                # Parse country group definitions for descriptions
+                cg_descriptions = parse_country_group_definitions(dtr_paths)
+                
+                st.success(f"✅ Loaded: DTR={len(dtr_df)} rows, NOM={len(nom_df)} rows")
             
             # 2. VALIDATION
             if not skip_validation:
