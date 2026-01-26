@@ -151,22 +151,27 @@ with tab_process:
         st.caption("**DTR** (Duty Rate) *required*")
         dtr_files_raw = st.file_uploader("DTR", type="xml", accept_multiple_files=True, key="dtr_upload", label_visibility="collapsed")
         dtr_files = filter_files_by_pattern(dtr_files_raw, "DTR")
-        if dtr_files_raw:
-            st.success(f"✅ {len(dtr_files)} DTR") if dtr_files else st.error("❌ No DTR")
 
     with col2:
         st.caption("**NOM** (Nomenclature) *required*")
         nom_files_raw = st.file_uploader("NOM", type="xml", accept_multiple_files=True, key="nom_upload", label_visibility="collapsed")
         nom_files = filter_files_by_pattern(nom_files_raw, "NOM")
-        if nom_files_raw:
-            st.success(f"✅ {len(nom_files)} NOM") if nom_files else st.error("❌ No NOM")
 
     with col3:
         st.caption("**TXT** (Text) *optional*")
         txt_files_raw = st.file_uploader("TXT", type="xml", accept_multiple_files=True, key="txt_upload", label_visibility="collapsed")
         txt_files = filter_files_by_pattern(txt_files_raw, "TXT")
-        if txt_files_raw and txt_files:
-            st.success(f"✅ {len(txt_files)} TXT")
+
+    # Show file counts inline
+    file_status = []
+    if dtr_files:
+        file_status.append(f"✅ {len(dtr_files)} DTR")
+    if nom_files:
+        file_status.append(f"✅ {len(nom_files)} NOM")
+    if txt_files:
+        file_status.append(f"✅ {len(txt_files)} TXT")
+    if file_status:
+        st.caption(" | ".join(file_status))
 
     st.markdown("##### ⚙️ Options")
     opt_col1, opt_col2, opt_col3 = st.columns([1, 2, 2])
@@ -177,6 +182,7 @@ with tab_process:
     with opt_col2:
         if 'output_dir' not in st.session_state:
             st.session_state['output_dir'] = "output_generated"
+        st.caption("**Output Directory**")
         output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
         st.session_state['output_dir'] = output_dir
         current_dir = os.getcwd()
