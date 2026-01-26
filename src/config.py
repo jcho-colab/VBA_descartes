@@ -115,9 +115,10 @@ class ConfigLoader:
                 country_list = [item.get("Country", item) if isinstance(item, dict) else item 
                                for item in eu_country_list]
         
-        # Extract active and all country group lists
+        # Extract active and all country group lists + main country group
         active_country_group_list = []
         all_country_group_list = []
+        third_country_groups = []  # For "3rd" marked entries
         
         if not rate_type_df.empty and "Descartes CG" in rate_type_df.columns:
             for _, row in rate_type_df.iterrows():
@@ -136,6 +137,17 @@ class ConfigLoader:
                         active_country_group_list.append(str(cg_full))
                         if cg not in active_country_group_list:
                             active_country_group_list.append(cg)
+                    
+                    # Track "3rd" entries for main country group calculation
+                    if comment == "3rd":
+                        third_country_groups.append({
+                            "cg": cg,
+                            "full": str(cg_full),
+                            "description": str(row.get("Description", ""))
+                        })
+        
+        # Calculate Main Country Group (replicates Excel formula from Menu!F7)
+        main_country_group, main_country_group_description = self._calculate_main_country_group(third_country_groups)
 
         return AppConfig(
             country=country,
@@ -148,8 +160,37 @@ class ConfigLoader:
             country_list=country_list,
             chapter_list=chapter_list,
             active_country_group_list=active_country_group_list,
-            all_country_group_list=all_country_group_list
+            all_country_group_list=all_country_group_list,
+            main_country_group=main_country_group,
+            main_country_group_description=main_country_group_description
         )
+    
+    def _calculate_main_country_group(self, third_country_groups: List[Dict]) -> tuple:
+        """
+        Calculate the Main Country Group based on entries marked as "3rd".
+        Replicates the Excel formula from Config tab used in Menu!F7:
+        
+        =IFERROR(IF(SUM(--(LEN(UNIQUE(FILTER(LEFT(nzRateType[Descartes CG], 
+        (FIND(" ", nzRateType[Descartes CG], 1)-1)),nzRateType[Comment]="3rd")))>0))>1,
+        "Multiple 3rd country group",
+        LEFT(INDEX(nzRateType,MATCH("3rd",nzRateType[Comment],0),1), 
+        FIND(" ",INDEX(nzRateType,MATCH("3rd",nzRateType[Comment],0),1))-1)),
+        "Missing 3rd country group")
+        
+        Returns: (main_country_group, description)
+        """
+        if not third_country_groups:
+            return ("Missing 3rd country group", "")
+        
+        # Get unique country group prefixes (part before the space)
+        unique_cg_prefixes = set(item["cg"] for item in third_country_groups)
+        
+        if len(unique_cg_prefixes) > 1:
+            return ("Multiple 3rd country group", "Multiple groups marked as 3rd")
+        
+        # Return the single "3rd" country group
+        first_third = third_country_groups[0]
+        return (first_third["cg"], first_third["description"])
     
     def get_available_countries(self) -> List[str]:
         """Returns list of available countries based on config files."""
