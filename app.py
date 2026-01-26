@@ -159,206 +159,82 @@ with tab_info:
         st.info("No rate types configured for this country")
 
 with tab_process:
+    # Helper function to filter files by pattern
+    def filter_files_by_pattern(files, pattern):
+        """Filter uploaded files by filename pattern."""
+        if not files:
+            return []
+        return [f for f in files if pattern.upper() in f.name.upper()]
 
-# File Upload Section
-st.subheader("📁 Upload XML Files")
+    # Compact file upload section
+    st.markdown("##### 📁 Upload XML Files")
+    col1, col2, col3 = st.columns(3)
 
-# Helper function to filter files by pattern
-def filter_files_by_pattern(files, pattern):
-    """Filter uploaded files by filename pattern."""
-    if not files:
-        return []
-    filtered = [f for f in files if pattern.upper() in f.name.upper()]
-    return filtered
+    with col1:
+        st.caption("**DTR** (Duty Rate) *required*")
+        dtr_files_raw = st.file_uploader("DTR", type="xml", accept_multiple_files=True, key="dtr_upload", label_visibility="collapsed")
+        dtr_files = filter_files_by_pattern(dtr_files_raw, "DTR")
+        if dtr_files_raw:
+            if dtr_files:
+                st.success(f"✅ {len(dtr_files)} DTR")
+            else:
+                st.error("❌ No DTR files")
 
-col1, col2, col3 = st.columns(3)
+    with col2:
+        st.caption("**NOM** (Nomenclature) *required*")
+        nom_files_raw = st.file_uploader("NOM", type="xml", accept_multiple_files=True, key="nom_upload", label_visibility="collapsed")
+        nom_files = filter_files_by_pattern(nom_files_raw, "NOM")
+        if nom_files_raw:
+            if nom_files:
+                st.success(f"✅ {len(nom_files)} NOM")
+            else:
+                st.error("❌ No NOM files")
 
-with col1:
-    st.markdown("**DTR Files** (Duty Rate)")
-    st.caption("📌 Expected pattern: *DTR*.xml")
-    dtr_files_raw = st.file_uploader(
-        "Upload DTR XML files", 
-        type="xml", 
-        accept_multiple_files=True,
-        key="dtr_upload",
-        help="Duty rate XML files matching pattern: *DTR*.xml (e.g., HSNZ_IMP_EN_DTR_I_00044001001.xml)"
-    )
-    
-    # Filter DTR files
-    dtr_files = filter_files_by_pattern(dtr_files_raw, "DTR")
-    
-    if dtr_files_raw:
-        if dtr_files:
-            st.success(f"✅ {len(dtr_files)} DTR file(s) uploaded")
-        else:
-            st.error(f"❌ No DTR files found. Please upload files containing 'DTR' in the filename.")
-        
-        # Show non-DTR files that were uploaded
-        non_dtr = [f.name for f in dtr_files_raw if f not in dtr_files]
-        if non_dtr:
-            st.warning(f"⚠️ Ignored {len(non_dtr)} non-DTR file(s)")
-            with st.expander("View ignored files"):
-                for fname in non_dtr:
-                    st.caption(f"• {fname}")
+    with col3:
+        st.caption("**TXT** (Text/Notes) *optional*")
+        txt_files_raw = st.file_uploader("TXT", type="xml", accept_multiple_files=True, key="txt_upload", label_visibility="collapsed")
+        txt_files = filter_files_by_pattern(txt_files_raw, "TXT")
+        if txt_files_raw and txt_files:
+            st.success(f"✅ {len(txt_files)} TXT")
 
-with col2:
-    st.markdown("**NOM Files** (Nomenclature)")
-    st.caption("📌 Expected pattern: *NOM*.xml")
-    nom_files_raw = st.file_uploader(
-        "Upload NOM XML files", 
-        type="xml", 
-        accept_multiple_files=True,
-        key="nom_upload",
-        help="Nomenclature XML files matching pattern: *NOM*.xml (e.g., HSNZ_IMP_EN_NOM_I_00044001003.xml)"
-    )
+    # Compact options row
+    st.markdown("##### ⚙️ Options")
+    opt_col1, opt_col2, opt_col3 = st.columns([1, 2, 2])
     
-    # Filter NOM files
-    nom_files = filter_files_by_pattern(nom_files_raw, "NOM")
+    with opt_col1:
+        skip_validation = st.checkbox("Skip Validation", value=False, help="Skip rate/config validation")
     
-    if nom_files_raw:
-        if nom_files:
-            st.success(f"✅ {len(nom_files)} NOM file(s) uploaded")
-        else:
-            st.error(f"❌ No NOM files found. Please upload files containing 'NOM' in the filename.")
-        
-        # Show non-NOM files
-        non_nom = [f.name for f in nom_files_raw if f not in nom_files]
-        if non_nom:
-            st.warning(f"⚠️ Ignored {len(non_nom)} non-NOM file(s)")
-            with st.expander("View ignored files"):
-                for fname in non_nom:
-                    st.caption(f"• {fname}")
-
-with col3:
-    st.markdown("**TXT Files** (Text/Notes) - Optional")
-    st.caption("📌 Expected pattern: *TXT*.xml")
-    txt_files_raw = st.file_uploader(
-        "Upload TXT XML files", 
-        type="xml", 
-        accept_multiple_files=True,
-        key="txt_upload",
-        help="Text/notes XML files matching pattern: *TXT*.xml (e.g., HSNZ_IMP_EN_TXT_I_00044001001.xml)"
-    )
-    
-    # Filter TXT files
-    txt_files = filter_files_by_pattern(txt_files_raw, "TXT")
-    
-    if txt_files_raw:
-        if txt_files:
-            st.success(f"✅ {len(txt_files)} TXT file(s) uploaded")
-        else:
-            st.error(f"❌ No TXT files found. Please upload files containing 'TXT' in the filename.")
-        
-        # Show non-TXT files
-        non_txt = [f.name for f in txt_files_raw if f not in txt_files]
-        if non_txt:
-            st.warning(f"⚠️ Ignored {len(non_txt)} non-TXT file(s)")
-            with st.expander("View ignored files"):
-                for fname in non_txt:
-                    st.caption(f"• {fname}")
-
-# Processing Options
-st.subheader("⚙️ Processing Options")
-
-col_opt1, col_opt2 = st.columns(2)
-
-with col_opt1:
-    skip_validation = st.checkbox(
-        "Skip Validation Checks",
-        value=False,
-        help="Skip rate and config validation (not recommended)"
-    )
-
-with col_opt2:
-    # Output directory with better UI
-    st.markdown("**Output Directory**")
-    
-    # Show current working directory as reference
-    current_dir = os.getcwd()
-    st.caption(f"📁 Current directory: {current_dir}")
-    
-    # Initialize output_dir in session state if not present
-    if 'output_dir' not in st.session_state:
-        st.session_state['output_dir'] = "output_generated"
-    
-    # Create two columns for path input and browse button
-    path_col, browse_col = st.columns([5, 1])
-    
-    with path_col:
-        output_dir = st.text_input(
-            "Save location",
-            value=st.session_state['output_dir'],
-            help="Directory where CSV files will be saved. Use relative or absolute path.",
-            label_visibility="collapsed",
-            key="output_dir_input"
-        )
+    with opt_col2:
+        if 'output_dir' not in st.session_state:
+            st.session_state['output_dir'] = "output_generated"
+        output_dir = st.text_input("Output Dir", value=st.session_state['output_dir'], key="output_dir_input", label_visibility="collapsed")
         st.session_state['output_dir'] = output_dir
+        current_dir = os.getcwd()
+        full_output_path = os.path.join(current_dir, output_dir) if not os.path.isabs(output_dir) else output_dir
     
-    with browse_col:
-        if st.button("📂", help="Browse for folder - opens folder selector dialog", key="browse_btn"):
-            try:
-                import tkinter as tk
-                from tkinter import filedialog
-                root = tk.Tk()
-                root.withdraw()
-                root.wm_attributes('-topmost', 1)
-                folder_selected = filedialog.askdirectory(initialdir=current_dir)
-                root.destroy()
-                if folder_selected:
-                    st.session_state['output_dir'] = folder_selected
-                    st.rerun()
-            except Exception:
-                st.warning("Folder browser not available. Please paste the path manually.")
-    
-    # Ensure output_dir is a string
-    output_dir = str(st.session_state.get('output_dir', 'output_generated'))
-    
-    # Show full path that will be used
-    if not os.path.isabs(output_dir):
-        full_output_path = os.path.join(current_dir, output_dir)
-    else:
-        full_output_path = output_dir
-    
-    st.caption(f"💾 Files will be saved to: `{full_output_path}`")
-    
-    # Button to create directory if it doesn't exist
-    if not os.path.exists(full_output_path):
-        if st.button("📁 Create Directory", key="create_output_dir"):
-            try:
-                os.makedirs(full_output_path, exist_ok=True)
-                st.success(f"✅ Directory created: {full_output_path}")
-            except Exception as e:
-                st.error(f"❌ Failed to create directory: {e}")
-    else:
-        st.success("✅ Directory exists")
+    with opt_col3:
+        # Output types based on country
+        output_types = {"ZD14": True}
+        if config.country == "CA":
+            c1, c2 = st.columns(2)
+            with c1:
+                output_types["CAPDR"] = st.checkbox("CAPDR", value=True)
+            with c2:
+                output_types["ZZDE"] = st.checkbox("ZZDE", value=True)
+        elif config.country == "MX":
+            output_types["MX6Digits"] = st.checkbox("MX6Digits", value=True)
+        elif config.country == "US":
+            output_types["ZZDF"] = st.checkbox("ZZDF", value=True)
 
-# Output types based on country (ZD14 always generated)
-output_types = {"ZD14": True}
-
-if config.country == "CA":
-    col_ca1, col_ca2 = st.columns(2)
-    with col_ca1:
-        output_types["CAPDR"] = st.checkbox("Generate CAPDR", value=True)
-    with col_ca2:
-        output_types["ZZDE"] = st.checkbox("Generate ZZDE", value=True)
-elif config.country == "MX":
-    output_types["MX6Digits"] = st.checkbox("Generate MX6Digits", value=True)
-elif config.country == "US":
-    output_types["ZZDF"] = st.checkbox("Generate ZZDF", value=True)
-
-# Reset and Process Buttons
-st.markdown("---")
-col_reset, col_process = st.columns([1, 4])
-
-with col_reset:
-    if st.button("🔄 Reset", type="secondary", use_container_width=True, help="Reset all settings and start over"):
-        # Clear all session state
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
-
-with col_process:
-    run_processing = st.button("🚀 Run Processing Pipeline", type="primary", use_container_width=True)
+    # Action buttons
+    btn_col1, btn_col2 = st.columns([1, 3])
+    with btn_col1:
+        if st.button("🔄 Reset", use_container_width=True):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
+    with btn_col2:
+        run_processing = st.button("🚀 Run Processing Pipeline", type="primary", use_container_width=True)
 
 if run_processing:
     if not dtr_files or not nom_files:
