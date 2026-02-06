@@ -31,14 +31,31 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         DataFrame with 6 columns for 8-digit HS codes only
     """
     logger.info(f"Generating Export HS output for {config.country}")
+    logger.info(f"Input NOM records: {len(nom_df)}")
+
+    # Debug: Check what we have
+    if 'hs_flag' in nom_df.columns:
+        logger.info(f"hs_flag values: {nom_df['hs_flag'].value_counts().to_dict()}")
+    else:
+        logger.warning("hs_flag column not found in NOM dataframe!")
+
+    if 'level_id' in nom_df.columns:
+        logger.info(f"level_id values: {nom_df['level_id'].value_counts().to_dict()}")
+        logger.info(f"level_id dtypes: {nom_df['level_id'].dtype}")
+    else:
+        logger.warning("level_id column not found in NOM dataframe!")
 
     # Filter for active records AND 8-digit codes only (level_id = 40)
-    filtered_nom = nom_df[
-        (nom_df['hs_flag'] == '01-active') &
-        (nom_df['level_id'].astype(str) == '40')
-    ].copy()
+    # Check each filter separately to debug
+    active_mask = nom_df['hs_flag'] == '01-active'
+    level_40_mask = nom_df['level_id'].astype(str) == '40'
 
-    logger.info(f"Active 8-digit HS records: {len(filtered_nom)}")
+    logger.info(f"Records with hs_flag='01-active': {active_mask.sum()}")
+    logger.info(f"Records with level_id=40: {level_40_mask.sum()}")
+
+    filtered_nom = nom_df[active_mask & level_40_mask].copy()
+
+    logger.info(f"Active 8-digit HS records after filtering: {len(filtered_nom)}")
 
     # Create output with exact column names expected
     output_df = pd.DataFrame({

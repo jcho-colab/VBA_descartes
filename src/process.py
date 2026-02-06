@@ -21,25 +21,32 @@ def cleanse_hs(df: pd.DataFrame, col_name: str = 'hs') -> pd.DataFrame:
 
 def filter_by_chapter(df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """Filters HS codes to include only chapters in chapter_list."""
-    if 'hs' not in df.columns:
+    # Check for 'hs' or 'number' column
+    hs_col = None
+    if 'hs' in df.columns:
+        hs_col = 'hs'
+    elif 'number' in df.columns:
+        hs_col = 'number'
+    else:
+        logger.warning("No hs or number column found, skipping chapter filter")
         return df
-    
+
     if not config.chapter_list:
         logger.warning("No chapter list defined, skipping chapter filter")
         return df
-        
+
     def is_valid_chapter(hs):
-        if not isinstance(hs, str) or len(hs) < 2: 
+        if not isinstance(hs, str) or len(hs) < 2:
             return False
         chapter = hs[:2]
         return chapter in config.chapter_list
 
     original_count = len(df)
-    df_filtered = df[df['hs'].apply(is_valid_chapter)].copy()
+    df_filtered = df[df[hs_col].apply(is_valid_chapter)].copy()
     filtered_count = len(df_filtered)
-    
+
     logger.info(f"Chapter filter: {original_count} -> {filtered_count} rows (removed {original_count - filtered_count})")
-    
+
     return df_filtered
 
 def filter_active_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
@@ -87,6 +94,9 @@ def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str, is_export: bool 
         doc_type: "DTR" or "NOM"
         is_export: If True, use Export HS flagging (no version_number grouping)
     """
+    logger.info(f"flag_hs called: doc_type={doc_type}, is_export={is_export}, rows={len(df)}")
+    logger.info(f"Available columns: {list(df.columns)}")
+
     # Sort keys
     # DTR: country_group, hs, version_date (desc), valid_from (desc), valid_to (asc), rates (desc)
 
@@ -138,7 +148,13 @@ def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str, is_export: bool 
         for old, new in mappings.items():
             if old in df.columns and new not in df.columns:
                 df[new] = df[old]
-                
+                logger.info(f"Mapped {old} -> {new}")
+
+        # Map 'number' to 'hs' for consistency with DTR
+        if 'number' in df.columns and 'hs' not in df.columns:
+            df['hs'] = df['number']
+            logger.info(f"Mapped number -> hs for NOM data")
+
     # Apply Sort
     # Fill N/As to avoid sort issues?
     for col in sort_cols:
@@ -185,7 +201,11 @@ def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str, is_export: bool 
 
     df['hs_flag'] = df.apply(determine_flag, axis=1)
     df.drop(columns=['is_duplicate'], inplace=True)
-    
+
+    # Log flag distribution
+    flag_counts = df['hs_flag'].value_counts().to_dict()
+    logger.info(f"Flag distribution: {flag_counts}")
+
     return df
 
 def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
