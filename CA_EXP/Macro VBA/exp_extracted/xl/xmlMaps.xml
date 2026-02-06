@@ -1,0 +1,188 @@
+<MapInfo xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" SelectionNamespaces=""><Schema ID="Schema3"><xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="">
+			<xs:element name="legal_numbering_exchange">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="head">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="version" type="xs:string"/>
+									<xs:element name="version_date" type="xs:date"/>
+									<xs:element name="version_number" type="xs:unsignedByte"/>
+									<xs:element name="upload_initial" type="xs:boolean"/>
+									<xs:element name="schema_id" type="xs:string"/>
+									<xs:element name="content_type" type="xs:unsignedByte"/>
+									<xs:element name="date_dependent" type="xs:boolean"/>
+									<xs:element name="country_dependent" type="xs:boolean"/>
+									<xs:element name="special_units_of_measure" type="xs:unsignedByte"/>
+									<xs:element name="schema_description">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="language" type="xs:string"/>
+												<xs:element name="text" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="countries">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="iso_country_code" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element maxOccurs="unbounded" name="level">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="level_id" type="xs:unsignedByte"/>
+												<xs:element name="length" type="xs:unsignedByte"/>
+												<xs:element name="separator"/>
+												<xs:element name="usage"/>
+												<xs:element name="level_description">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="language" type="xs:string"/>
+															<xs:element name="text" type="xs:string"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="body">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element maxOccurs="unbounded" name="texts">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="qualifier" type="xs:string"/>
+												<xs:element name="text_element_id" type="xs:string"/>
+												<xs:element name="reference_id" type="xs:string"/>
+												<xs:element name="deletion" type="xs:boolean"/>
+												<xs:element name="validity_begin" type="xs:date"/>
+												<xs:element name="validity_end" type="xs:date"/>
+												<xs:element name="text_element">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="language" type="xs:string"/>
+															<xs:element name="text" type="xs:string"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</Schema><Schema ID="Schema4"><xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="">
+			<xs:element name="legal_numbering_exchange">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="head">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="version" type="xs:string"/>
+									<xs:element name="version_date" type="xs:date"/>
+									<xs:element name="version_number" type="xs:unsignedByte"/>
+									<xs:element name="upload_initial" type="xs:boolean"/>
+									<xs:element name="schema_id" type="xs:string"/>
+									<xs:element name="content_type" type="xs:unsignedByte"/>
+									<xs:element name="date_dependent" type="xs:boolean"/>
+									<xs:element name="country_dependent" type="xs:boolean"/>
+									<xs:element name="special_units_of_measure" type="xs:unsignedByte"/>
+									<xs:element name="schema_description">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="language" type="xs:string"/>
+												<xs:element name="text" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="countries">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="iso_country_code" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element maxOccurs="unbounded" name="level">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="level_id" type="xs:unsignedByte"/>
+												<xs:element name="length" type="xs:unsignedByte"/>
+												<xs:element name="separator"/>
+												<xs:element name="usage"/>
+												<xs:element name="level_description">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="language" type="xs:string"/>
+															<xs:element name="text" type="xs:string"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="body">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element maxOccurs="unbounded" name="number_data">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="number" type="xs:string"/>
+												<xs:element name="id" type="xs:string"/>
+												<xs:element name="root_id" type="xs:unsignedByte"/>
+												<xs:element name="parent_id" type="xs:string"/>
+												<xs:element name="level_id" type="xs:unsignedByte"/>
+												<xs:element name="validity_begin" type="xs:date"/>
+												<xs:element name="validity_end" type="xs:date"/>
+												<xs:element name="date_of_physical_update" type="xs:date"/>
+												<xs:element name="utilisation" type="xs:string"/>
+												<xs:element name="grouping" type="xs:unsignedByte"/>
+												<xs:element name="alternate_unit_1" type="xs:string"/>
+												<xs:element name="alternate_unit_2"/>
+												<xs:element name="alternate_unit_3"/>
+												<xs:element name="texts">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="official_description">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="language" type="xs:string"/>
+																		<xs:element name="text" type="xs:string"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element minOccurs="0" name="description_reference">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="qualifier" type="xs:string"/>
+																		<xs:element name="text_element_id" type="xs:string"/>
+																		<xs:element name="validity_begin" type="xs:date"/>
+																		<xs:element name="validity_end" type="xs:date"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</Schema><Map ID="42" Name="legal_numbering_exchange" RootElement="legal_numbering_exchange" SchemaID="Schema4" ShowImportExportValidationErrors="false" AutoFit="true" Append="false" PreserveSortAFLayout="true" PreserveFormat="true"/><Map ID="41" Name="texts" RootElement="legal_numbering_exchange" SchemaID="Schema3" ShowImportExportValidationErrors="false" AutoFit="true" Append="false" PreserveSortAFLayout="true" PreserveFormat="true"><DataBinding FileBinding="true" ConnectionID="3" DataBindingLoadMode="1"/></Map></MapInfo>
