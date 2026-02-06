@@ -23,8 +23,8 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
     6. HS8_Fdesc - French description (always empty)
 
     Expected output columns (US format):
-    1. valid_from - Date from XML (kept as date type)
-    2. valid_to - Date from XML (kept as date type)
+    1. valid_from - Date from XML formatted as d/mm/yyyy
+    2. valid_to - Date from XML formatted as d/mm/yyyy, defaults to "12/30/9999" if empty
     3. hs - 8-digit HS code
     4. UOM - alternate_unit_1
     5. full_description - English description
@@ -90,11 +90,19 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
     else:
         # US: Different column names and format (matches VBA M code)
-        logger.info(f"US format: Using valid_from and valid_to dates as-is")
+        logger.info(f"US format: Converting dates to d/mm/yyyy format")
+
+        # Convert dates to d/mm/yyyy format
+        valid_from_dates = pd.to_datetime(filtered_nom['valid_from'], errors='coerce')
+        valid_from_formatted = valid_from_dates.dt.strftime('%-d/%m/%Y').fillna('')
+
+        # valid_to defaults to 12/30/9999 if empty
+        valid_to_dates = pd.to_datetime(filtered_nom['valid_to'], errors='coerce')
+        valid_to_formatted = valid_to_dates.dt.strftime('%-d/%m/%Y').fillna('12/30/9999')
 
         output_df = pd.DataFrame({
-            'valid_from': pd.to_datetime(filtered_nom['valid_from'], errors='coerce'),
-            'valid_to': pd.to_datetime(filtered_nom['valid_to'], errors='coerce'),
+            'valid_from': valid_from_formatted,
+            'valid_to': valid_to_formatted,
             'hs': filtered_nom['number'].fillna('').values,
             'UOM': filtered_nom['alternate_unit_1'].fillna('').values,
             'full_description': filtered_nom['full_description'].fillna('').values,
