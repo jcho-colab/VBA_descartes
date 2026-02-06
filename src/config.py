@@ -93,7 +93,12 @@ class ConfigLoader:
         
         with open(country_config_path, 'r') as f:
             country_config = json.load(f)
-        
+
+        # Check for country-specific year override
+        if "year" in country_config:
+            year = str(country_config["year"])
+            logger.info(f"Using country-specific year override: {year}")
+
         # Parse rate types
         rate_types_data = country_config.get("rate_types", [])
         rate_type_df = pd.DataFrame(rate_types_data) if rate_types_data else pd.DataFrame()

@@ -2,13 +2,13 @@
 
 ## Issues Identified
 
-### Issue 1: Start Date showing "200001" instead of expected year
+### Issue 1: Start Date showing "200001" - This is Correct
 
 **Root Cause:**
 - The VBA Power Query M code for **Canada (CA)** does NOT use the XML's `valid_from` date
-- Instead, it constructs the date as: `configYear & "01"` (e.g., "2026" + "01" = "202601")
-- If the Excel configuration has Year = 2000, it produces "200001"
-- The Python code was incorrectly using the XML dates and converting them
+- Instead, it constructs the date as: `configYear & "01"` (e.g., "2000" + "01" = "200001")
+- The Excel configuration has Year = 2000, which produces "200001" as intended
+- The Python code was incorrectly using the XML dates instead of config year
 
 **VBA M Code (CA):**
 ```m
@@ -20,6 +20,8 @@ addEnd = Table.AddColumn(addStart, "End date", each "999912", type text),
 **Fix Applied:**
 - For **CA**: Start date = `{config.year}01`, End date = `"999912"` (hardcoded)
 - For **US**: Start date and End date use actual XML dates (`valid_from`, `valid_to`) converted to YYYYMM format
+- **CA default year is now "2000"** (set in `ca_config.json`), producing "200001" to match VBA Excel behavior
+- Other countries use the global default year "2026" from `global_settings.json`
 
 ---
 
@@ -46,9 +48,10 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 
 ### Canada (CA):
 - **Level ID**: 40 (8-digit HS codes)
-- **Start Date**: Constructed from config year + "01" (e.g., "202601")
+- **Start Date**: Constructed from config year + "01" (e.g., "200001" for default year 2000)
 - **End Date**: Always "999912" (hardcoded)
-- **Dates Source**: Ignores XML dates, uses config
+- **Dates Source**: Ignores XML dates, uses config year
+- **Default Year**: 2000 (set in `ca_config.json`)
 
 ### United States (US):
 - **Level ID**: 50 (10-digit HS codes, also known as HTS)
@@ -59,6 +62,20 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 ---
 
 ## Code Changes Made
+
+### File: `src/config.py`
+
+1. **Added country-specific year override** (lines 96-99):
+   - Config loader now checks for "year" field in country-specific config files
+   - If present, overrides the global year setting
+   - Allows CA to have year 2000 while other countries use 2026
+
+### File: `Configuration_files/ca_config.json`
+
+1. **Added year field**:
+   - Set `"year": "2000"` at the top of the config
+   - Makes CA default to year 2000, producing "200001" start dates
+   - Matches the VBA Excel implementation behavior
 
 ### File: `src/export_hs.py`
 
@@ -91,10 +108,11 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 ## Configuration Note
 
 The year value is controlled by:
-1. **Configuration file**: `Configuration_files/global_settings.json` has `"year": "2026"`
-2. **Runtime**: The user can override this in the UI when loading configuration
+1. **Country-specific override**: `Configuration_files/ca_config.json` has `"year": "2000"` (CA Export HS default)
+2. **Global default**: `Configuration_files/global_settings.json` has `"year": "2026"` (for other countries)
+3. **Runtime**: The user can override this in the UI when loading configuration
 
-If the output shows "200001", it means the configuration has Year = 2000, which should be updated to the current or desired year (e.g., 2026).
+**For CA (Canada)**: The default year is intentionally set to "2000" to match the legacy VBA Excel implementation, which produces Start date = "200001". This is the expected behavior for CA_EXP.
 
 ---
 
@@ -102,7 +120,7 @@ If the output shows "200001", it means the configuration has Year = 2000, which 
 
 When testing the fixes, verify:
 
-- [ ] **CA Start Date**: Should be `{Year}01` (e.g., "202601" for year 2026)
+- [ ] **CA Start Date**: Should be `{Year}01` (e.g., "200001" for year 2000, which is the CA default)
 - [ ] **CA End Date**: Should always be "999912"
 - [ ] **UOM values**: Should show actual values like "NMB", "KGM", "DZN" from XML
 - [ ] **UOM defaults**: Empty UOM should default to "NMB", not "N/A"
@@ -114,12 +132,12 @@ When testing the fixes, verify:
 
 ## Example Output
 
-### Canada (CA) - Expected Format:
+### Canada (CA) - Expected Format (Default Year = 2000):
 ```
 Start date | End date | HS8_Code | HS8_Unit_of_Measure_Code | HS8_Edesc          | HS8_Fdesc
-202601     | 999912   | 01012100 | NMB                      | Horses; Pure-bred... |
-202601     | 999912   | 01012910 | NMB                      | For slaughter      |
-202601     | 999912   | 02011000 | KGM                      | Carcasses and...   |
+200001     | 999912   | 01012100 | NMB                      | Horses; Pure-bred... |
+200001     | 999912   | 01012910 | NMB                      | For slaughter      |
+200001     | 999912   | 02011000 | KGM                      | Carcasses and...   |
 ```
 
 ### United States (US) - Expected Format:
@@ -135,6 +153,8 @@ Start date | End date | HS8_Code   | HS8_Unit_of_Measure_Code | HS8_Edesc       
 ## Related Files
 
 - `src/export_hs.py` - Main export HS generation logic (UPDATED)
-- `Configuration_files/global_settings.json` - Contains default year value
+- `src/config.py` - Configuration loader with country-specific year override (UPDATED)
+- `Configuration_files/ca_config.json` - Canada configuration with year=2000 (UPDATED)
+- `Configuration_files/global_settings.json` - Contains global default year value (2026)
 - `CA_EXP/Macro VBA/HS_EXP_v1.xlsm` - Original VBA implementation
 - `EXPORT_HS_GUIDE.md` - General export HS documentation
