@@ -8,7 +8,8 @@ from pathlib import Path
 from src.config import ConfigLoader, DUTY_RATE_TYPE_DEFINITIONS
 from src.ingest import parse_xml_to_df, parse_country_group_definitions
 from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions
-from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split
+from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split, export_xlsx
+from src.export_hs import generate_export_hs
 from src.validation import validate_rates, validate_config
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -125,7 +126,168 @@ if st.session_state['config'] is None:
 config = st.session_state['config']
 
 # Tabs
-tab_process, tab_info = st.tabs(["🚀 Processing", "ℹ️ Reference Info"])
+tab_process, tab_export_hs, tab_info = st.tabs(["🚀 Import Tariffs", "📤 Export HS", "ℹ️ Reference Info"])
+
+with tab_export_hs:
+    st.markdown("##### 📁 Upload XML Files for Export HS")
+    st.info("⚠️ Export HS processing uses **NOM** and **TXT** files only (no DTR required)")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.caption("**NOM** (Nomenclature) *required*")
+        exp_nom_files_raw = st.file_uploader("NOM for Export", type="xml", accept_multiple_files=True, key="exp_nom_upload", label_visibility="collapsed")
+        exp_nom_files = [f for f in exp_nom_files_raw if "NOM" in f.name.upper()] if exp_nom_files_raw else []
+
+    with col2:
+        st.caption("**TXT** (Text) *optional*")
+        exp_txt_files_raw = st.file_uploader("TXT for Export", type="xml", accept_multiple_files=True, key="exp_txt_upload", label_visibility="collapsed")
+        exp_txt_files = [f for f in exp_txt_files_raw if "TXT" in f.name.upper()] if exp_txt_files_raw else []
+
+    file_status_exp = []
+    if exp_nom_files:
+        file_status_exp.append(f"✅ {len(exp_nom_files)} NOM")
+    if exp_txt_files:
+        file_status_exp.append(f"✅ {len(exp_txt_files)} TXT")
+    if file_status_exp:
+        st.caption(" | ".join(file_status_exp))
+
+    st.markdown("##### ⚙️ Export Options")
+    exp_opt_col1, exp_opt_col2 = st.columns(2)
+
+    with exp_opt_col1:
+        if 'exp_output_dir' not in st.session_state:
+            st.session_state['exp_output_dir'] = "output_generated"
+        st.caption("**Output Directory**")
+
+        exp_dir_col1, exp_dir_col2 = st.columns([5, 1])
+        with exp_dir_col1:
+            exp_output_dir = st.text_input("Export Output Dir", value=st.session_state['exp_output_dir'], key="exp_output_dir_input", label_visibility="collapsed")
+            st.session_state['exp_output_dir'] = exp_output_dir
+        with exp_dir_col2:
+            if st.button("📂", help="Browse for folder", key="exp_browse_btn"):
+                try:
+                    import tkinter as tk
+                    from tkinter import filedialog
+                    root = tk.Tk()
+                    root.withdraw()
+                    root.wm_attributes('-topmost', 1)
+                    folder_selected = filedialog.askdirectory()
+                    root.quit()
+                    root.destroy()
+                    if folder_selected:
+                        st.session_state['exp_output_dir'] = folder_selected
+                        st.rerun()
+                except Exception as e:
+                    st.toast(f"Folder browser error: {e}")
+
+        exp_current_dir = os.getcwd()
+        exp_full_output_path = os.path.join(exp_current_dir, exp_output_dir) if not os.path.isabs(exp_output_dir) else exp_output_dir
+        st.caption(f"💾 `{exp_full_output_path}`")
+
+    with exp_opt_col2:
+        st.caption("**Export Format**")
+        st.info("📊 XLSX format (single file)")
+
+    exp_btn_col1, exp_btn_col2 = st.columns([1, 3])
+    with exp_btn_col1:
+        if st.button("🔄 Reset Export", use_container_width=True, key="exp_reset_btn"):
+            for key in list(st.session_state.keys()):
+                if key.startswith('exp_'):
+                    del st.session_state[key]
+            st.rerun()
+    with exp_btn_col2:
+        run_export_processing = st.button("🚀 Run Export HS Pipeline", type="primary", use_container_width=True, key="exp_run_btn")
+
+    if run_export_processing:
+        if not exp_nom_files:
+            st.error("❌ Please upload NOM files")
+        else:
+            exp_progress_bar = st.progress(0)
+
+            try:
+                def save_uploads_exp(files):
+                    paths = []
+                    tmp_dir = tempfile.mkdtemp()
+                    for f in files:
+                        path = os.path.join(tmp_dir, f.name)
+                        with open(path, "wb") as f_out:
+                            f_out.write(f.getbuffer())
+                        paths.append(path)
+                    return paths, tmp_dir
+
+                st.info("📥 Step 1/5: Ingesting XML files...")
+                exp_progress_bar.progress(15)
+
+                exp_nom_paths, exp_nom_tmp = save_uploads_exp(exp_nom_files)
+                exp_txt_paths, exp_txt_tmp = save_uploads_exp(exp_txt_files) if exp_txt_files else ([], None)
+
+                nom_df = parse_xml_to_df(exp_nom_paths, "NOM")
+                txt_df = parse_xml_to_df(exp_txt_paths, "TXT") if exp_txt_paths else pd.DataFrame()
+
+                st.success(f"✅ Loaded: NOM={len(nom_df)} rows" + (f", TXT={len(txt_df)} rows" if not txt_df.empty else ""))
+
+                st.info("⚙️ Step 2/5: Processing NOM...")
+                exp_progress_bar.progress(30)
+
+                nom_df = cleanse_hs(nom_df, 'number')
+                nom_df = filter_by_chapter(nom_df, config)
+                nom_df = flag_hs(nom_df, config, "NOM")
+                st.success(f"✅ Processed NOM: {len(nom_df)} records")
+
+                st.info("⚙️ Step 3/5: Building descriptions...")
+                exp_progress_bar.progress(50)
+
+                nom_df = build_descriptions(nom_df)
+                st.success(f"✅ Built hierarchical descriptions")
+
+                st.info("📊 Step 4/5: Generating Export HS output...")
+                exp_progress_bar.progress(70)
+
+                export_hs_df = generate_export_hs(nom_df, txt_df, config)
+                st.success(f"✅ Export HS: {len(export_hs_df)} rows")
+
+                st.info("💾 Step 5/5: Exporting XLSX file...")
+                exp_progress_bar.progress(85)
+
+                exp_export_path = st.session_state.get('exp_output_dir', 'output_generated')
+                if not os.path.isabs(exp_export_path):
+                    exp_export_path = os.path.join(os.getcwd(), exp_export_path)
+                os.makedirs(exp_export_path, exist_ok=True)
+
+                exp_prefix = f"Exp{config.country}"
+                exp_file_path = export_xlsx(export_hs_df, exp_export_path, exp_prefix, config.country)
+
+                exp_progress_bar.progress(100)
+
+                if exp_file_path:
+                    st.markdown('<div class="success-box">', unsafe_allow_html=True)
+                    st.markdown(f"### ✅ Complete! Generated Export HS file")
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+                    with open(exp_file_path, "rb") as f:
+                        st.download_button("📥 Download XLSX", data=f,
+                                          file_name=os.path.basename(exp_file_path),
+                                          mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                          use_container_width=True)
+
+                    with st.expander("👀 Preview Export HS (first 50 rows)"):
+                        st.dataframe(export_hs_df.head(50), use_container_width=True)
+                else:
+                    st.error("❌ No file generated")
+
+                for tmp in [exp_nom_tmp, exp_txt_tmp]:
+                    if tmp and os.path.exists(tmp):
+                        shutil.rmtree(tmp, ignore_errors=True)
+
+            except Exception as e:
+                exp_progress_bar.progress(0)
+                st.markdown('<div class="error-box">', unsafe_allow_html=True)
+                st.markdown(f"### ❌ Error: {str(e)}")
+                st.markdown('</div>', unsafe_allow_html=True)
+                logger.error(f"Export processing error: {e}", exc_info=True)
+                with st.expander("🐛 Details"):
+                    st.exception(e)
 
 with tab_info:
     col1, col2 = st.columns(2)
@@ -421,4 +583,4 @@ with tab_process:
 
 # Footer
 st.markdown("---")
-st.markdown("<div style='text-align: center; color: #888; font-size: 0.8rem;'>FTA Tariff Processor | ZD14, CAPDR, MX6Digits, ZZDE, ZZDF</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888; font-size: 0.8rem;'>FTA Tariff Processor | Import Tariffs (ZD14, CAPDR, MX6Digits, ZZDE, ZZDF) + Export HS</div>", unsafe_allow_html=True)

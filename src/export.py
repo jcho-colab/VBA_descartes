@@ -1,6 +1,7 @@
 import pandas as pd
 import logging
 import os
+from datetime import datetime
 from .config import AppConfig
 
 logger = logging.getLogger(__name__)
@@ -258,5 +259,39 @@ def export_csv_split(df: pd.DataFrame, output_dir: str, prefix: str, max_rows: i
         
         start_row = end_row
         file_idx += 1
-    
+
     return exported_files
+
+def export_xlsx(df: pd.DataFrame, output_dir: str, prefix: str, country: str) -> str:
+    """
+    Exports DataFrame to a single Excel file (XLSX).
+    Replicates ExportXLSX logic from CA_EXP VBA.
+
+    Args:
+        df: DataFrame to export
+        output_dir: Output directory path
+        prefix: File prefix (e.g., "ExpHSCA")
+        country: Country code
+
+    Returns:
+        Path to exported file
+    """
+    if df.empty:
+        logger.warning(f"DataFrame is empty, skipping export for {prefix}")
+        return None
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    version = 1
+    while os.path.exists(os.path.join(output_dir, f"UPLOAD {prefix} V{version} {datetime.now().strftime('%Y%m%d')}.xlsx")):
+        version += 1
+
+    file_name = f"UPLOAD {prefix} V{version} {datetime.now().strftime('%Y%m%d')}.xlsx"
+    path = os.path.join(output_dir, file_name)
+
+    df.to_excel(path, index=False, engine='openpyxl')
+
+    logger.info(f"Exported {path} with {len(df)} rows")
+
+    return path
