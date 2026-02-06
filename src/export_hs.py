@@ -90,18 +90,18 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
     else:
         # US: Different column names and format (matches VBA M code)
-        logger.info(f"US format: Converting dates to d/mm/yyyy format")
+        logger.info(f"US format: Converting dates to m/d/yyyy format")
 
-        # Convert dates to d/mm/yyyy format (without leading zeros on day)
+        # Convert dates to m/d/yyyy format (without leading zeros)
         valid_from_dates = pd.to_datetime(filtered_nom['valid_from'], errors='coerce')
         valid_from_formatted = valid_from_dates.apply(
-            lambda x: f"{x.day}/{x.month:02d}/{x.year}" if pd.notna(x) else ''
+            lambda x: f"{x.month}/{x.day}/{x.year}" if pd.notna(x) else ''
         )
 
         # valid_to defaults to 12/30/9999 if empty
         valid_to_dates = pd.to_datetime(filtered_nom['valid_to'], errors='coerce')
         valid_to_formatted = valid_to_dates.apply(
-            lambda x: f"{x.day}/{x.month:02d}/{x.year}" if pd.notna(x) else '12/30/9999'
+            lambda x: f"{x.month}/{x.day}/{x.year}" if pd.notna(x) else '12/30/9999'
         )
 
         output_df = pd.DataFrame({
