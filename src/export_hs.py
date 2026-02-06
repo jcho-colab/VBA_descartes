@@ -92,13 +92,17 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         # US: Different column names and format (matches VBA M code)
         logger.info(f"US format: Converting dates to d/mm/yyyy format")
 
-        # Convert dates to d/mm/yyyy format
+        # Convert dates to d/mm/yyyy format (without leading zeros on day)
         valid_from_dates = pd.to_datetime(filtered_nom['valid_from'], errors='coerce')
-        valid_from_formatted = valid_from_dates.dt.strftime('%-d/%m/%Y').fillna('')
+        valid_from_formatted = valid_from_dates.apply(
+            lambda x: f"{x.day}/{x.month:02d}/{x.year}" if pd.notna(x) else ''
+        )
 
         # valid_to defaults to 12/30/9999 if empty
         valid_to_dates = pd.to_datetime(filtered_nom['valid_to'], errors='coerce')
-        valid_to_formatted = valid_to_dates.dt.strftime('%-d/%m/%Y').fillna('12/30/9999')
+        valid_to_formatted = valid_to_dates.apply(
+            lambda x: f"{x.day}/{x.month:02d}/{x.year}" if pd.notna(x) else '12/30/9999'
+        )
 
         output_df = pd.DataFrame({
             'valid_from': valid_from_formatted,
