@@ -76,44 +76,54 @@ def filter_active_country_groups(dtr_df: pd.DataFrame, config: AppConfig) -> pd.
     
     return dtr_df[dtr_df['concat_cg_drt'].isin(active_groups)].copy()
 
-def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str) -> pd.DataFrame:
+def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str, is_export: bool = False) -> pd.DataFrame:
     """
     Flags HS codes as 01-active, 02-invalid, 03-duplicate.
     Replicates FlagHS logic.
+
+    Args:
+        df: DataFrame to flag
+        config: Configuration object
+        doc_type: "DTR" or "NOM"
+        is_export: If True, use Export HS flagging (no version_number grouping)
     """
     # Sort keys
     # DTR: country_group, hs, version_date (desc), valid_from (desc), valid_to (asc), rates (desc)
-    
+
     # Ensure date columns are datetime for proper sorting if possible, or string sort YYYY-MM-DD works too
     # The XML dates are usually YYYY-MM-DD.
-    
+
     sort_cols = []
     ascending = []
-    
+
     if doc_type == "DTR":
         sort_cols = ['country_group', 'hs', 'version_date', 'valid_from', 'valid_to']
         ascending = [True, True, False, False, True]
-        
+
         # Add rate columns if they exist
         rate_cols = ['adValoremRate_percentage', 'specificRate_ratePerUOM', 'compoundRate_percentage']
         for rc in rate_cols:
             if rc in df.columns:
                 sort_cols.append(rc)
                 ascending.append(False)
-                
+
         key_group = ['country_group'] # We flag uniqueness per country_group
-        
+
     elif doc_type == "NOM":
-        # NOM sorting: version_number?, hs, ... (VBA says sKey2="version_number", sort by sKey2 asc, HS asc...)
-        # Actually VBA FlagHS for NOM:
-        # Key: .Parent.ListColumns(sKey2).Range -> version_number
-        # .SortFields.Add Key=hs
-        # ... same date sorts ...
-        
-        sort_cols = ['version_number', 'hs', 'version_date', 'valid_from', 'valid_to']
-        ascending = [True, True, False, False, True]
-        key_group = ['version_number']
-        
+        # Import NOM: groups by version_number
+        # Export NOM (CA_EXP): NO version_number grouping, just global HS
+        if is_export:
+            # CA_EXP FlagHS: sort by hs, version_date, valid_from, valid_to only
+            # No version_number key
+            sort_cols = ['hs', 'version_date', 'valid_from', 'valid_to']
+            ascending = [True, False, False, True]
+            key_group = []  # No grouping key - flag globally per HS
+        else:
+            # Import FlagHS for NOM (original behavior)
+            sort_cols = ['version_number', 'hs', 'version_date', 'valid_from', 'valid_to']
+            ascending = [True, True, False, False, True]
+            key_group = ['version_number']
+
     else:
         return df
 
@@ -143,12 +153,16 @@ def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str) -> pd.DataFrame:
     # Within each group, iterate HS.
     # First occurrence of HS -> Active/Invalid check
     # Subsequent -> Duplicate
-    
+
     # Vectorized approach:
     # Mark duplicates based on [key_group + 'hs']
     # Keep='first' means first is unique, others are duplicates
-    
-    subset_cols = key_group + ['hs']
+
+    # For export without grouping key, just check HS duplicates globally
+    if key_group:
+        subset_cols = key_group + ['hs']
+    else:
+        subset_cols = ['hs']
     df['is_duplicate'] = df.duplicated(subset=subset_cols, keep='first')
     
     def determine_flag(row):

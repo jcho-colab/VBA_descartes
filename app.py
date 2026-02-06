@@ -232,7 +232,7 @@ with tab_export_hs:
 
                 nom_df = cleanse_hs(nom_df, 'number')
                 nom_df = filter_by_chapter(nom_df, config)
-                nom_df = flag_hs(nom_df, config, "NOM")
+                nom_df = flag_hs(nom_df, config, "NOM", is_export=True)
                 st.success(f"✅ Processed NOM: {len(nom_df)} records")
 
                 st.info("⚙️ Step 3/5: Building descriptions...")

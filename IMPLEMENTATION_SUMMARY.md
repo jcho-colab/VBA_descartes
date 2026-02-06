@@ -229,14 +229,41 @@ Possible improvements:
 4. Merge multiple NOM files automatically
 5. Add comparison between versions
 
+## Updates and Corrections
+
+### Version 2 - Export HS Corrections
+
+After user feedback that output was "very different from expected", critical corrections were made:
+
+**Issue Identified:**
+The Import and Export workflows use different FlagHS logic, but the initial implementation didn't distinguish between them.
+
+**Corrections Made:**
+
+1. **Added `is_export` parameter to `flag_hs()` function**
+   - Export FlagHS: NO version_number grouping, global HS flagging
+   - Import FlagHS: Groups by version_number/country_group
+
+2. **Simplified `export_hs.py` output**
+   - Now matches QueryTable structure exactly
+   - 8 core columns from NOM table
+   - Column names match source NOM fields
+
+3. **Updated Export HS tab**
+   - Passes `is_export=True` to flag_hs()
+   - Ensures correct flagging behavior
+
+See `EXPORT_HS_CORRECTIONS.md` for detailed analysis.
+
 ## Conclusion
 
 The implementation successfully replicates the CA_EXP VBA functionality in Python/Streamlit while:
 - ✅ Preserving all existing Import Tariffs functionality
 - ✅ Maintaining code quality and organization
 - ✅ Providing clear separation between workflows
-- ✅ Maximizing code reuse
+- ✅ Maximizing code reuse (with appropriate differentiation where needed)
 - ✅ Improving user experience
 - ✅ Adding comprehensive documentation
+- ✅ Accurately replicating VBA business logic differences between Import and Export
 
-Both workflows are now available in a single, modern web application.
+Both workflows are now available in a single, modern web application with correct output formats.
