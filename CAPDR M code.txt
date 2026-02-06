@@ -1,0 +1,7 @@
+let
+    source = Excel.CurrentWorkbook(){[Name="_ZD14"]}[Content],
+    mainCG = Excel.CurrentWorkbook(){[Name="caMainCG"]}[Content]{0}[Column1],
+    filterID = Table.SelectRows(source, each [#"Rate type"] = mainCG and [HS Number] <> "--" and [HS Number] <> "0000000000"),
+    replacePDR = Table.ReplaceValue(filterID, mainCG, "PDR", Replacer.ReplaceText, {"Rate type"})
+in
+    replacePDR
