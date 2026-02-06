@@ -12,10 +12,10 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
     The VBA QueryOutput creates a query table that:
     - Filters for ONLY 8-digit HS codes (level_id = 40 for CA, 50 for US)
     - Filters for active records only (hs_flag = '01-active')
-    - Outputs 6 specific columns
+    - Outputs country-specific columns
 
     Expected output columns (CA format):
-    1. Start date - Constructed from config.year + "01" (e.g., "202601" for year 2026)
+    1. Start date - Constructed from config.year + "01" (e.g., "200001" for year 2000)
     2. End date - Always "999912" (hardcoded)
     3. HS8_Code - 8-digit HS code
     4. HS8_Unit_of_Measure_Code - alternate_unit_1, defaults to "NMB" if empty
@@ -23,12 +23,11 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
     6. HS8_Fdesc - French description (always empty)
 
     Expected output columns (US format):
-    1. Start date - From XML valid_from in YYYYMM format
-    2. End date - From XML valid_to in YYYYMM format
-    3. HS8_Code - 8-digit HS code
-    4. HS8_Unit_of_Measure_Code - alternate_unit_1, defaults to "NMB" if empty
-    5. HS8_Edesc - English description (full_description)
-    6. HS8_Fdesc - French description (always empty)
+    1. valid_from - Date from XML (kept as date type)
+    2. valid_to - Date from XML (kept as date type)
+    3. hs - 8-digit HS code
+    4. UOM - alternate_unit_1
+    5. full_description - English description
 
     Args:
         nom_df: Processed NOM dataframe with full_description and hs_flag
@@ -36,7 +35,7 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         config: Configuration object
 
     Returns:
-        DataFrame with 6 columns for 8-digit HS codes only
+        DataFrame with country-specific columns for 8-digit HS codes only
     """
     logger.info(f"Generating Export HS output for {config.country}")
     logger.info(f"Input NOM records: {len(nom_df)}")
@@ -68,9 +67,9 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
     logger.info(f"Active 8-digit HS records after filtering: {len(filtered_nom)}")
 
     # Create output with exact column names expected
-    # Note: Date handling differs by country:
-    # - CA: Uses config year + "01" for start, "999912" for end (ignores XML dates)
-    # - US: Uses actual valid_from/valid_to dates from XML
+    # Note: Output format is completely different between countries:
+    # - CA: 6 columns with HS8_Code, HS8_Unit_of_Measure_Code, HS8_Edesc, HS8_Fdesc, Start date, End date
+    # - US: 5 columns with hs, UOM, full_description, valid_from, valid_to
 
     if config.country.upper() == 'CA':
         # Canada: Use config year for dates (matches VBA M code)
@@ -82,34 +81,27 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
             'Start date': start_date_value,
             'End date': end_date_value,
             'HS8_Code': filtered_nom['number'].fillna('').values,
-            'HS8_Unit_of_Measure_Code': filtered_nom['alternate_unit_1'].fillna('').values,
+            'HS8_Unit_of_Measure_Code': filtered_nom['alternate_unit_1'].fillna('NMB').values,
             'HS8_Edesc': filtered_nom['full_description'].fillna('').values,
             'HS8_Fdesc': '',  # Always empty for Export HS format
         })
+
+        # Sort by HS8_Code
+        output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
     else:
-        # US and others: Use actual dates from XML
+        # US: Different column names and format (matches VBA M code)
+        logger.info(f"US format: Using valid_from and valid_to dates as-is")
+
         output_df = pd.DataFrame({
-            'Start date': filtered_nom['valid_from'].fillna('').values,
-            'End date': filtered_nom['valid_to'].fillna('').values,
-            'HS8_Code': filtered_nom['number'].fillna('').values,
-            'HS8_Unit_of_Measure_Code': filtered_nom['alternate_unit_1'].fillna('').values,
-            'HS8_Edesc': filtered_nom['full_description'].fillna('').values,
-            'HS8_Fdesc': '',  # Always empty for Export HS format
+            'valid_from': pd.to_datetime(filtered_nom['valid_from'], errors='coerce'),
+            'valid_to': pd.to_datetime(filtered_nom['valid_to'], errors='coerce'),
+            'hs': filtered_nom['number'].fillna('').values,
+            'UOM': filtered_nom['alternate_unit_1'].fillna('').values,
+            'full_description': filtered_nom['full_description'].fillna('').values,
         })
 
-        # Convert dates from YYYY-MM-DD to YYYYMM format (for US only)
-        output_df['Start date'] = output_df['Start date'].apply(lambda x: x.replace('-', '')[:6] if x else '')
-        output_df['End date'] = output_df['End date'].apply(lambda x: x.replace('-', '')[:6] if x else '')
-
-    # Ensure HS8_Unit_of_Measure_Code always has a value
-    # Default to 'NMB' (Number) if empty, matching VBA M code behavior
-    empty_uom_count = output_df['HS8_Unit_of_Measure_Code'].isin(['', None]).sum()
-    if empty_uom_count > 0:
-        logger.info(f"Setting {empty_uom_count} empty UOM values to default 'NMB'")
-    output_df['HS8_Unit_of_Measure_Code'] = output_df['HS8_Unit_of_Measure_Code'].replace('', 'NMB').fillna('NMB')
-
-    # Sort by HS8_Code
-    output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
+        # Sort by hs code
+        output_df = output_df.sort_values('hs').reset_index(drop=True)
 
     logger.info(f"Generated {len(output_df)} Export HS records (8-digit only)")
 

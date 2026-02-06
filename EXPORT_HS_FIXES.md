@@ -54,10 +54,14 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 - **Export HS Year**: Always 2000 (forced in `app.py` for tab 2)
 
 ### United States (US):
-- **Level ID**: 50 (10-digit HS codes, also known as HTS)
-- **Start Date**: From XML `valid_from` in YYYYMM format (e.g., "201701")
-- **End Date**: From XML `valid_to` in YYYYMM format (e.g., "999912")
-- **Dates Source**: Uses actual XML dates
+- **Level ID**: 50 (8-digit HS codes)
+- **valid_from**: From XML `valid_from` (kept as date type, not converted)
+- **valid_to**: From XML `valid_to` (kept as date type, not converted)
+- **Dates Source**: Uses actual XML dates as-is
+- **Output Format**: Completely different from CA
+  - Columns: valid_from, valid_to, hs, UOM, full_description
+  - No "Start date", "End date", or "HS8_*" columns
+  - No French description column
 
 ---
 
@@ -81,29 +85,31 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 
 ### File: `src/export_hs.py`
 
-1. **Updated date handling** (lines 75-102):
-   - Added country-specific logic: CA uses config year, US uses XML dates
-   - CA: `f"{config.year}01"` for start, `"999912"` for end
-   - US: Converts `valid_from`/`valid_to` to YYYYMM format
+1. **Completely different output formats for CA vs US** (lines 74-104):
+   - **CA format**: 6 columns (Start date, End date, HS8_Code, HS8_Unit_of_Measure_Code, HS8_Edesc, HS8_Fdesc)
+   - **US format**: 5 columns (valid_from, valid_to, hs, UOM, full_description)
+   - CA uses config year for dates: `f"{config.year}01"` for start, `"999912"` for end
+   - US uses XML dates as-is (kept as date type, not converted to YYYYMM)
 
-2. **Updated UOM default** (line 109):
+2. **Updated UOM default for CA** (line 84):
    - Changed from `'N/A'` to `'NMB'`
-   - Matches VBA M code behavior exactly
+   - Applied directly in DataFrame creation using `.fillna('NMB')`
+   - US keeps UOM as-is from XML (no default)
 
 3. **Updated level filtering** (lines 56-61):
-   - CA uses level_id = 40
-   - US uses level_id = 50
+   - CA uses level_id = 40 (8-digit codes)
+   - US uses level_id = 50 (8-digit codes)
    - Dynamically selects based on country
 
 4. **Added logging**:
+   - Logs which format is being used (CA vs US)
    - Logs which dates are being used for CA
-   - Logs how many UOM values are being defaulted
    - Helps with debugging and verification
 
 5. **Updated docstring**:
-   - Documents CA vs US differences
-   - Explains date construction logic
-   - Clarifies UOM default behavior
+   - Documents CA vs US format differences
+   - Explains date construction logic for each country
+   - Lists exact columns for each output format
 
 ---
 
@@ -127,19 +133,24 @@ The year value is controlled differently for each tab:
 
 When testing the fixes, verify:
 
-- [ ] **CA Start Date**: Should be `{Year}01` (e.g., "200001" for year 2000, which is the CA default)
-- [ ] **CA End Date**: Should always be "999912"
-- [ ] **UOM values**: Should show actual values like "NMB", "KGM", "DZN" from XML
-- [ ] **UOM defaults**: Empty UOM should default to "NMB", not "N/A"
-- [ ] **US Dates**: Should come from XML valid_from/valid_to in YYYYMM format
-- [ ] **US Level**: Should filter level_id = 50 (not 40)
-- [ ] **CA Level**: Should filter level_id = 40
+### Canada (CA):
+- [ ] **Columns**: Start date, End date, HS8_Code, HS8_Unit_of_Measure_Code, HS8_Edesc, HS8_Fdesc
+- [ ] **Start Date**: Should be `{Year}01` (e.g., "200001" for year 2000)
+- [ ] **End Date**: Should always be "999912"
+- [ ] **UOM defaults**: Empty UOM should default to "NMB"
+- [ ] **Level**: Should filter level_id = 40
+
+### United States (US):
+- [ ] **Columns**: valid_from, valid_to, hs, UOM, full_description
+- [ ] **Dates**: Should be date types from XML (not YYYYMM text format)
+- [ ] **UOM values**: Should show actual values from XML
+- [ ] **Level**: Should filter level_id = 50
 
 ---
 
 ## Example Output
 
-### Canada (CA) - Expected Format (Default Year = 2000):
+### Canada (CA) - Expected Format (Year = 2000 in Export HS tab):
 ```
 Start date | End date | HS8_Code | HS8_Unit_of_Measure_Code | HS8_Edesc          | HS8_Fdesc
 200001     | 999912   | 01012100 | NMB                      | Horses; Pure-bred... |
@@ -147,13 +158,19 @@ Start date | End date | HS8_Code | HS8_Unit_of_Measure_Code | HS8_Edesc         
 200001     | 999912   | 02011000 | KGM                      | Carcasses and...   |
 ```
 
-### United States (US) - Expected Format:
+### United States (US) - Expected Format (Completely Different):
 ```
-Start date | End date | HS8_Code   | HS8_Unit_of_Measure_Code | HS8_Edesc          | HS8_Fdesc
-201701     | 999912   | 0101210000 | NMB                      | Horses; Pure-bred... |
-201701     | 999912   | 0101291000 | NMB                      | For slaughter      |
-201701     | 999912   | 0201100000 | KGM                      | Carcasses and...   |
+valid_from | valid_to   | hs       | UOM | full_description
+2017-01-01 | 9999-12-31 | 01012100 | NMB | Horses; Pure-bred breeding animals
+2017-01-01 | 9999-12-31 | 01012910 | NMB | Horses; Live; Other than pure-bred breeding animals; For slaughter
+2017-01-01 | 9999-12-31 | 02011000 | KGM | Meat of bovine animals; Fresh or chilled; Carcasses and half-carcasses
 ```
+
+**Note**: US format has:
+- 5 columns (not 6)
+- Date types (not YYYYMM text)
+- Different column names (hs, UOM, full_description instead of HS8_Code, HS8_Unit_of_Measure_Code, HS8_Edesc)
+- No HS8_Fdesc column
 
 ---
 
