@@ -49,163 +49,372 @@ def format_date_to(d) -> str:
 
 def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """
-    Generates the ZD14 DataFrame by joining DTR and NOM data and mapping columns.
+    Generates the ZD14 DataFrame following M code logic:
+    1. Filter DTR by date (version_date >= ZD14Date)
+    2. Add header rows (-- and 0000000000)
+    3. Join with NOM for descriptions and UOM
+    4. Build all required columns
     """
     logger.info("Generating ZD14 Dataset...")
-    
+
     if dtr_df.empty:
         logger.warning("DTR DataFrame is empty, cannot generate ZD14")
         return pd.DataFrame()
-    
-    # 1. Join DTR with NOM to get Description and UOM
+
+    # Filter by date if ZD14Date is configured
+    filtered_dtr = dtr_df.copy()
+    if hasattr(config, 'zd14_date') and config.zd14_date:
+        filtered_dtr = filtered_dtr[
+            pd.to_datetime(filtered_dtr['valid_from'], errors='coerce') >= pd.to_datetime(config.zd14_date, errors='coerce')
+        ]
+
+    # Add header rows with mainCG
+    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    year_start = f"{config.year}0101"
+
+    header_rows = pd.DataFrame([
+        {'hs': '--', 'country_group': main_cg, 'adValoremRate_percentage': 0,
+         'specificRate_ratePerUOM': 0, 'specificRate_multiplier': None, 'specificRate_rateUOM': '',
+         'valid_from': year_start, 'valid_to': '99991231', 'regulation': ''},
+        {'hs': '0000000000', 'country_group': main_cg, 'adValoremRate_percentage': 0,
+         'specificRate_ratePerUOM': 0, 'specificRate_multiplier': None, 'specificRate_rateUOM': '',
+         'valid_from': year_start, 'valid_to': '99991231', 'regulation': ''}
+    ])
+
+    filtered_dtr = pd.concat([header_rows, filtered_dtr], ignore_index=True)
+
+    # Add index for sorting later
+    filtered_dtr['Index'] = range(len(filtered_dtr))
+
+    # Join with NOM
     merged = pd.merge(
-        dtr_df,
-        nom_df[['number', 'full_description', 'alternate_unit_1']] if not nom_df.empty else pd.DataFrame(), 
-        left_on='hs', 
-        right_on='number', 
+        filtered_dtr,
+        nom_df[['number', 'full_description', 'alternate_unit_1']] if not nom_df.empty else pd.DataFrame(),
+        left_on='hs',
+        right_on='number',
         how='left'
     )
-    
+
+    # Sort by index to maintain order
+    merged = merged.sort_values('Index').reset_index(drop=True)
+
     year_start_int = int(f"{config.year}0101")
-    
-    # 2. Construct ZD14 Columns
-    # Build dictionary first, then create DataFrame to avoid index issues
-    zd14_data = {
-        'Country': [config.country] * len(merged),
-        'HS Number': merged['hs'].values,
-        'Date from': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)).values,
-        'Date to': merged['valid_to'].apply(format_date_to).values,
-        'Lang 1': ['EN'] * len(merged),
-        'Desc 1': merged['full_description'].fillna("").values if 'full_description' in merged.columns else [""] * len(merged),
-    }
-    
-    # Empty Desc columns
-    for i in range(2, 8):
-        zd14_data[f'Desc {i}'] = [""] * len(merged)
-        
-    zd14_data['Lang 2'] = ['ES'] * len(merged)  # Hardcoded
-    
-    # Desc 21 should have the same description as Desc 1 (for Spanish)
-    zd14_data['Desc 21'] = merged['full_description'].fillna("").values if 'full_description' in merged.columns else [""] * len(merged)
-    
-    # Desc 22-27 are empty
-    for i in range(22, 28):
-        zd14_data[f'Desc {i}'] = [""] * len(merged)
-         
-    # Unit of measure - mapped via UOMDict
+
+    # Build ZD14 structure following M code column order
     def map_uom(u):
         if pd.isna(u) or u == '':
             return ""
         uom_str = str(u)
         return config.uom_dict.get(uom_str, uom_str)
-        
-    zd14_data['Unit of measure'] = merged['alternate_unit_1'].apply(map_uom).values if 'alternate_unit_1' in merged.columns else [""] * len(merged)
-    
-    zd14_data['Restriction code'] = [""] * len(merged)
-    
-    # Rate type -> Country Group
-    zd14_data['Rate type'] = merged['country_group'].fillna("").values if 'country_group' in merged.columns else [""] * len(merged)
-    
-    # Rates
-    zd14_data['Champ24'] = zd14_data['Date from']
-    zd14_data['Champ25'] = zd14_data['Date to']
-    
-    zd14_data['Base rate %'] = merged['adValoremRate_percentage'].apply(format_rate).values if 'adValoremRate_percentage' in merged.columns else ["0"] * len(merged)
-    zd14_data['Rate amount'] = merged['specificRate_ratePerUOM'].apply(format_rate).values if 'specificRate_ratePerUOM' in merged.columns else ["0"] * len(merged)
-    
+
+    zd14 = pd.DataFrame({
+        'Country': config.country,
+        'HS Number': merged['hs'].fillna(''),
+        'Date from': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)),
+        'Date to': merged['valid_to'].apply(format_date_to),
+        'Lang 1': 'EN',
+        'Desc 1': merged['full_description'].fillna(''),
+        'Desc 2': '',
+        'Desc 3': '',
+        'Desc 4': '',
+        'Desc 5': '',
+        'Desc 6': '',
+        'Desc 7': '',
+        'Lang 2': 'ES',
+        'Desc 21': merged['full_description'].fillna(''),  # Duplicate Desc 1
+        'Desc 22': '',
+        'Desc 23': '',
+        'Desc 24': '',
+        'Desc 25': '',
+        'Desc 26': '',
+        'Desc 27': '',
+        'Unit of measure': merged['alternate_unit_1'].apply(map_uom) if 'alternate_unit_1' in merged.columns else '',
+        'Restriction code': '',
+        'Rate type': merged['country_group'].fillna(''),
+        'Champ24': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)),  # Duplicate Date from
+        'Champ25': merged['valid_to'].apply(format_date_to),  # Duplicate Date to
+        'Base rate %': merged['adValoremRate_percentage'].apply(format_rate),
+        'Rate amount': merged['specificRate_ratePerUOM'].apply(format_rate),
+        'Rate curr': '',
+        'Rate qty': '',
+        'Rate qty uom': '',
+        'Spec App': '',
+        'Cert Ori': merged['regulation'].fillna(''),
+        'Cty Grp': ''
+    })
+
     # Special handling for Brazil - clear rate amount
     if config.country == "BR":
-        zd14_data['Rate amount'] = [""] * len(merged)
-    
-    zd14_data['Rate curr'] = [""] * len(merged)
-    zd14_data['Rate qty'] = [""] * len(merged)
-    zd14_data['Rate qty uom'] = [""] * len(merged)
-    zd14_data['Spec App'] = [""] * len(merged)
-    
-    # Cert Ori -> regulation
-    zd14_data['Cert Ori'] = merged['regulation'].fillna("").values if 'regulation' in merged.columns else [""] * len(merged)
-    
-    zd14_data['Cty Grp'] = [""] * len(merged)
-    
-    # Create DataFrame from dictionary
-    zd14 = pd.DataFrame(zd14_data)
-    
-    # Special replacement for country 'US': 'T' -> 'TO' in UOM
+        zd14['Rate amount'] = ''
+
+    # Special replacement for US: 'T' -> 'TO' in UOM
     if config.country == "US":
         zd14['Unit of measure'] = zd14['Unit of measure'].replace('T', 'TO')
-    
+
     logger.info(f"Generated ZD14 with {len(zd14)} rows")
-    
+
     return zd14
 
 def generate_capdr(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """
-    Generates the CAPDR DataFrame for Canada.
+    Generates the CAPDR DataFrame for Canada following M code logic:
+    1. Start with ZD14 data
+    2. Filter by mainCG
+    3. Remove "--" and "0000000000"
+    4. Replace mainCG with "PDR" in Rate type
     """
     logger.info("Generating CAPDR Dataset...")
-    
+
     if config.country != "CA":
         logger.warning("CAPDR is only for Canada (CA)")
         return pd.DataFrame()
-    
-    # CAPDR typically has similar structure to ZD14 but with Canada-specific fields
-    # Placeholder implementation - needs specific mapping based on requirements
-    capdr = generate_zd14(dtr_df, nom_df, config)
-    
+
+    # Generate base ZD14
+    zd14 = generate_zd14(dtr_df, nom_df, config)
+
+    if zd14.empty:
+        return pd.DataFrame()
+
+    # Filter by mainCG
+    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    capdr = zd14[zd14['Rate type'] == main_cg].copy()
+
+    # Remove header rows (-- and 0000000000)
+    capdr = capdr[
+        (capdr['HS Number'] != '--') &
+        (capdr['HS Number'] != '0000000000')
+    ]
+
+    # Replace mainCG with "PDR" in Rate type
+    capdr['Rate type'] = 'PDR'
+
     logger.info(f"Generated CAPDR with {len(capdr)} rows")
     return capdr
 
 def generate_mx6digits(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """
-    Generates the MX6Digits DataFrame for Mexico.
+    Generates the MX6Digits DataFrame for Mexico following M code logic:
+    1. Start with ZD14 data
+    2. Filter by mainCG
+    3. Remove "--"
+    4. Shorten HS to 6 digits
+    5. Remove duplicates by HS Number
     """
     logger.info("Generating MX6Digits Dataset...")
-    
+
     if config.country != "MX":
         logger.warning("MX6Digits is only for Mexico (MX)")
         return pd.DataFrame()
-    
-    # MX6Digits - specific format for Mexico
-    # Placeholder implementation
-    mx6 = generate_zd14(dtr_df, nom_df, config)
-    
+
+    # Generate base ZD14
+    zd14 = generate_zd14(dtr_df, nom_df, config)
+
+    if zd14.empty:
+        return pd.DataFrame()
+
+    # Filter by mainCG and remove "--"
+    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    mx6 = zd14[
+        (zd14['Rate type'] == main_cg) &
+        (zd14['HS Number'] != '--')
+    ].copy()
+
+    # Shorten HS to 6 digits
+    mx6['HS Number'] = mx6['HS Number'].astype(str).str[:6]
+
+    # Remove duplicates by HS Number
+    mx6 = mx6.drop_duplicates(subset=['HS Number'], keep='first')
+
     logger.info(f"Generated MX6Digits with {len(mx6)} rows")
     return mx6
 
 def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """
-    Generates the ZZDE DataFrame for Canada.
+    Generates the ZZDE DataFrame for Canada following M code logic:
+    1. Filter DTR by caMainCG
+    2. Add header rows (-- and 0000000000)
+    3. Calculate MFN $ = ratePerUOM / multiplier
+    4. Join with NOM for STAT UOM
+    5. Add all required columns
     """
     logger.info("Generating ZZDE Dataset...")
-    
+
     if config.country != "CA":
         logger.warning("ZZDE is only for Canada (CA)")
         return pd.DataFrame()
-    
-    # ZZDE - another Canada-specific format
-    zzde = generate_zd14(dtr_df, nom_df, config)
-    
+
+    if dtr_df.empty:
+        logger.warning("DTR DataFrame is empty, cannot generate ZZDE")
+        return pd.DataFrame()
+
+    # Filter by caMainCG
+    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
+
+    # Fill null multipliers with 1 for calculation
+    filtered_dtr['specificRate_multiplier'] = filtered_dtr['specificRate_multiplier'].fillna(1)
+
+    # Calculate MFN $ = ratePerUOM / multiplier
+    filtered_dtr['mfn_amount'] = filtered_dtr['specificRate_ratePerUOM'] / filtered_dtr['specificRate_multiplier']
+
+    # Add header rows
+    year_start = f"{config.year}0101"
+    header_rows = pd.DataFrame([
+        {'hs': '--', 'adValoremRate_percentage': 0, 'mfn_amount': 0, 'specificRate_rateUOM': ''},
+        {'hs': '0000000000', 'adValoremRate_percentage': 0, 'mfn_amount': 0, 'specificRate_rateUOM': ''}
+    ])
+
+    filtered_dtr = pd.concat([header_rows, filtered_dtr], ignore_index=True)
+    filtered_dtr['Index'] = range(len(filtered_dtr))
+
+    # Join with NOM
+    merged = pd.merge(
+        filtered_dtr,
+        nom_df[['number', 'alternate_unit_1']] if not nom_df.empty else pd.DataFrame(),
+        left_on='hs',
+        right_on='number',
+        how='left'
+    )
+
+    merged = merged.sort_values('Index').reset_index(drop=True)
+
+    # Build ZZDE structure with exact column order from M code
+    zzde = pd.DataFrame({
+        'Cl.': 10,
+        'Year': config.year,
+        'Can HS No.': merged['hs'].fillna(''),
+        'MFN %': merged['adValoremRate_percentage'].apply(format_rate),
+        'MFN $': merged['mfn_amount'].apply(format_rate),
+        'GPT %': 0,
+        'GPT $': 0,
+        'UST %': 0,
+        'UST $': 0,
+        'MEX %': 0,
+        'MEX $': 0,
+        'OTH %': 0,
+        'OTH $': 0,
+        'OTH2 %': 0,
+        'OTH2 $': 0,
+        'OTH3 %': 0,
+        'OTH3 $': 0,
+        '2450 %': 0,
+        '2450 $': 0,
+        '2460 %': 0,
+        '2460 $': 0,
+        '2475 %': 0,
+        '2475 $': 0,
+        'FREE %': 0,
+        'FREE $': 0,
+        'OTH4 %': 0,
+        'OTH4 $': 0,
+        'OTH5 %': 0,
+        'OTH5 $': 0,
+        'OTH6 %': 0,
+        'OTH6 $': 0,
+        'OTH7 %': 0,
+        'OTH7 $': 0,
+        'OTH8 %': 0,
+        'OTH8 $': 0,
+        'UOM %': '',
+        'UOM $': merged['specificRate_rateUOM'].fillna(''),
+        'STAT UOM': merged['alternate_unit_1'].fillna(''),
+        'STAT1 UOM': '',
+        'STAT1 QTY': 0,
+        'STAT2 UOM': '',
+        'STAT2 QTY': 0,
+        'Mex-US %': 0,
+        'Mex-US $': 0,
+        'Rest Cd': '',
+        'Date from': f"{config.year}0101",
+        'Date to': '99991231'
+    })
+
     logger.info(f"Generated ZZDE with {len(zzde)} rows")
     return zzde
 
 def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     """
-    Generates the ZZDF DataFrame for United States.
+    Generates the ZZDF DataFrame for United States following M code logic:
+    1. Filter DTR by usMainCG
+    2. Add header rows (-- and 0000000000)
+    3. Calculate GEN $ = ratePerUOM / multiplier
+    4. Join with NOM for STAT UOM and STAT2 UOM
+    5. Add all required columns
     """
     logger.info("Generating ZZDF Dataset...")
-    
+
     if config.country != "US":
         logger.warning("ZZDF is only for United States (US)")
         return pd.DataFrame()
-    
-    # ZZDF - US-specific format with T->TO replacement
-    zzdf = generate_zd14(dtr_df, nom_df, config)
-    
-    # Additional ZZDF-specific processing
+
+    if dtr_df.empty:
+        logger.warning("DTR DataFrame is empty, cannot generate ZZDF")
+        return pd.DataFrame()
+
+    # Filter by usMainCG
+    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
+
+    # Fill null multipliers with 1 for calculation
+    filtered_dtr['specificRate_multiplier'] = filtered_dtr['specificRate_multiplier'].fillna(1)
+
+    # Calculate GEN $ = ratePerUOM / multiplier
+    filtered_dtr['gen_amount'] = filtered_dtr['specificRate_ratePerUOM'] / filtered_dtr['specificRate_multiplier']
+
+    # Add header rows
+    header_rows = pd.DataFrame([
+        {'hs': '--', 'adValoremRate_percentage': 0, 'gen_amount': 0, 'specificRate_rateUOM': ''},
+        {'hs': '0000000000', 'adValoremRate_percentage': 0, 'gen_amount': 0, 'specificRate_rateUOM': ''}
+    ])
+
+    filtered_dtr = pd.concat([header_rows, filtered_dtr], ignore_index=True)
+    filtered_dtr['Index'] = range(len(filtered_dtr))
+
+    # Join with NOM for both alternate_unit_1 and alternate_unit_2
+    merged = pd.merge(
+        filtered_dtr,
+        nom_df[['number', 'alternate_unit_1', 'alternate_unit_2']] if not nom_df.empty else pd.DataFrame(),
+        left_on='hs',
+        right_on='number',
+        how='left'
+    )
+
+    merged = merged.sort_values('Index').reset_index(drop=True)
+
+    # Build ZZDF structure with exact column order from M code
+    zzdf = pd.DataFrame({
+        'Cl.': 10,
+        'Year': config.year,
+        'US HS No.': merged['hs'].fillna(''),
+        'GEN %': merged['adValoremRate_percentage'].apply(format_rate),
+        'GEN $': merged['gen_amount'].apply(format_rate),
+        'CAN %': 0,
+        'CAN $': 0,
+        'MEX %': 0,
+        'MEX $': 0,
+        'UMX %': 0,
+        'UMX $': 0,
+        'OTH %': 0,
+        'OTH $': 0,
+        'OTH1 %': 0,
+        'OTH1 $': 0,
+        'OTH2 %': 0,
+        'OTH2 $': 0,
+        'OTH3 %': 0,
+        'OTH3 $': 0,
+        'UOM %': '',
+        'UOM $': merged['specificRate_rateUOM'].fillna(''),
+        'STAT UOM': merged['alternate_unit_1'].fillna(''),
+        'STAT QTY': 0,
+        'STAT2 UOM': merged['alternate_unit_2'].fillna(''),
+        'STAT2 QTY': 0,
+        'Restr': ''
+    })
+
     # Replace 'T' with 'TO' in all columns (VBA does this for entire table)
     for col in zzdf.columns:
         zzdf[col] = zzdf[col].apply(lambda x: 'TO' if x == 'T' else x)
-    
+
     logger.info(f"Generated ZZDF with {len(zzdf)} rows")
     return zzdf
 
