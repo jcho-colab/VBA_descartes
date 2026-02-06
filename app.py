@@ -244,7 +244,11 @@ with tab_export_hs:
                 st.info("📊 Step 4/5: Generating Export HS output...")
                 exp_progress_bar.progress(70)
 
-                export_hs_df = generate_export_hs(nom_df, txt_df, config)
+                # Create a copy of config with year forced to 2000 for Export HS
+                from dataclasses import replace
+                export_config = replace(config, year="2000")
+
+                export_hs_df = generate_export_hs(nom_df, txt_df, export_config)
                 st.success(f"✅ Export HS: {len(export_hs_df)} rows")
 
                 st.info("💾 Step 5/5: Exporting XLSX file...")

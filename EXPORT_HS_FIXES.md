@@ -20,8 +20,8 @@ addEnd = Table.AddColumn(addStart, "End date", each "999912", type text),
 **Fix Applied:**
 - For **CA**: Start date = `{config.year}01`, End date = `"999912"` (hardcoded)
 - For **US**: Start date and End date use actual XML dates (`valid_from`, `valid_to`) converted to YYYYMM format
-- **CA default year is now "2000"** (set in `ca_config.json`), producing "200001" to match VBA Excel behavior
-- Other countries use the global default year "2026" from `global_settings.json`
+- **Export HS tab (tab 2) always uses year "2000"** (forced in `app.py`), producing "200001" for both CA and US
+- Import Tariffs tab (tab 1) uses the global default year "2026" from `global_settings.json`
 
 ---
 
@@ -48,10 +48,10 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 
 ### Canada (CA):
 - **Level ID**: 40 (8-digit HS codes)
-- **Start Date**: Constructed from config year + "01" (e.g., "200001" for default year 2000)
+- **Start Date**: Constructed from config year + "01" (e.g., "200001" when Export HS tab uses year 2000)
 - **End Date**: Always "999912" (hardcoded)
 - **Dates Source**: Ignores XML dates, uses config year
-- **Default Year**: 2000 (set in `ca_config.json`)
+- **Export HS Year**: Always 2000 (forced in `app.py` for tab 2)
 
 ### United States (US):
 - **Level ID**: 50 (10-digit HS codes, also known as HTS)
@@ -63,19 +63,21 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 
 ## Code Changes Made
 
+### File: `app.py`
+
+1. **Added year override for Export HS tab** (lines ~248-250):
+   - Creates a copy of the config with year forced to "2000"
+   - Uses `dataclasses.replace()` to create a modified config
+   - Ensures Export HS processing always uses year 2000 regardless of country
+   - Only affects tab 2 (Export HS), tab 1 (Import Tariffs) uses the configured year
+
 ### File: `src/config.py`
 
-1. **Added country-specific year override** (lines 96-99):
-   - Config loader now checks for "year" field in country-specific config files
+1. **Added country-specific year override capability** (lines 97-100):
+   - Config loader checks for optional "year" field in country-specific config files
    - If present, overrides the global year setting
-   - Allows CA to have year 2000 while other countries use 2026
-
-### File: `Configuration_files/ca_config.json`
-
-1. **Added year field**:
-   - Set `"year": "2000"` at the top of the config
-   - Makes CA default to year 2000, producing "200001" start dates
-   - Matches the VBA Excel implementation behavior
+   - Provides flexibility for future country-specific year needs
+   - Currently not used by any country config
 
 ### File: `src/export_hs.py`
 
@@ -107,12 +109,17 @@ fillUOM = Table.ReplaceValue(selectCols, null, "NMB", Replacer.ReplaceValue, {"a
 
 ## Configuration Note
 
-The year value is controlled by:
-1. **Country-specific override**: `Configuration_files/ca_config.json` has `"year": "2000"` (CA Export HS default)
-2. **Global default**: `Configuration_files/global_settings.json` has `"year": "2026"` (for other countries)
-3. **Runtime**: The user can override this in the UI when loading configuration
+The year value is controlled differently for each tab:
 
-**For CA (Canada)**: The default year is intentionally set to "2000" to match the legacy VBA Excel implementation, which produces Start date = "200001". This is the expected behavior for CA_EXP.
+**Tab 1 (Import Tariffs):**
+- Uses the global default year from `Configuration_files/global_settings.json` (currently "2026")
+- Can be overridden by the user in the UI
+
+**Tab 2 (Export HS):**
+- **Always uses year 2000** regardless of country selection (CA or US)
+- This is hardcoded in `app.py` (line ~248) to match the legacy VBA Excel implementation
+- Produces Start date = "200001" for both CA and US
+- This is the expected behavior for Export HS processing
 
 ---
 
@@ -152,9 +159,9 @@ Start date | End date | HS8_Code   | HS8_Unit_of_Measure_Code | HS8_Edesc       
 
 ## Related Files
 
+- `app.py` - Main Streamlit app with Export HS tab forcing year=2000 (UPDATED)
 - `src/export_hs.py` - Main export HS generation logic (UPDATED)
-- `src/config.py` - Configuration loader with country-specific year override (UPDATED)
-- `Configuration_files/ca_config.json` - Canada configuration with year=2000 (UPDATED)
+- `src/config.py` - Configuration loader with optional country-specific year override (UPDATED)
 - `Configuration_files/global_settings.json` - Contains global default year value (2026)
 - `CA_EXP/Macro VBA/HS_EXP_v1.xlsm` - Original VBA implementation
 - `EXPORT_HS_GUIDE.md` - General export HS documentation
