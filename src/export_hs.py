@@ -64,8 +64,15 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         'HS8_Code': filtered_nom['number'].fillna('').values,
         'HS8_Unit_of_Measure_Code': filtered_nom['alternate_unit_1'].fillna('').values,
         'HS8_Edesc': filtered_nom['full_description'].fillna('').values,
-        'HS8_Fdesc': filtered_nom['official_description'].fillna('').values,  # French desc or can be empty
+        'HS8_Fdesc': '',  # Always empty for Export HS format
     })
+
+    # Convert dates from YYYY-MM-DD to YYYYMM format
+    output_df['Start date'] = output_df['Start date'].apply(lambda x: x.replace('-', '')[:6] if x else '')
+    output_df['End date'] = output_df['End date'].apply(lambda x: x.replace('-', '')[:6] if x else '')
+
+    # Ensure HS8_Unit_of_Measure_Code always has a value (default to 'N/A' if empty, per config)
+    output_df['HS8_Unit_of_Measure_Code'] = output_df['HS8_Unit_of_Measure_Code'].replace('', 'N/A').fillna('N/A')
 
     # Sort by HS8_Code
     output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
