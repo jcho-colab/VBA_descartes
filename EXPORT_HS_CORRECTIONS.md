@@ -88,35 +88,40 @@ Export HS tab now calls:
 nom_df = flag_hs(nom_df, config, "NOM", is_export=True)
 ```
 
-## Expected Output Format
+## Expected Output Format (CORRECTED v2)
 
-The corrected Export HS output should now have:
+After additional analysis, the actual expected output is:
 
-**Columns:**
-1. `hs` - Harmonized System code
-2. `level_id` - Level in hierarchy (10, 20, 30, 40, 50)
-3. `full_description` - Hierarchical description built from parents
-4. `valid_from` - Validity start date (YYYY-MM-DD)
-5. `valid_to` - Validity end date (YYYY-MM-DD)
-6. `alternate_unit_1` - First alternate unit of measure
-7. `alternate_unit_2` - Second alternate unit of measure
-8. `alternate_unit_3` - Third alternate unit of measure
+**Columns (6 columns only):**
+1. `Start date` - Validity start date (valid_from)
+2. `End date` - Validity end date (valid_to)
+3. `HS8_Code` - 8-digit Harmonized System code
+4. `HS8_Unit_of_Measure_Code` - Unit of measure (alternate_unit_1)
+5. `HS8_Edesc` - English description (full_description - hierarchical)
+6. `HS8_Fdesc` - French description or official_description
 
-**Filters:**
+**Critical Filters:**
+- **ONLY 8-digit codes** (level_id = 40) - this is the key difference!
 - Only records with `hs_flag = '01-active'`
 - Active means: `valid_to` year >= processing year
+- Chapter filtering applies (e.g., >= chapter 25)
+
+**Expected Row Count:**
+- Approximately 4982 rows for Canada export HS codes
 
 **Sort:**
-- Ascending by `hs` code
+- Ascending by `HS8_Code`
 
-## Key Differences from Previous Version
+## Key Differences from Previous Versions
 
-| Aspect | Previous (Incorrect) | Current (Corrected) |
-|--------|---------------------|-------------------|
-| **FlagHS Grouping** | Used version_number grouping | No grouping (global HS) |
-| **Column Names** | Mixed names (HS_Code, Description, etc.) | Matches NOM columns (hs, full_description, etc.) |
-| **Column Count** | 12 columns (with Country, Year, etc.) | 8 columns (core NOM fields only) |
-| **Sorting** | May have had version_number influence | Pure HS code sort |
+| Aspect | v1 (Wrong) | v2 (Still Wrong) | v3 (CORRECT) |
+|--------|-----------|-----------------|--------------|
+| **Level Filter** | All levels | All levels | **8-digit ONLY (level_id=40)** |
+| **FlagHS Grouping** | version_number | No grouping | No grouping ✓ |
+| **Column Names** | Mixed | NOM fields | **Exact: Start date, End date, HS8_Code, etc.** |
+| **Column Count** | 12 columns | 8 columns | **6 columns** |
+| **Row Count** | ~All active | ~All active | **~4982 (8-digit only)** |
+| **Key Insight** | N/A | N/A | **HS8 = 8-digit codes ONLY!** |
 
 ## Testing
 
