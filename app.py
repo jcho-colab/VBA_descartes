@@ -472,29 +472,20 @@ with tab_process:
                 cg_descriptions = parse_country_group_definitions(dtr_paths)
                 
                 st.success(f"✅ Loaded: DTR={len(dtr_df)}, NOM={len(nom_df)} rows")
-                
+
+                st.info("✔️ Step 2/6: Auto-generating config from XML...")
+                progress_bar.progress(20)
+
+                # Always generate dynamic config from XML data - this merges base config with XML country groups
+                config = loader.generate_dynamic_config_from_xml(dtr_df, cg_descriptions, config)
+                st.session_state['config'] = config  # Update session state with dynamic config
+                st.success(f"✅ Config updated with {len(config.active_country_group_list)} active country groups")
+
                 if not skip_validation:
-                    st.info("✔️ Step 2/6: Validating...")
-                    progress_bar.progress(20)
-                    
                     rate_valid, invalid_hs = validate_rates(dtr_df, config)
                     if not rate_valid:
                         with st.expander(f"⚠️ {len(invalid_hs)} HS codes missing rate text"):
                             st.write(invalid_hs[:20])
-                    
-                    config_valid, missing_items = validate_config(dtr_df, nom_df, config, cg_descriptions)
-                    
-                    if missing_items['country_groups']:
-                        st.error("🚫 New Country Groups Detected - Update config first")
-                        config_file = f"Configuration_files/{config.country.lower()}_config.json"
-                        json_entries = []
-                        for cg_info in missing_items['country_groups']:
-                            json_entries.append(f'{{"Descartes CG": "{cg_info["cg"]} {cg_info["duty_rate_type"]}", "Comment": "keep", "Description": "{cg_info["description"]}"}}')
-                        st.code(",\n".join(json_entries), language="json")
-                        st.warning(f"Add above to {config_file} and reload")
-                        st.stop()
-                else:
-                    progress_bar.progress(20)
                 
                 st.info("⚙️ Step 3/6: Processing DTR...")
                 progress_bar.progress(35)

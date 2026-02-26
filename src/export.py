@@ -69,7 +69,7 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         ]
 
     # Add header rows with mainCG
-    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    main_cg = config.main_cg
     year_start = f"{config.year}0101"
 
     header_rows = pd.DataFrame([
@@ -183,7 +183,7 @@ def generate_capdr(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig
         return pd.DataFrame()
 
     # Filter by mainCG
-    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    main_cg = config.main_cg
     capdr = zd14[zd14['Rate type'] == main_cg].copy()
 
     # Remove header rows (-- and 0000000000)
@@ -220,7 +220,7 @@ def generate_mx6digits(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppCo
         return pd.DataFrame()
 
     # Filter by mainCG and remove "--"
-    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    main_cg = config.main_cg
     mx6 = zd14[
         (zd14['Rate type'] == main_cg) &
         (zd14['HS Number'] != '--')
@@ -255,7 +255,7 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         return pd.DataFrame()
 
     # Filter by caMainCG
-    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    main_cg = config.main_cg
     filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
 
     # Use combined columns from TableDTR processing if available
@@ -369,7 +369,7 @@ def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         return pd.DataFrame()
 
     # Filter by usMainCG
-    main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
+    main_cg = config.main_cg
     filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
 
     # Use combined columns from TableDTR processing if available

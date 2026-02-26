@@ -25,6 +25,11 @@ class AppConfig:
     main_country_group: str = ""  # The "3rd" country group (main/general rate)
     main_country_group_description: str = ""  # Description of the main country group
 
+    @property
+    def main_cg(self) -> str:
+        """Alias for main_country_group for backward compatibility."""
+        return self.main_country_group
+
 
 # Duty Rate Type definitions (Table34 from Excel)
 DUTY_RATE_TYPE_DEFINITIONS = {
@@ -206,3 +211,114 @@ class ConfigLoader:
                     country = filename.replace("_config.json", "").upper()
                     countries.append(country)
         return sorted(countries)
+
+    def generate_dynamic_config_from_xml(self, dtr_df: pd.DataFrame, cg_descriptions: Dict[str, str],
+                                        base_config: AppConfig) -> AppConfig:
+        """
+        Generates a dynamic config by merging base config with country groups found in XML.
+        This allows the system to work with any XML data without requiring manual config updates.
+
+        Args:
+            dtr_df: DTR DataFrame with country_group and duty_rate_type columns
+            cg_descriptions: Dictionary mapping country_group to description (from XML)
+            base_config: Base configuration from JSON file
+
+        Returns:
+            Updated AppConfig with all country groups from XML included
+        """
+        logger.info("Generating dynamic config from XML data...")
+
+        if dtr_df.empty or 'country_group' not in dtr_df.columns:
+            logger.warning("DTR DataFrame empty or missing country_group column")
+            return base_config
+
+        # Get unique country_group + duty_rate_type combinations from XML
+        if 'duty_rate_type' in dtr_df.columns:
+            xml_combinations = dtr_df[['country_group', 'duty_rate_type']].dropna().drop_duplicates()
+        else:
+            logger.warning("duty_rate_type column not found in DTR")
+            return base_config
+
+        # Build a set of existing CGs in base config (extract just the CG part before space)
+        existing_cgs = set()
+        for cg_full in base_config.all_country_group_list:
+            parts = str(cg_full).split()
+            cg_code = parts[0] if parts else str(cg_full)
+            existing_cgs.add(cg_code)
+
+        # Find new country groups from XML
+        new_rate_type_rows = []
+        for _, row in xml_combinations.iterrows():
+            cg_code = str(row['country_group'])
+            duty_rate_type = str(row['duty_rate_type'])
+
+            if cg_code not in existing_cgs:
+                description = cg_descriptions.get(cg_code, "Auto-generated from XML")
+                descartes_cg = f"{cg_code} {duty_rate_type}"
+
+                new_rate_type_rows.append({
+                    "Descartes CG": descartes_cg,
+                    "Comment": "keep",
+                    "Description": description
+                })
+
+                logger.info(f"Auto-adding country group from XML: {descartes_cg} - {description}")
+
+        if not new_rate_type_rows:
+            logger.info("No new country groups found in XML - using base config as-is")
+            return base_config
+
+        # Merge with existing rate_type_defs
+        new_df = pd.DataFrame(new_rate_type_rows)
+        merged_rate_type_df = pd.concat([base_config.rate_type_defs, new_df], ignore_index=True)
+
+        # Rebuild active and all country group lists
+        active_country_group_list = []
+        all_country_group_list = []
+        third_country_groups = []
+
+        for _, row in merged_rate_type_df.iterrows():
+            cg_full = row["Descartes CG"]
+            if pd.notna(cg_full):
+                cg_parts = str(cg_full).split()
+                cg = cg_parts[0] if cg_parts else str(cg_full)
+
+                all_country_group_list.append(str(cg_full))
+                if cg not in all_country_group_list:
+                    all_country_group_list.append(cg)
+
+                comment = str(row.get("Comment", "")).lower()
+                if "remove" not in comment:
+                    active_country_group_list.append(str(cg_full))
+                    if cg not in active_country_group_list:
+                        active_country_group_list.append(cg)
+
+                if comment == "3rd":
+                    third_country_groups.append({
+                        "cg": cg,
+                        "full": str(cg_full),
+                        "description": str(row.get("Description", ""))
+                    })
+
+        # Recalculate main country group
+        main_cg, main_cg_desc = self._calculate_main_country_group(third_country_groups)
+
+        # Create updated config
+        updated_config = AppConfig(
+            country=base_config.country,
+            year=base_config.year,
+            min_chapter=base_config.min_chapter,
+            max_csv=base_config.max_csv,
+            zd14_date=base_config.zd14_date,
+            rate_type_defs=merged_rate_type_df,
+            uom_dict=base_config.uom_dict,
+            country_list=base_config.country_list,
+            chapter_list=base_config.chapter_list,
+            active_country_group_list=active_country_group_list,
+            all_country_group_list=all_country_group_list,
+            main_country_group=main_cg,
+            main_country_group_description=main_cg_desc
+        )
+
+        logger.info(f"Dynamic config generated: {len(new_rate_type_rows)} new country groups added")
+        return updated_config
