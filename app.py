@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from src.config import ConfigLoader, DUTY_RATE_TYPE_DEFINITIONS
 from src.ingest import parse_xml_to_df, parse_country_group_definitions
-from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions
+from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions, process_dtr_table
 from src.export import generate_zd14, generate_capdr, generate_mx6digits, generate_zzde, generate_zzdf, export_csv_split, export_xlsx
 from src.export_hs import generate_export_hs
 from src.validation import validate_rates, validate_config
@@ -498,18 +498,21 @@ with tab_process:
                 
                 st.info("⚙️ Step 3/6: Processing DTR...")
                 progress_bar.progress(35)
-                
+
                 dtr_df = cleanse_hs(dtr_df, 'hs')
                 dtr_df = filter_by_chapter(dtr_df, config)
                 dtr_df = filter_active_country_groups(dtr_df, config)
                 dtr_df = flag_hs(dtr_df, config, "DTR")
-                dtr_active = dtr_df[dtr_df['hs_flag'] == '01-active'].copy()
-                st.success(f"✅ Active DTR: {len(dtr_active)}/{len(dtr_df)}")
+
+                # Apply TableDTR M code transformations (combines compound/specific rate columns, filters expired)
+                dtr_active = process_dtr_table(dtr_df, config)
+                st.success(f"✅ Active DTR after TableDTR processing: {len(dtr_active)}/{len(dtr_df)}")
                 
                 st.info("⚙️ Step 4/6: Processing NOM...")
                 progress_bar.progress(50)
-                
+
                 nom_df = cleanse_hs(nom_df, 'number')
+                nom_df = filter_by_chapter(nom_df, config)
                 nom_df = flag_hs(nom_df, config, "NOM")
                 nom_df = build_descriptions(nom_df)
                 st.success(f"✅ NOM: {len(nom_df)} records")

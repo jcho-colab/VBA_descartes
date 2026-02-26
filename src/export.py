@@ -107,6 +107,13 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         uom_str = str(u)
         return config.uom_dict.get(uom_str, uom_str)
 
+    # Use combined columns from TableDTR processing if they exist, otherwise fall back to original columns
+    # The ZD14 M code expects: percentage, ratePerUOM, multiplier, rateUOM
+    percentage_col = 'percentage' if 'percentage' in merged.columns else 'adValoremRate_percentage'
+    rate_amount_col = 'ratePerUOM' if 'ratePerUOM' in merged.columns else 'specificRate_ratePerUOM'
+    rate_qty_col = 'multiplier' if 'multiplier' in merged.columns else 'specificRate_multiplier'
+    rate_qty_uom_col = 'rateUOM' if 'rateUOM' in merged.columns else 'specificRate_rateUOM'
+
     zd14 = pd.DataFrame({
         'Country': config.country,
         'HS Number': merged['hs'].fillna(''),
@@ -133,11 +140,11 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Rate type': merged['country_group'].fillna(main_cg),
         'Champ24': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)),  # Duplicate Date from
         'Champ25': merged['valid_to'].apply(format_date_to),  # Duplicate Date to
-        'Base rate %': merged['adValoremRate_percentage'].apply(format_rate),
-        'Rate amount': merged['specificRate_ratePerUOM'].apply(format_rate),
+        'Base rate %': merged[percentage_col].apply(format_rate) if percentage_col in merged.columns else '0',
+        'Rate amount': merged[rate_amount_col].apply(format_rate) if rate_amount_col in merged.columns else '0',
         'Rate curr': '',
-        'Rate qty': '',
-        'Rate qty uom': '',
+        'Rate qty': merged[rate_qty_col].apply(format_rate) if rate_qty_col in merged.columns else '',
+        'Rate qty uom': merged[rate_qty_uom_col].fillna('') if rate_qty_uom_col in merged.columns else '',
         'Spec App': '',
         'Cert Ori': '',
         'Cty Grp': ''
@@ -251,17 +258,27 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
     filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
 
+    # Use combined columns from TableDTR processing if available
+    percentage_col = 'percentage' if 'percentage' in filtered_dtr.columns else 'adValoremRate_percentage'
+    rate_per_uom_col = 'ratePerUOM' if 'ratePerUOM' in filtered_dtr.columns else 'specificRate_ratePerUOM'
+    multiplier_col = 'multiplier' if 'multiplier' in filtered_dtr.columns else 'specificRate_multiplier'
+    rate_uom_col = 'rateUOM' if 'rateUOM' in filtered_dtr.columns else 'specificRate_rateUOM'
+
     # Fill null multipliers with 1 for calculation
-    filtered_dtr['specificRate_multiplier'] = filtered_dtr['specificRate_multiplier'].fillna(1)
+    if multiplier_col in filtered_dtr.columns:
+        filtered_dtr[multiplier_col] = filtered_dtr[multiplier_col].fillna(1)
 
     # Calculate MFN $ = ratePerUOM / multiplier
-    filtered_dtr['mfn_amount'] = filtered_dtr['specificRate_ratePerUOM'] / filtered_dtr['specificRate_multiplier']
+    if rate_per_uom_col in filtered_dtr.columns and multiplier_col in filtered_dtr.columns:
+        filtered_dtr['mfn_amount'] = filtered_dtr[rate_per_uom_col] / filtered_dtr[multiplier_col]
+    else:
+        filtered_dtr['mfn_amount'] = 0
 
     # Add header rows
     year_start = f"{config.year}0101"
     header_rows = pd.DataFrame([
-        {'hs': '--', 'adValoremRate_percentage': 0, 'mfn_amount': 0, 'specificRate_rateUOM': ''},
-        {'hs': '0000000000', 'adValoremRate_percentage': 0, 'mfn_amount': 0, 'specificRate_rateUOM': ''}
+        {'hs': '--', percentage_col: 0, 'mfn_amount': 0, rate_uom_col: ''},
+        {'hs': '0000000000', percentage_col: 0, 'mfn_amount': 0, rate_uom_col: ''}
     ])
 
     filtered_dtr = pd.concat([header_rows, filtered_dtr], ignore_index=True)
@@ -283,7 +300,7 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Cl.': 10,
         'Year': config.year,
         'Can HS No.': merged['hs'].fillna(''),
-        'MFN %': merged['adValoremRate_percentage'].apply(format_rate),
+        'MFN %': merged[percentage_col].apply(format_rate) if percentage_col in merged.columns else '0',
         'MFN $': merged['mfn_amount'].apply(format_rate),
         'GPT %': 0,
         'GPT $': 0,
@@ -316,7 +333,7 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'OTH8 %': 0,
         'OTH8 $': 0,
         'UOM %': '',
-        'UOM $': merged['specificRate_rateUOM'].fillna(''),
+        'UOM $': merged[rate_uom_col].fillna('') if rate_uom_col in merged.columns else '',
         'STAT UOM': merged['alternate_unit_1'].fillna(''),
         'STAT1 UOM': '',
         'STAT1 QTY': 0,
@@ -355,16 +372,26 @@ def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     main_cg = config.main_cg if hasattr(config, 'main_cg') else ''
     filtered_dtr = dtr_df[dtr_df['country_group'] == main_cg].copy()
 
+    # Use combined columns from TableDTR processing if available
+    percentage_col = 'percentage' if 'percentage' in filtered_dtr.columns else 'adValoremRate_percentage'
+    rate_per_uom_col = 'ratePerUOM' if 'ratePerUOM' in filtered_dtr.columns else 'specificRate_ratePerUOM'
+    multiplier_col = 'multiplier' if 'multiplier' in filtered_dtr.columns else 'specificRate_multiplier'
+    rate_uom_col = 'rateUOM' if 'rateUOM' in filtered_dtr.columns else 'specificRate_rateUOM'
+
     # Fill null multipliers with 1 for calculation
-    filtered_dtr['specificRate_multiplier'] = filtered_dtr['specificRate_multiplier'].fillna(1)
+    if multiplier_col in filtered_dtr.columns:
+        filtered_dtr[multiplier_col] = filtered_dtr[multiplier_col].fillna(1)
 
     # Calculate GEN $ = ratePerUOM / multiplier
-    filtered_dtr['gen_amount'] = filtered_dtr['specificRate_ratePerUOM'] / filtered_dtr['specificRate_multiplier']
+    if rate_per_uom_col in filtered_dtr.columns and multiplier_col in filtered_dtr.columns:
+        filtered_dtr['gen_amount'] = filtered_dtr[rate_per_uom_col] / filtered_dtr[multiplier_col]
+    else:
+        filtered_dtr['gen_amount'] = 0
 
     # Add header rows
     header_rows = pd.DataFrame([
-        {'hs': '--', 'adValoremRate_percentage': 0, 'gen_amount': 0, 'specificRate_rateUOM': ''},
-        {'hs': '0000000000', 'adValoremRate_percentage': 0, 'gen_amount': 0, 'specificRate_rateUOM': ''}
+        {'hs': '--', percentage_col: 0, 'gen_amount': 0, rate_uom_col: ''},
+        {'hs': '0000000000', percentage_col: 0, 'gen_amount': 0, rate_uom_col: ''}
     ])
 
     filtered_dtr = pd.concat([header_rows, filtered_dtr], ignore_index=True)
@@ -386,7 +413,7 @@ def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Cl.': 10,
         'Year': config.year,
         'US HS No.': merged['hs'].fillna(''),
-        'GEN %': merged['adValoremRate_percentage'].apply(format_rate),
+        'GEN %': merged[percentage_col].apply(format_rate) if percentage_col in merged.columns else '0',
         'GEN $': merged['gen_amount'].apply(format_rate),
         'CAN %': 0,
         'CAN $': 0,
@@ -403,7 +430,7 @@ def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'OTH3 %': 0,
         'OTH3 $': 0,
         'UOM %': '',
-        'UOM $': merged['specificRate_rateUOM'].fillna(''),
+        'UOM $': merged[rate_uom_col].fillna('') if rate_uom_col in merged.columns else '',
         'STAT UOM': merged['alternate_unit_1'].fillna(''),
         'STAT QTY': 0,
         'STAT2 UOM': merged['alternate_unit_2'].fillna(''),

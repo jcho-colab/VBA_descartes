@@ -208,6 +208,128 @@ def flag_hs(df: pd.DataFrame, config: AppConfig, doc_type: str, is_export: bool 
 
     return df
 
+def process_dtr_table(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
+    """
+    Applies TableDTR M code logic to combine compound and specific rate columns.
+    This replicates the M code transformation from 'TableDTR M code.txt'.
+
+    Key transformations:
+    1. Filter for active records only (hs_flag = '01-active')
+    2. Filter out expired records (valid_to >= today)
+    3. Combine adValoremRate_percentage + compoundRate_percentage -> percentage
+    4. Combine specificRate_ratePerUOM + compoundRate_ratePerUOM -> ratePerUOM
+    5. Combine specificRate_multiplier + compoundRate_multiplier -> multiplier
+    6. Combine specificRate_UOM + compoundRate_UOM -> rateUOM
+
+    Args:
+        dtr_df: DTR DataFrame with hs_flag already computed
+        config: Configuration object
+
+    Returns:
+        Processed DTR DataFrame with combined columns
+    """
+    logger.info("Applying TableDTR M code transformations...")
+
+    if dtr_df.empty:
+        logger.warning("DTR DataFrame is empty")
+        return dtr_df
+
+    # Step 1: Filter for active records only
+    # TableDTR M code line 3: each ([hs_flag] = "01-active")
+    active_dtr = dtr_df[dtr_df['hs_flag'] == '01-active'].copy()
+    logger.info(f"After filtering for active: {len(active_dtr)} rows (from {len(dtr_df)})")
+
+    # Step 2: Filter out expired records (valid_to >= today)
+    # TableDTR M code line 9: each [valid_to] >= Date.From(DateTime.LocalNow())
+    from datetime import datetime
+    today = datetime.now().date()
+
+    # Convert valid_to to datetime if it's not already
+    if 'valid_to' in active_dtr.columns:
+        active_dtr['valid_to_date'] = pd.to_datetime(active_dtr['valid_to'], errors='coerce')
+        # Filter for non-expired records
+        active_dtr = active_dtr[
+            (active_dtr['valid_to_date'].isna()) |
+            (active_dtr['valid_to_date'].dt.date >= today)
+        ].copy()
+        logger.info(f"After filtering expired records: {len(active_dtr)} rows")
+
+    # Step 3: Combine compound and specific rate columns
+    # The M code combines these columns using CombineTextByDelimiter("", ...) which means concatenate
+    # If either is null, it uses the other. If both exist, concatenate (but typically only one has a value)
+
+    # Helper function to combine two numeric columns
+    def combine_numeric_cols(df, col1, col2, new_col, fill_value=0):
+        """Combine two numeric columns: take first non-null value or sum if both exist."""
+        if col1 in df.columns and col2 in df.columns:
+            # Fill nulls with 0 for combination
+            val1 = df[col1].fillna(0)
+            val2 = df[col2].fillna(0)
+            # Combine: if either is non-zero, use the max (typically only one is filled)
+            # The M code concatenates as text then converts to number, which effectively picks the non-null one
+            df[new_col] = val1 + val2
+        elif col1 in df.columns:
+            df[new_col] = df[col1].fillna(fill_value)
+        elif col2 in df.columns:
+            df[new_col] = df[col2].fillna(fill_value)
+        else:
+            df[new_col] = fill_value
+        return df
+
+    # Helper function to combine two text columns
+    def combine_text_cols(df, col1, col2, new_col, fill_value=''):
+        """Combine two text columns: take first non-empty value."""
+        if col1 in df.columns and col2 in df.columns:
+            # Combine: take non-empty value, prefer col2 if both exist
+            df[new_col] = df[col2].fillna(df[col1]).fillna(fill_value)
+        elif col1 in df.columns:
+            df[new_col] = df[col1].fillna(fill_value)
+        elif col2 in df.columns:
+            df[new_col] = df[col2].fillna(fill_value)
+        else:
+            df[new_col] = fill_value
+        return df
+
+    # Combine percentage columns
+    active_dtr = combine_numeric_cols(
+        active_dtr,
+        'adValoremRate_percentage',
+        'compoundRate_percentage',
+        'percentage',
+        0
+    )
+
+    # Combine ratePerUOM columns
+    active_dtr = combine_numeric_cols(
+        active_dtr,
+        'specificRate_ratePerUOM',
+        'compoundRate_ratePerUOM',
+        'ratePerUOM',
+        0
+    )
+
+    # Combine multiplier columns
+    active_dtr = combine_numeric_cols(
+        active_dtr,
+        'specificRate_multiplier',
+        'compoundRate_multiplier',
+        'multiplier',
+        0
+    )
+
+    # Combine UOM columns
+    active_dtr = combine_text_cols(
+        active_dtr,
+        'specificRate_UOM',
+        'compoundRate_UOM',
+        'rateUOM',
+        ''
+    )
+
+    logger.info(f"TableDTR processing complete: {len(active_dtr)} rows with combined columns")
+
+    return active_dtr
+
 def build_descriptions(nom_df: pd.DataFrame) -> pd.DataFrame:
     """
     Replicates CompleteDescription.
