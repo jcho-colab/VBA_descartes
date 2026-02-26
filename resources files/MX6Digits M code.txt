@@ -1,0 +1,11 @@
+let
+    source = Excel.CurrentWorkbook(){[Name="_ZD14"]}[Content],
+    mainCG = Excel.CurrentWorkbook(){[Name="mxMainCG"]}[Content]{0}[Column1],
+    filterID = Table.SelectRows(source, each [Rate type] = mainCG and [HS Number] <> "--"),
+    shortenHS = Table.AddColumn(filterID, "HS Shortened", each Text.Start([HS Number], 6), type text),
+    removeOldHS = Table.RemoveColumns(shortenHS, "HS Number"),
+    renameHS = Table.RenameColumns(removeOldHS, {"HS Shortened", "HS Number"}),
+    reorderCols = Table.ReorderColumns(renameHS,{"Country", "HS Number", "Date from", "Date to", "Lang 1", "Desc 1", "Desc 2", "Desc 3", "Desc 4", "Desc 5", "Desc 6", "Desc 7", "Lang 2", "Desc 21", "Desc 22", "Desc 23", "Desc 24", "Desc 25", "Desc 26", "Desc 27", "Unit of measure", "Restriction code", "Rate type", "Champ24", "Champ25", "Base rate %", "Rate amount", "Rate curr", "Rate qty", "Rate qty uom", "Spec App", "Cert Ori", "Cty Grp"}),
+    removeDups = Table.Distinct(reorderCols, {"HS Number"})
+in
+    removeDups

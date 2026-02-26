@@ -45,7 +45,8 @@ HS{CountryCode}_IMP_EN_TXT*.xml
 
 ## 📤 Export HS (New Workflow)
 
-**When to use:** Processing export HS codes and descriptions
+**When to use:** Processing export HS codes and descriptions for CA and US only
+**Required** Make sure the tab 'Export HS' is clickable only if the country group is CA or US.
 
 ### Files Required:
 - ✅ NOM (Nomenclature) - **Required**
@@ -83,7 +84,7 @@ Both workflows use the same configuration:
 3. Click "Load Configuration"
 
 ### Settings:
-- **Year:** Processing year (default: 2026)
+- **Year:** Processing year (default: 2000)
 - **Min Chapter:** Minimum HS chapter to include (default: 25)
 - **Output Directory:** Where files are saved
 
@@ -151,63 +152,3 @@ Console output (visible in terminal running Streamlit)
 - ✅ Verify chapter filtering
 - ✅ Monitor progress bar for issues
 
----
-
-## Performance
-
-### Import Tariffs:
-⏱️ 2-10 minutes (large DTR files)
-💾 High memory usage
-📦 Multiple output files
-
-### Export HS:
-⏱️ 30 seconds - 2 minutes
-💾 Moderate memory usage
-📦 Single output file
-
----
-
-## Getting Help
-
-1. **Check error messages** - Usually self-explanatory
-2. **Review EXPORT_HS_GUIDE.md** - Comprehensive documentation
-3. **Check logs** - Terminal output shows detailed progress
-4. **Verify XML format** - Ensure files match expected patterns
-
----
-
-## Quick Reference
-
-| Feature | Import Tariffs | Export HS |
-|---------|---------------|-----------|
-| **Tab** | 🚀 Import Tariffs | 📤 Export HS |
-| **DTR File** | ✅ Required | ❌ Not needed |
-| **NOM File** | ✅ Required | ✅ Required |
-| **TXT File** | ⭕ Optional | ⭕ Optional |
-| **Output** | Multiple CSV | Single XLSX |
-| **Splitting** | Yes (30k rows) | No |
-| **Duration** | 2-10 min | 30s-2 min |
-| **Use Case** | Import duties | Export codes |
-
----
-
-## Next Steps
-
-1. **Try Import Tariffs:** Upload sample DTR, NOM, TXT files
-2. **Try Export HS:** Upload sample NOM file
-3. **Review outputs:** Check generated files
-4. **Customize config:** Adjust settings as needed
-5. **Read full guide:** See EXPORT_HS_GUIDE.md for details
-
----
-
-## Version History
-
-- **v2.0** - Added Export HS workflow (this release)
-- **v1.0** - Original Import Tariffs workflow
-
----
-
-**Application:** FTA Tariff Rates Processor
-**Platform:** Streamlit Web Application
-**Language:** Python 3.8+

@@ -1,0 +1,6 @@
+let
+    source = Excel.CurrentWorkbook(){[Name="TableNOM"]}[Content],
+    filterDups = Table.SelectRows(source, each [hs_flag] = "01-active"),
+    selectCols = Table.SelectColumns(filterDups,{"hs", "alternate_unit_1", "alternate_unit_2", "alternate_unit_3", "full_description"})
+in
+    selectCols

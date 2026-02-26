@@ -191,10 +191,9 @@ with tab_export_hs:
 
     exp_btn_col1, exp_btn_col2 = st.columns([1, 3])
     with exp_btn_col1:
-        if st.button("🔄 Reset Export", use_container_width=True, key="exp_reset_btn"):
+        if st.button("🔄 Reset Export", use_container_width=True): 
             for key in list(st.session_state.keys()):
-                if key.startswith('exp_'):
-                    del st.session_state[key]
+                del st.session_state[key]
             st.rerun()
     with exp_btn_col2:
         run_export_processing = st.button("🚀 Run Export HS Pipeline", type="primary", use_container_width=True, key="exp_run_btn")

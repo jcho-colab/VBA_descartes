@@ -73,6 +73,8 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
 
     if config.country.upper() == 'CA':
         # Canada: Use config year for dates (matches VBA M code)
+        # use 2000 as config year by default
+        config.year = '2000'
         start_date_value = f"{config.year}01"
         end_date_value = "999912"
         logger.info(f"CA format: Using Start date={start_date_value}, End date={end_date_value}")
@@ -90,19 +92,18 @@ def generate_export_hs(nom_df: pd.DataFrame, txt_df: Optional[pd.DataFrame], con
         output_df = output_df.sort_values('HS8_Code').reset_index(drop=True)
     else:
         # US: Different column names and format (matches VBA M code)
-        logger.info(f"US format: Converting dates to m/d/yyyy format")
+        logger.info(f"US format: Converting dates to yyyy-mm-dd format")
 
-        # Convert dates to m/d/yyyy format (without leading zeros)
+        # Convert dates to yyyy-mm-dd format 
         valid_from_dates = pd.to_datetime(filtered_nom['valid_from'], errors='coerce')
-        valid_from_formatted = valid_from_dates.apply(
-            lambda x: f"{x.month}/{x.day}/{x.year}" if pd.notna(x) else ''
-        )
+        valid_from_formatted = valid_from_dates.dt.strftime('%Y-%m-%d').fillna('')
 
-        # valid_to defaults to 12/30/9999 if empty
+        # valid_to defaults to 9999-12-30 if empty
         valid_to_dates = pd.to_datetime(filtered_nom['valid_to'], errors='coerce')
-        valid_to_formatted = valid_to_dates.apply(
-            lambda x: f"{x.month}/{x.day}/{x.year}" if pd.notna(x) else '12/30/9999'
-        )
+        valid_to_formatted = (  valid_to_dates
+                                .dt.strftime('%Y-%m-%d')
+                                .fillna('9999-12-30')
+                            )
 
         output_df = pd.DataFrame({
             'valid_from': valid_from_formatted,

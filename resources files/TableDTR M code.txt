@@ -1,0 +1,50 @@
+let
+    source = Excel.CurrentWorkbook(){[Name="TableDTR"]}[Content],
+    filterDups = Table.SelectRows(source, each ([hs_flag] = "01-active") and ([valid_to] <> #datetime(2026, 1, 31, 0, 0, 0))),
+    // Ensure types
+    versionDate = Table.TransformColumnTypes(filterDups, {
+        {"version_date", type date}, {"hs", type text}, {"country_group", type text}, {"valid_to", type date}
+    }),
+    // 🔽 keep rows whose valid_to is today or later
+    filterNotExpired = Table.SelectRows(versionDate, each [valid_to] >= Date.From(DateTime.LocalNow())),
+    selectCols = Table.SelectColumns(filterNotExpired,{"version_date", "hs", "country_group", "compoundRate_percentage", "compoundRate_ratePerUOM", "compoundRate_multiplier", "compoundRate_UOM", "specificRate_ratePerUOM", "specificRate_multiplier", "specificRate_UOM", "adValoremRate_percentage"}),
+    percentage = Table.TransformColumnTypes(
+        Table.CombineColumns(
+            Table.TransformColumnTypes(selectCols, {{"adValoremRate_percentage", type text}, {"compoundRate_percentage", type text}}, "fr-CA"),
+            {"adValoremRate_percentage", "compoundRate_percentage"},
+            Combiner.CombineTextByDelimiter("", QuoteStyle.None),
+            "percentage"
+        ),
+        {"percentage", Double.Type}
+    ),
+    fillPercentage = Table.ReplaceValue(percentage, null, 0, Replacer.ReplaceValue, {"percentage"}),
+    amount = Table.TransformColumnTypes(
+        Table.CombineColumns(
+            Table.TransformColumnTypes(fillPercentage, {{"compoundRate_ratePerUOM", type text}, {"specificRate_ratePerUOM", type text}}, "fr-CA"),
+            {"compoundRate_ratePerUOM", "specificRate_ratePerUOM"},
+            Combiner.CombineTextByDelimiter("", QuoteStyle.None),
+            "ratePerUOM"
+        ),
+        {"ratePerUOM", Double.Type}
+    ),
+    fillAmount = Table.ReplaceValue(amount, null, 0, Replacer.ReplaceValue, {"ratePerUOM"}),
+    multiplier = Table.TransformColumnTypes(
+        Table.CombineColumns(
+            Table.TransformColumnTypes(fillAmount, {{"compoundRate_multiplier", type text}, {"specificRate_multiplier", type text}}, "fr-CA"),
+            {"compoundRate_multiplier", "specificRate_multiplier"},
+            Combiner.CombineTextByDelimiter("", QuoteStyle.None),
+            "multiplier"
+        ),
+        {"multiplier", Double.Type}
+    ),
+    rateUOM = Table.TransformColumnTypes(
+        Table.CombineColumns(
+            Table.TransformColumnTypes(multiplier, {{"compoundRate_UOM", type text}, {"specificRate_UOM", type text}}, "fr-CA"),
+            {"compoundRate_UOM", "specificRate_UOM"},
+            Combiner.CombineTextByDelimiter("", QuoteStyle.None),
+            "rateUOM"
+        ),
+        {"rateUOM", type text}
+    )
+in
+    rateUOM

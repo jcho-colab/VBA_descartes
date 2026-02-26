@@ -128,9 +128,9 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Desc 25': '',
         'Desc 26': '',
         'Desc 27': '',
-        'Unit of measure': merged['alternate_unit_1'].apply(map_uom) if 'alternate_unit_1' in merged.columns else '',
+        'Unit of measure': merged['alternate_unit_1'].apply(map_uom) if 'alternate_unit_1' in merged.columns else 'N/A',
         'Restriction code': '',
-        'Rate type': merged['country_group'].fillna(''),
+        'Rate type': merged['country_group'].fillna(main_cg),
         'Champ24': merged['valid_from'].apply(lambda d: format_date_from(d, year_start_int)),  # Duplicate Date from
         'Champ25': merged['valid_to'].apply(format_date_to),  # Duplicate Date to
         'Base rate %': merged['adValoremRate_percentage'].apply(format_rate),
@@ -139,7 +139,7 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Rate qty': '',
         'Rate qty uom': '',
         'Spec App': '',
-        'Cert Ori': merged['regulation'].fillna(''),
+        'Cert Ori': '',
         'Cty Grp': ''
     })
 
