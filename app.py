@@ -446,9 +446,8 @@ with tab_process:
         skip_validation = st.checkbox("Skip Validation", value=False)
     
     with opt_col2:
-        # if 'output_dir' not in st.session_state:
-        #     st.session_state['output_dir'] = "output_generated"
-        st.session_state['output_dir'] = r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template"
+        if 'output_dir' not in st.session_state:
+            st.session_state['output_dir'] = r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template"
         st.caption("**Output Directory**")
         
         dir_col1, dir_col2 = st.columns([5, 1])
