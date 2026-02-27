@@ -242,7 +242,7 @@ def process_dtr_table(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     # Step 2: Filter out expired records (valid_to >= today)
     # TableDTR M code line 9: each [valid_to] >= Date.From(DateTime.LocalNow())
     from datetime import datetime
-    today = datetime.now().date()
+    today = pd.Timestamp.now().normalize()  # Get today's date as pandas Timestamp (midnight)
 
     # Convert valid_to to datetime if it's not already
     if 'valid_to' in active_dtr.columns:
@@ -250,7 +250,7 @@ def process_dtr_table(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
         # Filter for non-expired records
         active_dtr = active_dtr[
             (active_dtr['valid_to_date'].isna()) |
-            (active_dtr['valid_to_date'].dt.date >= today)
+            (active_dtr['valid_to_date'] >= today)
         ].copy()
         logger.info(f"After filtering expired records: {len(active_dtr)} rows")
 
