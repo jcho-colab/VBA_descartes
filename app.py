@@ -205,14 +205,24 @@ with tab_export_hs:
                 try:
                     import tkinter as tk
                     from tkinter import filedialog
-                    root = tk.Tk()
-                    root.withdraw()
-                    root.wm_attributes('-topmost', 1)
-                    folder_selected = filedialog.askdirectory()
-                    root.quit()
-                    root.destroy()
-                    if folder_selected:
-                        st.session_state['exp_output_dir'] = folder_selected
+                    import threading
+
+                    folder_selected = [None]
+
+                    def select_folder():
+                        root = tk.Tk()
+                        root.withdraw()
+                        root.wm_attributes('-topmost', 1)
+                        folder = filedialog.askdirectory()
+                        folder_selected[0] = folder
+                        root.destroy()
+
+                    thread = threading.Thread(target=select_folder)
+                    thread.start()
+                    thread.join()
+
+                    if folder_selected[0]:
+                        st.session_state['exp_output_dir'] = folder_selected[0]
                         st.rerun()
                 except Exception as e:
                     st.toast(f"Folder browser error: {e}")
@@ -460,14 +470,24 @@ with tab_process:
                 try:
                     import tkinter as tk
                     from tkinter import filedialog
-                    root = tk.Tk()
-                    root.withdraw()
-                    root.wm_attributes('-topmost', 1)
-                    folder_selected = filedialog.askdirectory(initialdir=r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template")
-                    root.quit()
-                    root.destroy()
-                    if folder_selected:
-                        st.session_state['output_dir'] = folder_selected
+                    import threading
+
+                    folder_selected = [None]
+
+                    def select_folder():
+                        root = tk.Tk()
+                        root.withdraw()
+                        root.wm_attributes('-topmost', 1)
+                        folder = filedialog.askdirectory(initialdir=r"S:\Shared\Finances\Douane\Global Content (HS Tariff)\Tariff_Update_Descartes\_v_ImpHS_Template")
+                        folder_selected[0] = folder
+                        root.destroy()
+
+                    thread = threading.Thread(target=select_folder)
+                    thread.start()
+                    thread.join()
+
+                    if folder_selected[0]:
+                        st.session_state['output_dir'] = folder_selected[0]
                         st.rerun()
                 except Exception as e:
                     st.toast(f"Folder browser error: {e}")
