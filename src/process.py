@@ -262,16 +262,16 @@ def process_dtr_table(dtr_df: pd.DataFrame, config: AppConfig) -> pd.DataFrame:
     def combine_numeric_cols(df, col1, col2, new_col, fill_value=0):
         """Combine two numeric columns: take first non-null value or sum if both exist."""
         if col1 in df.columns and col2 in df.columns:
-            # Fill nulls with 0 for combination
-            val1 = df[col1].fillna(0)
-            val2 = df[col2].fillna(0)
+            # Convert to numeric, coercing errors to NaN, then fill with 0
+            val1 = pd.to_numeric(df[col1], errors='coerce').fillna(0)
+            val2 = pd.to_numeric(df[col2], errors='coerce').fillna(0)
             # Combine: if either is non-zero, use the max (typically only one is filled)
             # The M code concatenates as text then converts to number, which effectively picks the non-null one
             df[new_col] = val1 + val2
         elif col1 in df.columns:
-            df[new_col] = df[col1].fillna(fill_value)
+            df[new_col] = pd.to_numeric(df[col1], errors='coerce').fillna(fill_value)
         elif col2 in df.columns:
-            df[new_col] = df[col2].fillna(fill_value)
+            df[new_col] = pd.to_numeric(df[col2], errors='coerce').fillna(fill_value)
         else:
             df[new_col] = fill_value
         return df

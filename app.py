@@ -514,9 +514,9 @@ with tab_process:
                 """Update the log display in Streamlit."""
                 logs = st.session_state['log_handler'].get_logs()
                 if logs:
-                    # Show last 50 logs in an expander
+                    # Show last 50 logs in an expander - expanded by default for visibility
                     with log_placeholder.container():
-                        with st.expander("📋 Processing Logs (click to expand)", expanded=False):
+                        with st.expander("📋 Processing Logs", expanded=True):
                             log_text = "\n".join(logs[-50:])  # Last 50 logs
                             st.code(log_text, language="log")
 
