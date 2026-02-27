@@ -158,6 +158,9 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     if config.country == "US":
         zd14['Unit of measure'] = zd14['Unit of measure'].replace('T', 'TO')
 
+    # Final sort: HS Number, then Rate type (matching VBA output)
+    zd14 = zd14.sort_values(['HS Number', 'Rate type']).reset_index(drop=True)
+
     logger.info(f"Generated ZD14 with {len(zd14)} rows")
 
     return zd14
@@ -195,6 +198,9 @@ def generate_capdr(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig
     # Replace mainCG with "PDR" in Rate type
     capdr['Rate type'] = 'PDR'
 
+    # Final sort: HS Number, then Rate type (matching VBA output)
+    capdr = capdr.sort_values(['HS Number', 'Rate type']).reset_index(drop=True)
+
     logger.info(f"Generated CAPDR with {len(capdr)} rows")
     return capdr
 
@@ -231,6 +237,9 @@ def generate_mx6digits(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppCo
 
     # Remove duplicates by HS Number
     mx6 = mx6.drop_duplicates(subset=['HS Number'], keep='first')
+
+    # Final sort: HS Number, then Rate type (matching VBA output)
+    mx6 = mx6.sort_values(['HS Number', 'Rate type']).reset_index(drop=True)
 
     logger.info(f"Generated MX6Digits with {len(mx6)} rows")
     return mx6
@@ -346,6 +355,9 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Date to': '99991231'
     })
 
+    # Final sort: HS Number only (ZZDE doesn't have Rate type, matching VBA output)
+    zzde = zzde.sort_values('HS Number').reset_index(drop=True)
+
     logger.info(f"Generated ZZDE with {len(zzde)} rows")
     return zzde
 
@@ -441,6 +453,9 @@ def generate_zzdf(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
     # Replace 'T' with 'TO' in all columns (VBA does this for entire table)
     for col in zzdf.columns:
         zzdf[col] = zzdf[col].apply(lambda x: 'TO' if x == 'T' else x)
+
+    # Final sort: HS Number only (ZZDF doesn't have Rate type, matching VBA output)
+    zzdf = zzdf.sort_values('HS Number').reset_index(drop=True)
 
     logger.info(f"Generated ZZDF with {len(zzdf)} rows")
     return zzdf
