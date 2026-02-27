@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import logging
 from pathlib import Path
+from io import StringIO
 from src.config import ConfigLoader, DUTY_RATE_TYPE_DEFINITIONS
 from src.ingest import parse_xml_to_df, parse_country_group_definitions
 from src.process import cleanse_hs, filter_active_country_groups, filter_by_chapter, flag_hs, build_descriptions, process_dtr_table
@@ -12,8 +13,34 @@ from src.export import generate_zd14, generate_capdr, generate_mx6digits, genera
 from src.export_hs import generate_export_hs
 from src.validation import validate_rates, validate_config
 
+# Custom log handler for Streamlit
+class StreamlitLogHandler(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        self.log_messages = []
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.log_messages.append(log_entry)
+
+    def get_logs(self):
+        return self.log_messages
+
+    def clear_logs(self):
+        self.log_messages = []
+
+# Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Initialize session state for log handler
+if 'log_handler' not in st.session_state:
+    st.session_state['log_handler'] = StreamlitLogHandler()
+    st.session_state['log_handler'].setFormatter(
+        logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S')
+    )
+    # Add handler to root logger to capture all logs
+    logging.getLogger().addHandler(st.session_state['log_handler'])
 
 st.set_page_config(page_title="FTA Tariff Rates Processor", layout="wide", page_icon="📊")
 
@@ -35,6 +62,15 @@ st.markdown("""
     .block-container { padding-top: 0.5rem; }
     div[data-testid="stExpander"] { margin-bottom: 0.2rem; }
     h1, h2, h3 { margin-top: 0.4rem; margin-bottom: 0.2rem; }
+    .log-container {
+        background-color: #1e1e1e;
+        padding: 0.5rem;
+        border-radius: 4px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 0.75rem;
+        max-height: 400px;
+        overflow-y: auto;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -202,7 +238,20 @@ with tab_export_hs:
         if not exp_nom_files:
             st.error("❌ Please upload NOM files")
         else:
+            # Clear previous logs
+            st.session_state['log_handler'].clear_logs()
+
             exp_progress_bar = st.progress(0)
+            exp_log_placeholder = st.empty()  # Placeholder for live log updates
+
+            def update_export_logs():
+                """Update the log display for Export HS processing."""
+                logs = st.session_state['log_handler'].get_logs()
+                if logs:
+                    with exp_log_placeholder.container():
+                        with st.expander("📋 Export HS Logs (click to expand)", expanded=False):
+                            log_text = "\n".join(logs[-50:])
+                            st.code(log_text, language="log")
 
             try:
                 def save_uploads_exp(files):
@@ -223,6 +272,7 @@ with tab_export_hs:
 
                 nom_df = parse_xml_to_df(exp_nom_paths, "NOM")
                 txt_df = parse_xml_to_df(exp_txt_paths, "TXT") if exp_txt_paths else pd.DataFrame()
+                update_export_logs()
 
                 st.success(f"✅ Loaded: NOM={len(nom_df)} rows" + (f", TXT={len(txt_df)} rows" if not txt_df.empty else ""))
 
@@ -232,12 +282,14 @@ with tab_export_hs:
                 nom_df = cleanse_hs(nom_df, 'number')
                 nom_df = filter_by_chapter(nom_df, config)
                 nom_df = flag_hs(nom_df, config, "NOM", is_export=True)
+                update_export_logs()
                 st.success(f"✅ Processed NOM: {len(nom_df)} records")
 
                 st.info("⚙️ Step 3/5: Building descriptions...")
                 exp_progress_bar.progress(50)
 
                 nom_df = build_descriptions(nom_df)
+                update_export_logs()
                 st.success(f"✅ Built hierarchical descriptions")
 
                 st.info("📊 Step 4/5: Generating Export HS output...")
@@ -248,6 +300,7 @@ with tab_export_hs:
                 export_config = replace(config, year="2000")
 
                 export_hs_df = generate_export_hs(nom_df, txt_df, export_config)
+                update_export_logs()
                 st.success(f"✅ Export HS: {len(export_hs_df)} rows")
 
                 st.info("💾 Step 5/5: Exporting XLSX file...")
@@ -262,6 +315,7 @@ with tab_export_hs:
                 exp_file_path = export_xlsx(export_hs_df, exp_export_path, exp_prefix, config.country)
 
                 exp_progress_bar.progress(100)
+                update_export_logs()
 
                 if exp_file_path:
                     st.markdown('<div class="success-box">', unsafe_allow_html=True)
@@ -276,8 +330,12 @@ with tab_export_hs:
 
                     with st.expander("👀 Preview Export HS (first 50 rows)"):
                         st.dataframe(export_hs_df.head(50), use_container_width=True)
+
+                    # Show final logs
+                    update_export_logs()
                 else:
                     st.error("❌ No file generated")
+                    update_export_logs()
 
                 for tmp in [exp_nom_tmp, exp_txt_tmp]:
                     if tmp and os.path.exists(tmp):
@@ -446,8 +504,22 @@ with tab_process:
         if not dtr_files or not nom_files:
             st.error("❌ Please upload DTR and NOM files")
         else:
+            # Clear previous logs
+            st.session_state['log_handler'].clear_logs()
+
             progress_bar = st.progress(0)
-            
+            log_placeholder = st.empty()  # Placeholder for live log updates
+
+            def update_logs():
+                """Update the log display in Streamlit."""
+                logs = st.session_state['log_handler'].get_logs()
+                if logs:
+                    # Show last 50 logs in an expander
+                    with log_placeholder.container():
+                        with st.expander("📋 Processing Logs (click to expand)", expanded=False):
+                            log_text = "\n".join(logs[-50:])  # Last 50 logs
+                            st.code(log_text, language="log")
+
             try:
                 def save_uploads(files):
                     paths = []
@@ -470,7 +542,8 @@ with tab_process:
                 nom_df = parse_xml_to_df(nom_paths, "NOM")
                 txt_df = parse_xml_to_df(txt_paths, "TXT") if txt_paths else pd.DataFrame()
                 cg_descriptions = parse_country_group_definitions(dtr_paths)
-                
+                update_logs()
+
                 st.success(f"✅ Loaded: DTR={len(dtr_df)}, NOM={len(nom_df)} rows")
 
                 st.info("✔️ Step 2/6: Auto-generating config from XML...")
@@ -479,14 +552,16 @@ with tab_process:
                 # Always generate dynamic config from XML data - this merges base config with XML country groups
                 config = loader.generate_dynamic_config_from_xml(dtr_df, cg_descriptions, config)
                 st.session_state['config'] = config  # Update session state with dynamic config
+                update_logs()
                 st.success(f"✅ Config updated with {len(config.active_country_group_list)} active country groups")
 
                 if not skip_validation:
                     rate_valid, invalid_hs = validate_rates(dtr_df, config)
+                    update_logs()
                     if not rate_valid:
                         with st.expander(f"⚠️ {len(invalid_hs)} HS codes missing rate text"):
                             st.write(invalid_hs[:20])
-                
+
                 st.info("⚙️ Step 3/6: Processing DTR...")
                 progress_bar.progress(35)
 
@@ -497,8 +572,9 @@ with tab_process:
 
                 # Apply TableDTR M code transformations (combines compound/specific rate columns, filters expired)
                 dtr_active = process_dtr_table(dtr_df, config)
+                update_logs()
                 st.success(f"✅ Active DTR after TableDTR processing: {len(dtr_active)}/{len(dtr_df)}")
-                
+
                 st.info("⚙️ Step 4/6: Processing NOM...")
                 progress_bar.progress(50)
 
@@ -506,6 +582,7 @@ with tab_process:
                 nom_df = filter_by_chapter(nom_df, config)
                 nom_df = flag_hs(nom_df, config, "NOM")
                 nom_df = build_descriptions(nom_df)
+                update_logs()
                 st.success(f"✅ NOM: {len(nom_df)} records")
                 
                 st.info("📊 Step 5/6: Generating outputs...")
@@ -514,17 +591,22 @@ with tab_process:
                 outputs = {}
                 if output_types.get("ZD14", True):
                     outputs["ZD14"] = generate_zd14(dtr_active, nom_df, config)
+                    update_logs()
                     st.success(f"✅ ZD14: {len(outputs['ZD14'])} rows")
-                
+
                 if output_types.get("CAPDR"):
                     outputs["CAPDR"] = generate_capdr(dtr_active, nom_df, config)
+                    update_logs()
                 if output_types.get("MX6Digits"):
                     outputs["MX6Digits"] = generate_mx6digits(dtr_active, nom_df, config)
+                    update_logs()
                 if output_types.get("ZZDE"):
                     outputs["ZZDE"] = generate_zzde(dtr_active, nom_df, config)
+                    update_logs()
                 if output_types.get("ZZDF"):
                     outputs["ZZDF"] = generate_zzdf(dtr_active, nom_df, config)
-                
+                    update_logs()
+
                 st.info("💾 Step 6/6: Exporting CSV files...")
                 progress_bar.progress(80)
                 
@@ -548,21 +630,26 @@ with tab_process:
                     zip_path = "output.zip"
                     shutil.make_archive("output", 'zip', export_path)
                     progress_bar.progress(100)
-                    
+                    update_logs()
+
                     st.markdown('<div class="success-box">', unsafe_allow_html=True)
                     st.markdown(f"### ✅ Complete! Generated {len(all_exported_files)} file(s)")
                     st.markdown('</div>', unsafe_allow_html=True)
-                    
+
                     with open(zip_path, "rb") as f:
-                        st.download_button("📥 Download ZIP", data=f, 
+                        st.download_button("📥 Download ZIP", data=f,
                                           file_name=f"{config.country}_tariff_{config.year}.zip",
                                           mime="application/zip", use_container_width=True)
-                    
+
                     if "ZD14" in outputs and not outputs["ZD14"].empty:
                         with st.expander("👀 Preview ZD14 (first 50 rows)"):
                             st.dataframe(outputs["ZD14"].head(50), use_container_width=True)
+
+                    # Show final logs
+                    update_logs()
                 else:
                     st.error("❌ No files generated")
+                    update_logs()
                 
                 # Cleanup
                 for tmp in [dtr_tmp, nom_tmp, txt_tmp]:
