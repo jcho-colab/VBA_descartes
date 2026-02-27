@@ -6,10 +6,12 @@ from .config import AppConfig
 
 logger = logging.getLogger(__name__)
 
-def format_rate(r, decimal_places: int = 2, always_show_decimals: bool = True) -> str:
+def format_rate(r, decimal_places: int = 2, always_show_decimals: bool = True, allow_empty: bool = False) -> str:
     """Format rate values for CSV output."""
     try:
         if pd.isna(r) or r == '' or r is None:
+            if allow_empty:
+                return ''
             if always_show_decimals:
                 return f"0.{'0' * decimal_places}"
             return "0"
@@ -21,6 +23,8 @@ def format_rate(r, decimal_places: int = 2, always_show_decimals: bool = True) -
             formatted = formatted.rstrip('0').rstrip('.')
         return formatted if formatted else "0"
     except:
+        if allow_empty:
+            return ''
         if always_show_decimals:
             return f"0.{'0' * decimal_places}"
         return "0"
@@ -140,7 +144,7 @@ def generate_zd14(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Base rate %': merged[percentage_col].apply(format_rate) if percentage_col in merged.columns else '0',
         'Rate amount': merged[rate_amount_col].apply(format_rate) if rate_amount_col in merged.columns else '0',
         'Rate curr': '',
-        'Rate qty': merged[rate_qty_col].apply(format_rate) if rate_qty_col in merged.columns else '',
+        'Rate qty': merged[rate_qty_col].apply(lambda x: format_rate(x, allow_empty=True)) if rate_qty_col in merged.columns else '',
         'Rate qty uom': merged[rate_qty_uom_col].fillna('') if rate_qty_uom_col in merged.columns else '',
         'Spec App': '',
         'Cert Ori': '',
