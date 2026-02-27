@@ -356,8 +356,8 @@ def generate_zzde(dtr_df: pd.DataFrame, nom_df: pd.DataFrame, config: AppConfig)
         'Date to': '99991231'
     })
 
-    # Final sort: HS Number only (ZZDE doesn't have Rate type, matching VBA output)
-    zzde = zzde.sort_values('HS Number').reset_index(drop=True)
+    # Final sort: Can HS No. only (ZZDE doesn't have Rate type, matching VBA output)
+    zzde = zzde.sort_values('Can HS No.').reset_index(drop=True)
 
     logger.info(f"Generated ZZDE with {len(zzde)} rows")
     return zzde
