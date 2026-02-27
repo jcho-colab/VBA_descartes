@@ -6,32 +6,29 @@ from .config import AppConfig
 
 logger = logging.getLogger(__name__)
 
-def format_rate(r, decimal_places: int = 1) -> str:
+def format_rate(r, decimal_places: int = 2, always_show_decimals: bool = True) -> str:
     """Format rate values for CSV output."""
     try:
         if pd.isna(r) or r == '' or r is None:
+            if always_show_decimals:
+                return f"0.{'0' * decimal_places}"
             return "0"
         val = float(r)
-        if val == 0:
-            return "0"
-        # Format with specified decimal places, remove trailing zeros
-        formatted = f"{val:.{decimal_places}f}".rstrip('0').rstrip('.')
+        # Format with specified decimal places
+        formatted = f"{val:.{decimal_places}f}"
+        if not always_show_decimals:
+            # Remove trailing zeros and decimal point if not needed
+            formatted = formatted.rstrip('0').rstrip('.')
         return formatted if formatted else "0"
     except:
+        if always_show_decimals:
+            return f"0.{'0' * decimal_places}"
         return "0"
 
 def format_date_from(d, year_start_int: int) -> str:
-    """Format valid_from date to YYYYMMDD, clamping to year start."""
-    if pd.isna(d) or d == '':
-        return ""
-    s = str(d).replace("-", "").replace(" ", "")[:8]
-    try:
-        val_int = int(s)
-        if val_int < year_start_int:
-            return str(year_start_int)
-        return str(val_int)
-    except:
-        return s
+    """Format valid_from date to YYYYMMDD, always using year start (e.g., 20240101)."""
+    # Always return the year start date regardless of the input date
+    return str(year_start_int)
 
 def format_date_to(d) -> str:
     """Format valid_to date to YYYYMMDD."""
